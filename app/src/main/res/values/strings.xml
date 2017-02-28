@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">hAPPy-Hour</string>
+    <string name="title_activity_login">Sign in</string>
+    <string name="facebook_app_id">414270288923807</string>
+</resources>

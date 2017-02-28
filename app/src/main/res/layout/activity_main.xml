@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:background="#EF6C00"
+            android:orientation="vertical"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:weightSum="1">
+
+            <Button
+                android:layout_marginTop="50dp"
+                android:layout_marginBottom="25dp"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:id="@+id/login_button"
+                android:background="@drawable/ic_person_black_24dp"
+                android:onClick="login" />
+
+            <Button
+                android:layout_marginTop="50dp"
+                android:layout_marginBottom="25dp"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:id="@+id/shopping_cart_button"
+                android:background="@drawable/ic_shopping_cart_black_24dp" />
+
+            <Button
+                android:layout_marginTop="50dp"
+                android:layout_marginBottom="50dp"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:id="@+id/settings_button"
+                android:background="@drawable/ic_settings_black_24dp" />
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:background="#FFA726"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <Button
+                android:layout_centerInParent="true"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:background="@drawable/ic_magnifying_glass_icon" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+</LinearLayout>
