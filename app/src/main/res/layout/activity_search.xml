@@ -5,40 +5,71 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="beer.happy_hour.drinking.SearchActivity">
+    tools:context="beer.happy_hour.drinking.SearchActivity"
+    android:background="@color/colorPrimary">
 
     <SearchView
         android:id="@+id/search_view"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="8dp" />
+        tools:layout_editor_absoluteY="8dp"/>
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="90dp"
-        tools:layout_editor_absoluteY="0dp"
-        tools:layout_editor_absoluteX="8dp">
+        android:layout_gravity="center"
+        android:paddingEnd="8dp"
+        android:paddingRight="8dp"
+        android:background="@color/colorPrimary"
+        android:orientation="horizontal"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="0dp">
 
         <Button
-            android:background="@drawable/ic_beer_mug_2015060235"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent" />
+            android:layout_weight="1"
+            android:gravity="left"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/ic_snack_sack" />
+
 
         <Button
-            android:background="@drawable/ic_gerald_g_fast_food_drinks_ff_menu_11"
-            android:layout_width="55dp"
-            android:layout_height="match_parent" />
+            android:layout_weight="1"
+            android:gravity="left"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/ic_movie_soda_clipart_free_clipart_images" />
 
         <Button
-            android:background="@drawable/ic_beer_mug_2015060235"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent" />
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/ic_antu_drink_beer_svg" />
+
+        <Button
+            android:layout_weight="1"
+            android:layout_gravity="right"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/ic_cigarette_box" />
+
+        <Button
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/ic_shopping_cart" />
 
     </LinearLayout>
 
     <ListView
+        android:background="#ffffff"
+        android:layout_marginTop="10dp"
         android:id="@+id/items_list_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
