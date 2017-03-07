@@ -34,5 +34,9 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-
+    public void goToSearchActivity(View view){
+        //Pode haver problema nesse this
+        Intent intent = new Intent(this, SearchActivity.class);
+        startActivity(intent);
+    }
 }
