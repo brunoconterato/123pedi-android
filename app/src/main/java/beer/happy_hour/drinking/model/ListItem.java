@@ -1,5 +1,7 @@
 package beer.happy_hour.drinking.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -10,21 +12,21 @@ import beer.happy_hour.drinking.R;
  * Created by brcon on 09/03/2017.
  */
 
-public class ListItem {
-
-    private View view;
+public class ListItem implements Parcelable{
 
     private Item item;
-
-    //TODO: Sera que da pra implementar os botoes e o EditText direto no ListItemAdapter? Não ficaria até melhor (guardando menos informação?)
     //Quantidade que o comprador deseja
     private int quantity;
 
-//    private Button addOne_button;
-//    private Button minusOne_button;
-//    private Button addToShoppingCart_button;
+    public ListItem(Item item) {
+        this.item = item;
+        this.quantity = 0;
+    }
 
-//    private EditText quantity_editText;
+    public ListItem(Parcel in) {
+        this.quantity = in.readInt();
+        this.item = (Item) in.readParcelable(Item.class.getClassLoader());
+    }
 
     public int getQuantity() {
         return quantity;
@@ -37,63 +39,9 @@ public class ListItem {
             this.quantity = 0;
     }
 
-//    public EditText getQuantity_editText() {
-//        if(quantity_editText == null)
-//            quantity_editText = (EditText) view.findViewById(R.id.quantity_editText);
-//        return quantity_editText;
-//    }
-
-//    public void setQuantity_editText(EditText quantity_editText) {
-//        this.quantity_editText = quantity_editText;
-//    }
-
-    public ListItem(View list_item_view, Item item) {
-        this.view = list_item_view;
-        this.item = item;
-    }
-
-//    public Button getAddOne_button() {
-//        if(addOne_button == null)
-//            addOne_button = (Button) view.findViewById(R.id.addOne_button);
-//
-//        return addOne_button;
-//    }
-//
-//    public Button getMinusOne_button() {
-//        if(minusOne_button == null)
-//            minusOne_button = (Button) view.findViewById(R.id.minusOne_button);
-//
-//        return minusOne_button;
-//    }
-//
-//    public Button getAddToShoppingCart_button() {
-//        if(addToShoppingCart_button ==null)
-//            addToShoppingCart_button = (Button) view.findViewById(R.id.addToShoppingCart_button);
-//
-//        return addToShoppingCart_button;
-//    }
-
-//    public void incrementQuantity(){
-//        if(quantity_editText == null)
-//            quantity_editText = (EditText) view.findViewById(R.id.quantity_editText);
-//
-//        this.quantity++;
-//        this.quantity_editText.setText(Integer.toString(quantity));
-//    }
-
     public void incrementQuantity(){
         this.quantity++;
     }
-
-//    public void decrementQuantity(){
-//        if(quantity > 0) {
-//            if (quantity_editText == null)
-//                quantity_editText = (EditText) view.findViewById(R.id.quantity_editText);
-//
-//            this.quantity--;
-//            this.quantity_editText.setText(Integer.toString(quantity));
-//        }
-//    }
 
     public void decrementQuantity(){
         this.quantity--;
@@ -105,5 +53,37 @@ public class ListItem {
 
     public void setItem(Item item) {
         this.item = item;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeInt(quantity);
+
+        out.writeParcelable(item, flags);
+    }
+
+    public static final Creator<ListItem> CREATOR = new Creator<ListItem>() {
+        @Override
+        public ListItem createFromParcel(Parcel in) {
+            return new ListItem(in);
+        }
+
+        @Override
+        public ListItem[] newArray(int size) {
+            return new ListItem[size];
+        }
+    };
+
+    @Override
+    public String toString(){
+        String str = "Name: " + item.getProduct().getName() + "\n" +
+                "Quantity: "+ this.quantity;
+
+        return str;
     }
 }

@@ -13,28 +13,24 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import java.util.List;
-import java.util.zip.Inflater;
 
 import beer.happy_hour.drinking.R;
-import beer.happy_hour.drinking.model.Item;
 import beer.happy_hour.drinking.model.ListItem;
 
 /**
  * Created by brcon on 09/03/2017.
  */
 
-public class ListItemAdapter extends ArrayAdapter<Item> {
+public class ListItemAdapter extends ArrayAdapter<ListItem> {
 
     private final Context context;
+    private List<ListItem> listItems;
 
-    private final List<Item> items;
+    public ListItemAdapter(Context context, List<ListItem> listItems){
+        super(context, R.layout.list_item, listItems);
 
-    public ListItemAdapter(Context context, List<Item> items){
-
-        super(context, R.layout.list_item, items);
-
+        this.listItems = listItems;
         this.context = context;
-        this.items = items;
     }
 
     @Override
@@ -42,10 +38,12 @@ public class ListItemAdapter extends ArrayAdapter<Item> {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View row = inflater.inflate(R.layout.list_item, parent, false);
 
-        Item item = items.get(position);
-        final ListItem listItem = new ListItem(row, item);
+        final ListItem listItem = listItems.get(position);
 
         final EditText quantity_editText = (EditText) row.findViewById(R.id.quantity_editText);
+
+        if(listItem.getQuantity() > 0)
+            quantity_editText.setText(Integer.toString(listItem.getQuantity()));
 
         Button addOne_button = (Button) row.findViewById(R.id.addOne_button);
         Button minusOne_button = (Button) row.findViewById(R.id.minusOne_button);
@@ -65,9 +63,15 @@ public class ListItemAdapter extends ArrayAdapter<Item> {
             @Override
             public void onClick(View view) {
                 Log.d("Click","Botão -");
-                if(Integer.parseInt(quantity_editText.getText().toString()) > 0) {
-                    listItem.decrementQuantity();
-                    quantity_editText.setText(Integer.toString(listItem.getQuantity()));
+
+                try {
+                    if (Integer.parseInt(quantity_editText.getText().toString()) > 0) {
+                        listItem.decrementQuantity();
+                        quantity_editText.setText(Integer.toString(listItem.getQuantity()));
+                    }
+                } catch (NumberFormatException e){
+                    e.printStackTrace();
+                    Log.e("Error","Não há inteiro definido");
                 }
             }
         });
@@ -93,12 +97,14 @@ public class ListItemAdapter extends ArrayAdapter<Item> {
             @Override
             public void afterTextChanged(Editable editable) {
                 if(quantity_editText.getText() != null) {
+
+                    Log.d("After Text Changed: ", quantity_editText.getText().toString());
+
                     listItem.setQuantity(Integer.parseInt(quantity_editText.getText().toString()));
                     Log.d("New Quantity: ", Integer.toString(listItem.getQuantity()));
                 }
             }
         });
-
 
         //Declarando as TextViews
         TextView nome_text_view = (TextView) row.findViewById(R.id.name);
@@ -107,10 +113,10 @@ public class ListItemAdapter extends ArrayAdapter<Item> {
         TextView price_text_view = (TextView) row.findViewById(R.id.price);
 
         //Mostrando informações
-        nome_text_view.setText(item.getProduct().getName());
-        brand_text_view.setText(item.getProduct().getBrand());
-        manufacturer_text_view.setText(item.getProduct().getManufacturer());
-        price_text_view.setText(Double.toString(item.getPrice()));
+        nome_text_view.setText(listItem.getItem().getProduct().getName());
+        brand_text_view.setText(listItem.getItem().getProduct().getBrand());
+        manufacturer_text_view.setText(listItem.getItem().getProduct().getManufacturer());
+        price_text_view.setText(Double.toString(listItem.getItem().getPrice()));
 
         return row;
     }
@@ -119,8 +125,8 @@ public class ListItemAdapter extends ArrayAdapter<Item> {
      * USO: salvar o estado da ListItem
      *
      */
-    public List<Item> getItems() {
-        return items;
+    public List<ListItem> getListItems() {
+        return listItems;
     }
 
 }

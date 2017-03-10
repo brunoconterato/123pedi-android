@@ -7,13 +7,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import beer.happy_hour.drinking.adapter.ListItemAdapter;
@@ -27,8 +24,7 @@ public class SearchActivity extends Activity implements LoadStockJSONTask.Listen
     //public static final String URL = "https://api.learn2crack.com/android/jsonandroid/";
     public static final String URL = "http://happy-hour.beer/api/search/stocksearch";
 
-
-    private List<Item> listItems;
+    private List<ListItem> list_listItems;
     ListItemAdapter adapter;
 
 //    private List<HashMap<String, String>> mItemsHashMap = new ArrayList<>();
@@ -42,27 +38,46 @@ public class SearchActivity extends Activity implements LoadStockJSONTask.Listen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
-        // Get the intent, verify the action and get the query
-        Intent intent = getIntent();
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            String query = intent.getStringExtra(SearchManager.QUERY);
-            doSearch(query);
-        }
-
-        //Show listiew
+        //Show listview
         mListView = (ListView) findViewById(R.id.items_list_view);
         mListView.setOnItemClickListener(this);
-        new LoadStockJSONTask(this).execute(URL);
+
+        if(savedInstanceState == null || !savedInstanceState.containsKey("key")) {
+            // Get the intent, verify the action and get the query
+            Intent intent = getIntent();
+            if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+                String query = intent.getStringExtra(SearchManager.QUERY);
+                doSearch(query);
+            }
+
+            list_listItems = new ArrayList<ListItem>();
+
+            //Show listiew
+            new LoadStockJSONTask(this).execute(URL);
+        }
+        else {
+            Log.d("Entrou: ", "else");
+            list_listItems = savedInstanceState.getParcelableArrayList("key");
+
+//            Log.d("listItems: ", listItems.toString());
+
+            loadListView();
+        }
     }
 
     //Show listview
     @Override
     public void onLoaded(List<Item> listItems) {
 
-        this.listItems = listItems;
+//        this.listItems = listItems;
+
+        Log.d("Entrou : ", "onLoaded");
+
+        Log.d("listItems: ", listItems.toString());
 
         for(Item item : listItems){
             Log.d("ToString : ", item.toString());
+            list_listItems.add(new ListItem(item));
         }
 
 
@@ -87,6 +102,28 @@ public class SearchActivity extends Activity implements LoadStockJSONTask.Listen
         loadListView();
     }
 
+    //show listview
+    private void loadListView() {
+
+        Log.d("Entrou : ", "loadListView() Method");
+
+//        Log.d("listItems: ", listItems.toString());
+
+        Log.d("list_listItems: ", list_listItems.toString());
+
+        adapter = new ListItemAdapter(this, list_listItems);
+        mListView.setAdapter(adapter);
+
+//        ListAdapter adapter = new SimpleAdapter(
+//                SearchActivity.this,
+//                mItemsHashMap,
+//                R.layout.list_item,
+//                new String[] {KEY_PRICE, KEY_NAME, KEY_BRAND, KEY_MANUFACTURER},
+//                new int[] { R.id.price, R.id.name, R.id.brand, R.id.manufacturer});
+//
+//        mListView.setAdapter(adapter);
+    }
+
     //Show listview
     @Override
     public void onError() {
@@ -106,25 +143,16 @@ public class SearchActivity extends Activity implements LoadStockJSONTask.Listen
 //        ),Toast.LENGTH_SHORT).show();
     }
 
-    //show listview
-    private void loadListView() {
 
-        List<ListItem> list = new ArrayList<ListItem>();
+    //TODO: salvar Adapter
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
 
-
-        adapter = new ListItemAdapter(this, listItems);
-        mListView.setAdapter(adapter);
-
-
-//        ListAdapter adapter = new SimpleAdapter(
-//                SearchActivity.this,
-//                mItemsHashMap,
-//                R.layout.list_item,
-//                new String[] {KEY_PRICE, KEY_NAME, KEY_BRAND, KEY_MANUFACTURER},
-//                new int[] { R.id.price, R.id.name, R.id.brand, R.id.manufacturer});
-//
-//        mListView.setAdapter(adapter);
+        List<ListItem> values = adapter.getListItems();
+        outState.putParcelableArrayList("key", (ArrayList<ListItem>) values);
     }
+
 
     //search
     public void onNewIntent(Intent intent) {
