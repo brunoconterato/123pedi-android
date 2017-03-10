@@ -10,7 +10,7 @@
     <ImageView
         android:padding="10dp"
         android:id="@+id/image"
-        android:layout_weight="3"
+        android:layout_weight="0.9"
         android:layout_width="350dp"
         android:layout_height="match_parent"
         android:background="@android:drawable/btn_star" />
@@ -18,7 +18,7 @@
 
     <LinearLayout
         android:padding="10dp"
-        android:layout_weight="1"
+        android:layout_weight="0.8"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -47,6 +47,54 @@
             android:id="@+id/price"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_weight="1.2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/quantity_editText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:hint="0"
+            android:inputType="number" />
+
+        <Button
+            android:id="@+id/addToShoppingCart_button"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/ic_add_shopping_cart_black_24dp"/>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_weight="1.2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/addOne_button"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/ic_add_black_24dp" />
+
+        <Button
+            android:id="@+id/minusOne_button"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/ic_remove_black_24dp"/>
+
 
     </LinearLayout>
 
