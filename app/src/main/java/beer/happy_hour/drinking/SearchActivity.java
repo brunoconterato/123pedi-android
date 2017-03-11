@@ -2,22 +2,27 @@ package beer.happy_hour.drinking;
 
 import android.app.Activity;
 import android.app.SearchManager;
-import android.content.Intent;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import beer.happy_hour.drinking.adapter.ListItemAdapter;
+import beer.happy_hour.drinking.adapter.ShoppingCartAdapter;
 import beer.happy_hour.drinking.model.Item;
 import beer.happy_hour.drinking.model.ListItem;
+import beer.happy_hour.drinking.model.ShoppingCartSingleton;
 
-public class SearchActivity extends Activity implements LoadStockJSONTask.Listener, AdapterView.OnItemClickListener {
+public class SearchActivity extends Activity implements LoadStockJSONTask.Listener,
+                                                        AdapterView.OnItemClickListener,
+                                                        SearchView.OnQueryTextListener{
 
     //Show listview
     private ListView mListView;
@@ -25,13 +30,12 @@ public class SearchActivity extends Activity implements LoadStockJSONTask.Listen
     public static final String URL = "http://happy-hour.beer/api/search/stocksearch";
 
     private List<ListItem> list_listItems;
-    ListItemAdapter adapter;
+    ListItemAdapter listItemAdapter;
+    ShoppingCartAdapter shoppingCartAdapter;
 
-//    private List<HashMap<String, String>> mItemsHashMap = new ArrayList<>();
-//    private static final String KEY_PRICE = "price";
-//    private static final String KEY_NAME = "name";
-//    private static final String KEY_BRAND = "brand";
-//    private static final String KEY_MANUFACTURER = "manufacturer";
+    ShoppingCartSingleton cart;
+
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,11 +48,11 @@ public class SearchActivity extends Activity implements LoadStockJSONTask.Listen
 
         if(savedInstanceState == null || !savedInstanceState.containsKey("key")) {
             // Get the intent, verify the action and get the query
-            Intent intent = getIntent();
-            if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-                String query = intent.getStringExtra(SearchManager.QUERY);
-                doSearch(query);
-            }
+//            Intent intent = getIntent();
+//            if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+//                String query = intent.getStringExtra(SearchManager.QUERY);
+//                doSearch(query);
+//            }
 
             list_listItems = new ArrayList<ListItem>();
 
@@ -63,14 +67,25 @@ public class SearchActivity extends Activity implements LoadStockJSONTask.Listen
 
             loadListView();
         }
+
+        cart = ShoppingCartSingleton.getInstance();
+
+        listItemAdapter = new ListItemAdapter(this, list_listItems);
+        shoppingCartAdapter = new ShoppingCartAdapter(this,cart);
+
+        SearchManager searchManager = (SearchManager)
+                getSystemService(Context.SEARCH_SERVICE);
+
+        searchView = (SearchView) findViewById(R.id.search_view);
+
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setSubmitButtonEnabled(true);
+        searchView.setOnQueryTextListener(this);
     }
 
     //Show listview
     @Override
     public void onLoaded(List<Item> listItems) {
-
-//        this.listItems = listItems;
-
         Log.d("Entrou : ", "onLoaded");
 
         Log.d("listItems: ", listItems.toString());
@@ -80,25 +95,6 @@ public class SearchActivity extends Activity implements LoadStockJSONTask.Listen
             list_listItems.add(new ListItem(item));
         }
 
-
-//        for (Item item : listItem) {
-//
-//            HashMap<String, String> map = new HashMap<>();
-//
-//            map.put(KEY_PRICE, Double.toString(item.getPrice()));
-//            map.put(KEY_NAME, item.getProduct().getName());
-//            map.put(KEY_BRAND, item.getProduct().getBrand());
-//            map.put(KEY_MANUFACTURER, item.getProduct().getManufacturer());
-//
-//            Log.d("PRICE : ", Double.toString(item.getPrice()));
-//            Log.d("JSON : ", item.getProduct().getName());
-//            Log.d("JSON : ", item.getProduct().getBrand());
-//            Log.d("JSON : ", item.getProduct().getManufacturer());
-//
-//            mItemsHashMap.add(map);
-//
-//        }
-
         loadListView();
     }
 
@@ -107,21 +103,10 @@ public class SearchActivity extends Activity implements LoadStockJSONTask.Listen
 
         Log.d("Entrou : ", "loadListView() Method");
 
-//        Log.d("listItems: ", listItems.toString());
-
         Log.d("list_listItems: ", list_listItems.toString());
 
-        adapter = new ListItemAdapter(this, list_listItems);
-        mListView.setAdapter(adapter);
-
-//        ListAdapter adapter = new SimpleAdapter(
-//                SearchActivity.this,
-//                mItemsHashMap,
-//                R.layout.list_item,
-//                new String[] {KEY_PRICE, KEY_NAME, KEY_BRAND, KEY_MANUFACTURER},
-//                new int[] { R.id.price, R.id.name, R.id.brand, R.id.manufacturer});
-//
-//        mListView.setAdapter(adapter);
+        listItemAdapter = new ListItemAdapter(this, list_listItems);
+        mListView.setAdapter(listItemAdapter);
     }
 
     //Show listview
@@ -149,35 +134,45 @@ public class SearchActivity extends Activity implements LoadStockJSONTask.Listen
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        List<ListItem> values = adapter.getListItems();
+        List<ListItem> values = listItemAdapter.getListItems();
         outState.putParcelableArrayList("key", (ArrayList<ListItem>) values);
     }
 
-
-    //search
-    public void onNewIntent(Intent intent) {
-        setIntent(intent);
-        handleIntent(intent);
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
     }
 
-    //search
-    public void onListItemClick(ListView l,
-                                View v, int position, long id) {
-        // call detail activity for clicked entry
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        Log.d("Entrou:", "onQueryTextChange");
+        listItemAdapter.getFilter().filter(newText);
+        mListView.setAdapter(listItemAdapter);
+
+        return true;
     }
 
-    //search
-    private void handleIntent(Intent intent) {
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            String query =
-                    intent.getStringExtra(SearchManager.QUERY);
-            doSearch(query);
-        }
+    public void searchSnackCategory(View view){
+        mListView.setAdapter(listItemAdapter);
+        listItemAdapter.getFilter().filter(Constants.SEARCH_CATEGORY_HASH + "et");
     }
 
-    //search
-    private void doSearch(String queryStr) {
-        // get a Cursor, prepare the ListAdapter
-        // and set it
+    public void searchSodaCategory(View view){
+        mListView.setAdapter(listItemAdapter);
+        listItemAdapter.getFilter().filter(Constants.SEARCH_CATEGORY_HASH + "Soda");
+    }
+
+    public void searchAlcoholCategory(View view){
+        mListView.setAdapter(listItemAdapter);
+        listItemAdapter.getFilter().filter(Constants.SEARCH_CATEGORY_HASH + "Alcohol");
+    }
+
+    public void searchCigaretteCategory(View view){
+        mListView.setAdapter(listItemAdapter);
+        listItemAdapter.getFilter().filter(Constants.SEARCH_CATEGORY_HASH + "Cigarette");
+    }
+
+    public void viewShoppingCart(View view){
+        mListView.setAdapter(shoppingCartAdapter);
     }
 }

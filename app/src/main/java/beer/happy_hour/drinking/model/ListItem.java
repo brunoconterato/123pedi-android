@@ -82,7 +82,8 @@ public class ListItem implements Parcelable{
     @Override
     public String toString(){
         String str = "Name: " + item.getProduct().getName() + "\n" +
-                "Quantity: "+ this.quantity;
+                "Quantity: " + this.quantity + "\n" +
+                "Category: " + item.getProduct().getCategory().getName();
 
         return str;
     }

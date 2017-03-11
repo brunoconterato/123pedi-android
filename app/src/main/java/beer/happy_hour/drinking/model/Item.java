@@ -34,8 +34,9 @@ public class Item implements Parcelable{
     @Override
     public String toString(){
         String str = "Price: " + Double.toString(price) + "\n" +
-                "Product Name: " + product.getName();
+                "Product Name: " + product.getName() + "\n";
 
+        str += "\n";
         return str;
     }
 

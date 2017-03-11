@@ -13,12 +13,16 @@ public class Product implements Parcelable{
     private String brand;
     private String manufacturer;
 
+    private Category category;
+
     public Product() {}
 
     public Product(Parcel in) {
         name = in.readString();
         brand = in.readString();
         manufacturer = in.readString();
+
+        category = (Category) in.readParcelable(Category.class.getClassLoader());
     }
 
 
@@ -32,6 +36,10 @@ public class Product implements Parcelable{
 
     public String getManufacturer() {
         return manufacturer;
+    }
+
+    public Category getCategory() {
+        return category;
     }
 
     @Override

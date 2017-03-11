@@ -10,6 +10,8 @@
 
     <SearchView
         android:id="@+id/search_view"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:layout_editor_absoluteX="8dp"
@@ -33,7 +35,8 @@
             android:layout_marginRight="2dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/ic_snack_sack" />
+            android:background="@drawable/ic_snack_sack"
+            android:onClick="searchSnackCategory"/>
 
 
         <Button
@@ -43,27 +46,31 @@
             android:layout_marginRight="10dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/ic_movie_soda_clipart_free_clipart_images" />
+            android:background="@drawable/ic_movie_soda_clipart_free_clipart_images"
+            android:onClick="searchSodaCategory" />
 
         <Button
             android:layout_weight="1"
             android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/ic_antu_drink_beer_svg" />
+            android:background="@drawable/ic_antu_drink_beer_svg"
+            android:onClick="searchAlcoholCategory" />
 
         <Button
             android:layout_weight="1"
             android:layout_gravity="right"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/ic_cigarette_box" />
+            android:background="@drawable/ic_cigarette_box"
+            android:onClick="searchCigaretteCategory" />
 
         <Button
             android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/ic_shopping_cart" />
+            android:background="@drawable/ic_shopping_cart"
+            android:onClick="viewShoppingCart" />
 
     </LinearLayout>
 
