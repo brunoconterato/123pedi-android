@@ -19,6 +19,7 @@ import beer.happy_hour.drinking.adapter.ShoppingCartAdapter;
 import beer.happy_hour.drinking.model.Item;
 import beer.happy_hour.drinking.model.ListItem;
 import beer.happy_hour.drinking.model.ShoppingCartSingleton;
+import beer.happy_hour.drinking.repository.ListItemRepositorySingleton;
 
 public class SearchActivity extends Activity implements LoadStockJSONTask.Listener,
                                                         AdapterView.OnItemClickListener,
@@ -29,7 +30,8 @@ public class SearchActivity extends Activity implements LoadStockJSONTask.Listen
     //public static final String URL = "https://api.learn2crack.com/android/jsonandroid/";
     public static final String URL = "http://happy-hour.beer/api/search/stocksearch";
 
-    private List<ListItem> list_listItems;
+//    private List<ListItem> listItemRepository;
+    private ListItemRepositorySingleton listItemRepository;
     ListItemAdapter listItemAdapter;
     ShoppingCartAdapter shoppingCartAdapter;
 
@@ -46,31 +48,25 @@ public class SearchActivity extends Activity implements LoadStockJSONTask.Listen
         mListView = (ListView) findViewById(R.id.items_list_view);
         mListView.setOnItemClickListener(this);
 
+        listItemRepository = ListItemRepositorySingleton.getInstance();
+
         if(savedInstanceState == null || !savedInstanceState.containsKey("key")) {
-            // Get the intent, verify the action and get the query
-//            Intent intent = getIntent();
-//            if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-//                String query = intent.getStringExtra(SearchManager.QUERY);
-//                doSearch(query);
-//            }
-
-            list_listItems = new ArrayList<ListItem>();
-
+            Log.d("entrou", "if");
             //Show listiew
-            new LoadStockJSONTask(this).execute(URL);
+            if(listItemRepository.isEmpty())
+                new LoadStockJSONTask(this).execute(URL);
+            else
+                loadListView();
         }
         else {
             Log.d("Entrou: ", "else");
-            list_listItems = savedInstanceState.getParcelableArrayList("key");
-
-//            Log.d("listItems: ", listItems.toString());
 
             loadListView();
         }
 
         cart = ShoppingCartSingleton.getInstance();
 
-        listItemAdapter = new ListItemAdapter(this, list_listItems);
+        listItemAdapter = new ListItemAdapter(this, listItemRepository);
         shoppingCartAdapter = new ShoppingCartAdapter(this,cart);
 
         SearchManager searchManager = (SearchManager)
@@ -92,7 +88,8 @@ public class SearchActivity extends Activity implements LoadStockJSONTask.Listen
 
         for(Item item : listItems){
             Log.d("ToString : ", item.toString());
-            list_listItems.add(new ListItem(item));
+            listItemRepository.add(new ListItem(item));
+            listItemRepository.addToFilteredList(new ListItem(item));
         }
 
         loadListView();
@@ -103,9 +100,9 @@ public class SearchActivity extends Activity implements LoadStockJSONTask.Listen
 
         Log.d("Entrou : ", "loadListView() Method");
 
-        Log.d("list_listItems: ", list_listItems.toString());
+        Log.d("listItemRepository: ", listItemRepository.toString());
 
-        listItemAdapter = new ListItemAdapter(this, list_listItems);
+        listItemAdapter = new ListItemAdapter(this, listItemRepository);
         mListView.setAdapter(listItemAdapter);
     }
 
@@ -129,12 +126,12 @@ public class SearchActivity extends Activity implements LoadStockJSONTask.Listen
     }
 
 
-    //TODO: salvar Adapter
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        List<ListItem> values = listItemAdapter.getListItems();
+        List<ListItem> values = listItemRepository.getList();
+//        List<ListItem> values = listItemAdapter.getListItems();
         outState.putParcelableArrayList("key", (ArrayList<ListItem>) values);
     }
 

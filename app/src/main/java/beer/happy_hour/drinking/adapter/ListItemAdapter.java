@@ -22,6 +22,7 @@ import beer.happy_hour.drinking.Constants;
 import beer.happy_hour.drinking.R;
 import beer.happy_hour.drinking.model.ListItem;
 import beer.happy_hour.drinking.model.ShoppingCartSingleton;
+import beer.happy_hour.drinking.repository.ListItemRepositorySingleton;
 
 /**
  * Created by brcon on 09/03/2017.
@@ -31,24 +32,25 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
 
     private final Context context;
 
-    private List<ListItem> listItems;
-    private List<ListItem> originalListItems;  //Cópia
+//    private List<ListItem> listItems;
+//    private List<ListItem> originalListItems;  //Cópia
     //Used for search
-    private List<ListItem> filtered_listItems;
 
     private Filter listItemFilter;
 
+    private ListItemRepositorySingleton listItemRepositorySingleton;
+
     private ShoppingCartSingleton cart;
 
-    public ListItemAdapter(Context context, List<ListItem> listItems){
-        super(context, R.layout.list_item, listItems);
+    public ListItemAdapter(Context context, ListItemRepositorySingleton listItemRepositorySingleton){
+        super(context, R.layout.list_item, listItemRepositorySingleton.getFilteredList());
 
-        this.listItems = new ArrayList<ListItem>(listItems);
-        this.filtered_listItems = new ArrayList<ListItem>(listItems);
-        this.originalListItems = new ArrayList<ListItem>(listItems);
+//        this.listItems = listItemRepositorySingleton.getList();
+//        this.originalListItems = listItemRepositorySingleton.getList();
 
         this.context = context;
 
+        this.listItemRepositorySingleton = listItemRepositorySingleton;
         cart = ShoppingCartSingleton.getInstance();
 
         getFilter();
@@ -61,7 +63,7 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
 
         //Inicializando Botões
         Button addOne_button = (Button) row.findViewById(R.id.addOne_button);
-        Button minusOne_button = (Button) row.findViewById(R.id.minusOne_button);;
+        Button minusOne_button = (Button) row.findViewById(R.id.minusOne_button);
         Button addToShoppingCart_button = (Button) row.findViewById(R.id.addToShoppingCart_button);
 
         final EditText quantity_editText;
@@ -75,12 +77,21 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
         //Inicializando EditText
         quantity_editText = (EditText) row.findViewById(R.id.quantity_editText);
 
-        final ListItem listItem = listItems.get(position);
+        final ListItem listItem = listItemRepositorySingleton.getFilteredItem(position);
 
-        if (cart.getListItems().contains(listItem)) {
-            int listItemIndexInCart = cart.getListItems().indexOf(listItem);
-            quantity_editText.setText(Integer.toString(cart.getListItems().get(listItemIndexInCart).getQuantity()));
-        }
+
+        int listItemIndexInLIRepository = listItemRepositorySingleton.getFilteredList().indexOf(listItem);
+        quantity_editText.setText(Integer.toString(listItemRepositorySingleton.getFilteredList().get(listItemIndexInLIRepository).getQuantity()));
+
+//        if (cart.getListItems().contains(listItem)) {
+//            int listItemIndexInCart = cart.getListItems().indexOf(listItem);
+//            quantity_editText.setText(Integer.toString(cart.getListItems().get(listItemIndexInCart).getQuantity()));
+//        }
+//        else
+//        {
+//            int listItemIndexInLIRepository = listItemRepositorySingleton.getFilteredList().indexOf(listItem);
+//            quantity_editText.setText(Integer.toString(listItemRepositorySingleton.getFilteredList().get(listItemIndexInLIRepository).getQuantity()));
+//        }
 
         //Organizando comportamento dos botões
         addOne_button.setOnClickListener(new View.OnClickListener() {
@@ -102,6 +113,9 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
                         listItem.decrementQuantity();
                         quantity_editText.setText(Integer.toString(listItem.getQuantity()));
                     }
+                    else if(Integer.parseInt(quantity_editText.getText().toString()) == 0){
+                        cart.deleteFromCart(listItem);
+                    }
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                     Log.e("Error", "Não há inteiro definido");
@@ -112,10 +126,12 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
         addToShoppingCart_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                cart.addToCart(listItem);
-                Log.d("Click", "Botão cart");
-                Log.d("Adicionado ao carrinho", listItem.toString());
-                Log.d("Carrinho", cart.toString());
+                if(listItem.getQuantity() > 0) {
+                    cart.addToCart(listItem);
+                    Log.d("Click", "Botão cart");
+                    Log.d("Adicionado ao carrinho", listItem.toString());
+                    Log.d("Carrinho", cart.toString());
+                }
             }
         });
 
@@ -134,10 +150,16 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
             public void afterTextChanged(Editable editable) {
                 if (quantity_editText.getText() != null) {
 
-                    Log.d("After Text Changed: ", quantity_editText.getText().toString());
+                    if(Integer.parseInt(quantity_editText.getText().toString()) > 0) {
+                        Log.d("After Text Changed: ", quantity_editText.getText().toString());
 
-                    listItem.setQuantity(Integer.parseInt(quantity_editText.getText().toString()));
-                    Log.d("New Quantity: ", Integer.toString(listItem.getQuantity()));
+                        listItem.setQuantity(Integer.parseInt(quantity_editText.getText().toString()));
+                        Log.d("New Quantity: ", Integer.toString(listItem.getQuantity()));
+                    }
+                    else{
+                        listItem.setQuantity(Integer.parseInt(quantity_editText.getText().toString()));
+                        cart.deleteFromCart(listItem);
+                    }
                 }
             }
         });
@@ -157,7 +179,7 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
      *
      */
     public List<ListItem> getListItems() {
-        return listItems;
+        return listItemRepositorySingleton.getList();
     }
 
     @Override
@@ -168,17 +190,19 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
             listItemFilter = new ListItemFilter();
         }
 
+
+        Log.d("Saindo ", "getFilter");
         return listItemFilter;
     }
 
     /**
      * Sobrescrevemos para obter a lista final filtrada quando busca é realizada
-     * @param pos
+     * @param position
      * @return
      */
     @Override
-    public ListItem getItem(int pos){
-        return listItems.get(pos);
+    public ListItem getItem(int position){
+        return listItemRepositorySingleton.getItem(position);
     }
 
     /**
@@ -189,7 +213,7 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
      */
     @Override
     public int getCount(){
-        return listItems.size();
+        return listItemRepositorySingleton.getFIlteredListSize();
     }
 
     private class ListItemFilter extends Filter{
@@ -203,31 +227,24 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
             if (constraint != null && constraint.length() > 0) {
                 List<ListItem> tempList = new ArrayList<ListItem>();
 
-
-
                 //Verifica se a busca foi por categoria
                 //Uso interno da app pelos botões de categoria
-                if(constraint.toString().startsWith(Constants.SEARCH_CATEGORY_HASH)){
+                if (constraint.toString().startsWith(Constants.SEARCH_CATEGORY_HASH)) {
                     String searchCategoryHash = Constants.SEARCH_CATEGORY_HASH;
 
                     String categoryConstraint = constraint.toString().substring(searchCategoryHash.length());
-                    Log.d("categoryConstraint",categoryConstraint);
+                    Log.d("categoryConstraint", categoryConstraint);
 
-                    for (ListItem listItem : listItems) {
-
-                        if(listItem.getItem().getProduct().getCategory().getName().contains(categoryConstraint.toLowerCase())){
+                    for (ListItem listItem : listItemRepositorySingleton.getList()) {
+                        if (listItem.getItem().getProduct().getCategory().getName().contains(categoryConstraint.toLowerCase())) {
                             Log.d("Aviso: ", "filtro de categoria encontrado: você tem um produto dea categoria!");
                             Log.d("Nome produto: ", listItem.getItem().getProduct().getName());
                             tempList.add(listItem);
                         }
                     }
-                }
-                else {
-                    //zera a lista
-                    listItems = originalListItems;
-
+                } else {
                     // search content in friend list
-                    for (ListItem listItem : listItems) {
+                    for (ListItem listItem : listItemRepositorySingleton.getList()) {
                         if (listItem.getItem().getProduct().getName().toLowerCase().contains(constraint.toString().toLowerCase())
                                 || listItem.getItem().getProduct().getBrand().toLowerCase().contains(constraint.toString().toLowerCase())
                                 || listItem.getItem().getProduct().getManufacturer().toLowerCase().contains(constraint.toString().toLowerCase())
@@ -239,12 +256,14 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
                     }
                 }
 
-                filterResults.count = tempList.size();
-                filterResults.values = tempList;
-
-            } else {
-                filterResults.count = originalListItems.size();
-                filterResults.values = originalListItems;
+                if (tempList.size() > 0) {
+                    filterResults.values = tempList;
+                    filterResults.count = tempList.size();
+                } else {
+                    filterResults.count = listItemRepositorySingleton.getSize();
+                    filterResults.values = listItemRepositorySingleton.getList();
+                    listItemRepositorySingleton.resetFilteredList();
+                }
             }
 
             return filterResults;
@@ -260,14 +279,15 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
         protected void publishResults(CharSequence constraint, FilterResults filterResults) {
             Log.d("Entrou: ", "publishResults");
 
-            if (filterResults.count == 0)
+            if (filterResults.count == 0) {
+                listItemRepositorySingleton.resetFilteredList();
                 notifyDataSetInvalidated();
+            }
             else{
-                listItems = (ArrayList<ListItem>) filterResults.values;
+                listItemRepositorySingleton.setFilteredList( (ArrayList<ListItem>) filterResults.values );
+                notifyDataSetChanged();
             }
 
-            Log.d("Filtered: ", filtered_listItems.toString());
-                notifyDataSetChanged();
         }
     }
 }

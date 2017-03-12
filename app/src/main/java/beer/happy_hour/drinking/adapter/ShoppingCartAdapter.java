@@ -77,7 +77,7 @@ public class ShoppingCartAdapter extends ArrayAdapter<ListItem> {
                 Log.d("Click", "Botão -");
 
                 try {
-                    if (Integer.parseInt(quantity_editText.getText().toString()) > 0) {
+                    if (Integer.parseInt(quantity_editText.getText().toString()) > 1) {
                         listItem.decrementQuantity();
                         quantity_editText.setText(Integer.toString(listItem.getQuantity()));
                     }

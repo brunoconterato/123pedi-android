@@ -36,7 +36,6 @@
 
         <activity
             android:name=".SearchActivity"
-            android:screenOrientation="portrait"
             android:configChanges="orientation"
             android:windowSoftInputMode="stateHidden"
             android:launchMode="singleTask"
