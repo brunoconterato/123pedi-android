@@ -1,10 +1,13 @@
 package beer.happy_hour.drinking;
 
-import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -21,21 +24,20 @@ import beer.happy_hour.drinking.model.ListItem;
 import beer.happy_hour.drinking.model.ShoppingCartSingleton;
 import beer.happy_hour.drinking.repository.ListItemRepositorySingleton;
 
-public class SearchActivity extends Activity implements LoadStockJSONTask.Listener,
+public class SearchActivity extends AppCompatActivity implements LoadStockJSONTask.Listener,
                                                         AdapterView.OnItemClickListener,
                                                         SearchView.OnQueryTextListener{
 
-    //Show listview
-    private ListView mListView;
     //public static final String URL = "https://api.learn2crack.com/android/jsonandroid/";
     public static final String URL = "http://happy-hour.beer/api/search/stocksearch";
-
+    //Show listview
+    private ListView mListView;
 //    private List<ListItem> listItemRepository;
     private ListItemRepositorySingleton listItemRepository;
-    ListItemAdapter listItemAdapter;
-    ShoppingCartAdapter shoppingCartAdapter;
+    private ListItemAdapter listItemAdapter;
+    private ShoppingCartAdapter shoppingCartAdapter;
 
-    ShoppingCartSingleton cart;
+    private ShoppingCartSingleton cart;
 
     private SearchView searchView;
 
@@ -119,10 +121,7 @@ public class SearchActivity extends Activity implements LoadStockJSONTask.Listen
     @Override
     public void onItemClick(AdapterView adapterView, View view, int i, long l) {
 
-//        Toast.makeText(this, mItemsHashMap.get(i).get(
-//                KEY_NAME
-//                KEY_PRICE
-//        ),Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Item clicado", Toast.LENGTH_SHORT).show();
     }
 
 
@@ -149,6 +148,11 @@ public class SearchActivity extends Activity implements LoadStockJSONTask.Listen
         return true;
     }
 
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(this, MainActivity.class));
+    }
+
     public void searchSnackCategory(View view){
         mListView.setAdapter(listItemAdapter);
         listItemAdapter.getFilter().filter(Constants.SEARCH_CATEGORY_HASH + "et");
@@ -170,6 +174,34 @@ public class SearchActivity extends Activity implements LoadStockJSONTask.Listen
     }
 
     public void viewShoppingCart(View view){
-        mListView.setAdapter(shoppingCartAdapter);
+//        mListView.setAdapter(shoppingCartAdapter);
+        Intent intent = new Intent(this, CheckoutActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.add:
+                return (true);
+            case R.id.reset:
+                return (true);
+            case R.id.about:
+                Toast.makeText(this, "About Toast!", Toast.LENGTH_LONG).show();
+                return (true);
+            case R.id.exit:
+                finish();
+                return (true);
+
+        }
+        return (super.onOptionsItemSelected(item));
     }
 }

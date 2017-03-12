@@ -1,7 +1,6 @@
 package beer.happy_hour.drinking.adapter;
 
 import android.content.Context;
-import android.provider.SyncStateContract;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
