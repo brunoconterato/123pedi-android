@@ -38,19 +38,22 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
     private Filter listItemFilter;
 
     private ListItemRepositorySingleton listItemRepositorySingleton;
-
     private ShoppingCartSingleton cart;
 
-    public ListItemAdapter(Context context, ListItemRepositorySingleton listItemRepositorySingleton){
-        super(context, R.layout.list_item, listItemRepositorySingleton.getFilteredList());
+    private List<ListItem> filteredList;
+
+    public ListItemAdapter(Context context) {
+        super(context, R.layout.list_item, ListItemRepositorySingleton.getInstance().getList());
 
 //        this.listItems = listItemRepositorySingleton.getList();
 //        this.originalListItems = listItemRepositorySingleton.getList();
 
         this.context = context;
 
-        this.listItemRepositorySingleton = listItemRepositorySingleton;
+        listItemRepositorySingleton = ListItemRepositorySingleton.getInstance();
         cart = ShoppingCartSingleton.getInstance();
+
+        filteredList = listItemRepositorySingleton.getList();
 
         getFilter();
     }
@@ -69,18 +72,17 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
 
         //Inicializando TextViews
         TextView nome_text_view = (TextView) row.findViewById(R.id.name);
-        TextView brand_text_view = (TextView) row.findViewById(R.id.brand);;
-        TextView manufacturer_text_view = (TextView) row.findViewById(R.id.manufacturer);;
-        TextView price_text_view = (TextView) row.findViewById(R.id.price);;
+        TextView brand_text_view = (TextView) row.findViewById(R.id.brand);
+        TextView manufacturer_text_view = (TextView) row.findViewById(R.id.manufacturer);
+        TextView price_text_view = (TextView) row.findViewById(R.id.price);
 
         //Inicializando EditText
         quantity_editText = (EditText) row.findViewById(R.id.quantity_editText);
 
-        final ListItem listItem = listItemRepositorySingleton.getFilteredItem(position);
+        final ListItem listItem = filteredList.get(position);
 
-
-        int listItemIndexInLIRepository = listItemRepositorySingleton.getFilteredList().indexOf(listItem);
-        quantity_editText.setText(Integer.toString(listItemRepositorySingleton.getFilteredList().get(listItemIndexInLIRepository).getQuantity()));
+//        int listItemIndexInLIRepository = filteredList.get(position).indexOf(listItem);
+        quantity_editText.setText(Integer.toString(listItem.getQuantity()));
 
 //        if (cart.getListItems().contains(listItem)) {
 //            int listItemIndexInCart = cart.getListItems().indexOf(listItem);
@@ -156,7 +158,7 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
                         Log.d("New Quantity: ", Integer.toString(listItem.getQuantity()));
                     }
                     else{
-                        listItem.setQuantity(Integer.parseInt(quantity_editText.getText().toString()));
+                        listItem.setQuantity(0);
                         cart.deleteFromCart(listItem);
                     }
                 }
@@ -212,7 +214,7 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
      */
     @Override
     public int getCount(){
-        return listItemRepositorySingleton.getFIlteredListSize();
+        return filteredList.size();
     }
 
     private class ListItemFilter extends Filter{
@@ -254,14 +256,16 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
                         }
                     }
                 }
-
+                //Alguns valores foram filtrados
                 if (tempList.size() > 0) {
                     filterResults.values = tempList;
                     filterResults.count = tempList.size();
-                } else {
+                }
+                //Nenhum valor foi filtrado
+                else {
                     filterResults.count = listItemRepositorySingleton.getSize();
                     filterResults.values = listItemRepositorySingleton.getList();
-                    listItemRepositorySingleton.resetFilteredList();
+//                    listItemRepositorySingleton.resetFilteredList();
                 }
             }
 
@@ -279,14 +283,15 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
             Log.d("Entrou: ", "publishResults");
 
             if (filterResults.count == 0) {
-                listItemRepositorySingleton.resetFilteredList();
+//                listItemRepositorySingleton.resetFilteredList();
+                filteredList = listItemRepositorySingleton.getList();
                 notifyDataSetInvalidated();
             }
             else{
-                listItemRepositorySingleton.setFilteredList( (ArrayList<ListItem>) filterResults.values );
+//                listItemRepositorySingleton.setFilteredList( (ArrayList<ListItem>) filterResults.values );
+                filteredList = (ArrayList<ListItem>) filterResults.values;
                 notifyDataSetChanged();
             }
-
         }
     }
 }

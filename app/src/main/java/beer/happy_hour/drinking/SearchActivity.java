@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import beer.happy_hour.drinking.adapter.ListItemAdapter;
-import beer.happy_hour.drinking.adapter.ShoppingCartAdapter;
 import beer.happy_hour.drinking.model.Item;
 import beer.happy_hour.drinking.model.ListItem;
 import beer.happy_hour.drinking.model.ShoppingCartSingleton;
@@ -35,7 +34,6 @@ public class SearchActivity extends AppCompatActivity implements LoadStockJSONTa
 //    private List<ListItem> listItemRepository;
     private ListItemRepositorySingleton listItemRepository;
     private ListItemAdapter listItemAdapter;
-    private ShoppingCartAdapter shoppingCartAdapter;
 
     private ShoppingCartSingleton cart;
 
@@ -52,13 +50,11 @@ public class SearchActivity extends AppCompatActivity implements LoadStockJSONTa
 
         listItemRepository = ListItemRepositorySingleton.getInstance();
 
-        if(savedInstanceState == null || !savedInstanceState.containsKey("key")) {
-            Log.d("entrou", "if");
+        if ((savedInstanceState == null || !savedInstanceState.containsKey("key"))
+                && listItemRepository.isEmpty()) {
+
             //Show listiew
-            if(listItemRepository.isEmpty())
-                new LoadStockJSONTask(this).execute(URL);
-            else
-                loadListView();
+            new LoadStockJSONTask(this).execute(URL);
         }
         else {
             Log.d("Entrou: ", "else");
@@ -68,8 +64,7 @@ public class SearchActivity extends AppCompatActivity implements LoadStockJSONTa
 
         cart = ShoppingCartSingleton.getInstance();
 
-        listItemAdapter = new ListItemAdapter(this, listItemRepository);
-        shoppingCartAdapter = new ShoppingCartAdapter(this,cart);
+        listItemAdapter = new ListItemAdapter(this);
 
         SearchManager searchManager = (SearchManager)
                 getSystemService(Context.SEARCH_SERVICE);
@@ -91,8 +86,12 @@ public class SearchActivity extends AppCompatActivity implements LoadStockJSONTa
         for(Item item : listItems){
             Log.d("ToString : ", item.toString());
             listItemRepository.add(new ListItem(item));
-            listItemRepository.addToFilteredList(new ListItem(item));
+//            listItemRepository.addToFilteredList(new ListItem(item));
         }
+
+        Log.d("Lista Normal: ", listItemRepository.getList().toString());
+//        Log.d("Lista filtrada: ", listItemRepository.getFilteredList().toString());
+
 
         loadListView();
     }
@@ -104,7 +103,7 @@ public class SearchActivity extends AppCompatActivity implements LoadStockJSONTa
 
         Log.d("listItemRepository: ", listItemRepository.toString());
 
-        listItemAdapter = new ListItemAdapter(this, listItemRepository);
+        listItemAdapter = new ListItemAdapter(this);
         mListView.setAdapter(listItemAdapter);
     }
 
@@ -174,7 +173,6 @@ public class SearchActivity extends AppCompatActivity implements LoadStockJSONTa
     }
 
     public void viewShoppingCart(View view){
-//        mListView.setAdapter(shoppingCartAdapter);
         Intent intent = new Intent(this, CheckoutActivity.class);
         startActivity(intent);
         finish();

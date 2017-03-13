@@ -11,13 +11,11 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import beer.happy_hour.drinking.adapter.ShoppingCartAdapter;
-import beer.happy_hour.drinking.model.ShoppingCartSingleton;
 
 public class CheckoutActivity extends Activity implements AdapterView.OnItemClickListener {
 
     private ListView cartListView;
     private ShoppingCartAdapter shoppingCartAdapter;
-    private ShoppingCartSingleton cart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,8 +25,7 @@ public class CheckoutActivity extends Activity implements AdapterView.OnItemClic
         cartListView = (ListView) findViewById(R.id.cart_list_view);
         cartListView.setOnItemClickListener(this);
 
-        cart = ShoppingCartSingleton.getInstance();
-        shoppingCartAdapter = new ShoppingCartAdapter(this, cart);
+        shoppingCartAdapter = new ShoppingCartAdapter(this);
         cartListView.setAdapter(shoppingCartAdapter);
     }
 

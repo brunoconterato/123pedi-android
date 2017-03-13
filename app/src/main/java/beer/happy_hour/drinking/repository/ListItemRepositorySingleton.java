@@ -15,12 +15,12 @@ public class ListItemRepositorySingleton {
 
     private List<ListItem> list;
 
-    private List<ListItem> filteredList;
+//    private List<ListItem> filteredList;
 
     private ListItemRepositorySingleton(){
 
         list = new ArrayList<ListItem>();
-        filteredList = new ArrayList<ListItem>();
+//        filteredList = new ArrayList<ListItem>();
 
     }
 
@@ -43,21 +43,22 @@ public class ListItemRepositorySingleton {
         return list;
     }
 
-    public List<ListItem> getFilteredList() {
-        return filteredList;
-    }
+//    public List<ListItem> getFilteredList() {
+//        return filteredList;
+//    }
 
-    public void setFilteredList(List<ListItem> filteredList) {
-        this.filteredList = filteredList;
-    }
+//    public void setFilteredList(List<ListItem> filteredList) {
+//        this.filteredList = filteredList;
+//    }
 
-    public void resetFilteredList(){
-        this.filteredList = list;
-    }
+//    public void resetFilteredList(){
+//        this.filteredList = new ArrayList<ListItem>(list) {
+//        };
+//    }
 
-    public int getFIlteredListSize(){
-        return this.filteredList.size();
-    }
+//    public int getFIlteredListSize(){
+//        return this.filteredList.size();
+//    }
 
     public ListItem getItem(int position){
         if (position < list.size())
@@ -66,17 +67,17 @@ public class ListItemRepositorySingleton {
             return null;
     }
 
-    public ListItem getFilteredItem(int position){
-        return filteredList.get(position);
-    }
+//    public ListItem getFilteredItem(int position){
+//        return filteredList.get(position);
+//    }
 
     public int getSize() {
         return list.size();
     }
 
-    public void addToFilteredList(ListItem listItem) {
-        filteredList.add((listItem));
-    }
+//    public void addToFilteredList(ListItem listItem) {
+//        filteredList.add((listItem));
+//    }
 
     public boolean isEmpty() {
         return list.isEmpty();

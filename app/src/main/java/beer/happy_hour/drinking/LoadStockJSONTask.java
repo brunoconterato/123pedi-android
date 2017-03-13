@@ -23,24 +23,17 @@ import beer.happy_hour.drinking.model.Item;
 
 public class LoadStockJSONTask extends AsyncTask<String, Void, List<Item>> {
 
+    private Listener mListener;
+
     public LoadStockJSONTask(Listener listener) {
 
         mListener = listener;
     }
 
-    public interface Listener {
-
-        void onLoaded(List<Item> item);
-
-        void onError();
-    }
-
-    private Listener mListener;
-
     @Override
     protected List<Item> doInBackground(String... strings) {
         try {
-
+            Log.d("Entrou", "LoadStockJSONTask");
             String stringJSON = loadJSON(strings[0]);
 
             //deserialize generic collection (like a List, in this case)
@@ -94,5 +87,12 @@ public class LoadStockJSONTask extends AsyncTask<String, Void, List<Item>> {
         Log.d("JSON : ", response.toString());
 
         return response.toString();
+    }
+
+    public interface Listener {
+
+        void onLoaded(List<Item> item);
+
+        void onError();
     }
 }

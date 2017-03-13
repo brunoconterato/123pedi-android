@@ -25,8 +25,8 @@ public class ShoppingCartAdapter extends ArrayAdapter<ListItem> {
     private Context context;
     private ShoppingCartSingleton cart;
 
-    public ShoppingCartAdapter(Context context, ShoppingCartSingleton cart){
-        super(context, R.layout.shopping_cart_item, cart.getListItems());
+    public ShoppingCartAdapter(Context context) {
+        super(context, R.layout.shopping_cart_item, ShoppingCartSingleton.getInstance().getListItems());
 
         this.context = context;
         this.cart = ShoppingCartSingleton.getInstance();
