@@ -1,5 +1,6 @@
 package beer.happy_hour.drinking;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -10,7 +11,7 @@ import android.widget.Toast;
 
 public class FinalizeActivity extends AppCompatActivity {
 
-    //Location Variables
+    //Location Variables (Not Google Map API)
     Button get_location_button;
     // GPSTracker class
     GPSTracker gps;
@@ -20,6 +21,7 @@ public class FinalizeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_finalize);
 
+        //Not from google mapFragment api
         get_location_button = (Button) findViewById(R.id.get_location_button);
 
         // show location button click event
@@ -49,10 +51,6 @@ public class FinalizeActivity extends AppCompatActivity {
         });
     }
 
-    public void getUserLocation(View view) {
-
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -76,5 +74,9 @@ public class FinalizeActivity extends AppCompatActivity {
 
         }
         return (super.onOptionsItemSelected(item));
+    }
+
+    public void goToMapActivity(View view) {
+        startActivity(new Intent(this, MapsFragmentActivity.class));
     }
 }

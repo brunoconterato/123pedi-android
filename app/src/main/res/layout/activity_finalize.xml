@@ -84,8 +84,14 @@
             android:id="@+id/get_location_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="getUserLocation"
             android:text="Obter Localização" />
+
+        <Button
+            android:id="@+id/goToMap"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="goToMapActivity"
+            android:text="Obter Mapa" />
 
     </LinearLayout>
 
