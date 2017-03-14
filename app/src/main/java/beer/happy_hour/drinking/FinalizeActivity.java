@@ -7,7 +7,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import beer.happy_hour.drinking.model.DeliveryPlace;
 
 public class FinalizeActivity extends AppCompatActivity {
 
@@ -15,6 +18,8 @@ public class FinalizeActivity extends AppCompatActivity {
     Button get_location_button;
     // GPSTracker class
     GPSTracker gps;
+
+    DeliveryPlace deliveryPlace;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +54,21 @@ public class FinalizeActivity extends AppCompatActivity {
 
             }
         });
+
+        TextView adress_text_view = (TextView) findViewById(R.id.adress_text_view);
+        TextView citystate_text_view = (TextView) findViewById(R.id.citystate_text_view);
+        TextView country_text_view = (TextView) findViewById(R.id.country_text_view);
+        TextView zipcode_text_view = (TextView) findViewById(R.id.zipcode_text_view);
+
+        Bundle bundle = this.getIntent().getExtras();
+        if (bundle != null) {
+            deliveryPlace = bundle.getParcelable("hasLocation");
+            adress_text_view.setText(deliveryPlace.getAdress());
+            citystate_text_view.setText(deliveryPlace.getCityState());
+            country_text_view.setText(deliveryPlace.getCountry());
+            zipcode_text_view.setText(deliveryPlace.getZipCode());
+        } else
+            deliveryPlace = new DeliveryPlace();
     }
 
     @Override
@@ -78,5 +98,6 @@ public class FinalizeActivity extends AppCompatActivity {
 
     public void goToMapActivity(View view) {
         startActivity(new Intent(this, MapsFragmentActivity.class));
+        finish();
     }
 }

@@ -1,5 +1,6 @@
 package beer.happy_hour.drinking;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -10,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -28,6 +30,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.List;
 import java.util.Locale;
 
+import beer.happy_hour.drinking.model.DeliveryPlace;
+
 public class MapsFragmentActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
@@ -35,6 +39,7 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
 
     private GoogleMap map;
     private LatLng myLocation;
+    private DeliveryPlace deliveryPlace;
 
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
@@ -55,6 +60,8 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this).build();
+
+        deliveryPlace = new DeliveryPlace();
     }
 
 
@@ -136,6 +143,34 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
                 if (addresses.size() > 0) {
                     Log.d("Location", addresses.get(0).getAddressLine(0) + ", " + addresses.get(0).getFeatureName() + ", " + addresses.get(0).getLocality() + ", " + addresses.get(0).getAdminArea() + ", " + addresses.get(0).getCountryName());
 //                    yourtextfieldname.setText(addresses.get(0).getFeatureName() + ", " + addresses.get(0).getLocality() +", " + addresses.get(0).getAdminArea() + ", " + addresses.get(0).getCountryName());
+
+                    for (int i = 0; i <= 2; i++)
+                        Log.d("AdressLine " + i, addresses.get(0).getAddressLine(i));
+
+                    //get current Street name
+//                    deliveryPlace.setAdress(addresses.get(0).getAddressLine(0));
+                    deliveryPlace.setAdress(addresses.get(0).getAddressLine(0));
+
+                    //get current city/state
+                    deliveryPlace.setCityState(addresses.get(0).getAddressLine(1));
+
+                    //get country
+                    deliveryPlace.setCountry(addresses.get(0).getCountryName());
+
+                    //get postal code
+                    deliveryPlace.setZipCode(addresses.get(0).getPostalCode());
+
+                    //get place Name
+                    deliveryPlace.setKnownName(addresses.get(0).getFeatureName());
+
+                    //get latitude
+                    deliveryPlace.setLatitude(addresses.get(0).getLatitude());
+
+                    //get longitude
+                    deliveryPlace.setLongitude(addresses.get(0).getLongitude());
+
+                    Log.d("DeliveryPlace", deliveryPlace.toString());
+
                     Toast.makeText(getApplicationContext(), "Address:- " + addresses.get(0).getFeatureName() + addresses.get(0).getAdminArea() + addresses.get(0).getLocality(), Toast.LENGTH_LONG).show();
                 }
             }
@@ -143,29 +178,6 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
             e.printStackTrace(); // getFromLocation() may sometimes fail
         }
     }
-
-//    private GoogleMap.OnMyLocationChangeListener myLocationChangeListener() {
-//        return new GoogleMap.OnMyLocationChangeListener() {
-//            @Override
-//            public void onMyLocationChange(Location location) {
-//                LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
-//                double longitude = location.getLongitude();
-//                double latitude = location.getLatitude();
-//
-//                // Clears marks on map
-//                map.clear();
-//
-//                Marker marker;
-//                marker = map.addMarker(new MarkerOptions().position(loc));
-//                map.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 16.0f));
-//                Log.d("Location", "You are at [" + longitude + " ; " + latitude + " ]");
-//
-//                //get current address by invoke an AsyncTask object
-////                new GetAddressTask(LocationActivity.this).execute(String.valueOf(latitude), String.valueOf(longitude));
-//                setMyLocationAdress(loc);
-//            }
-//        };
-//    }
 
     private GoogleMap.OnMyLocationButtonClickListener onMyLocationButtonClickListener() {
         return new GoogleMap.OnMyLocationButtonClickListener() {
@@ -277,5 +289,22 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
         // You can now create a LatLng Object for use with maps
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+    }
+
+    //Só implementar se for usar o AsyncTask GetAddressTask
+    public void callBackDataFromAsyncTask(DeliveryPlace address) {
+
+    }
+
+
+    public void updateDeliveryPlace(View view) {
+        Intent intent = new Intent();
+        Bundle bundle = new Bundle();
+
+        //Passando deliveryPlace para a activity FinalizeActivity
+        bundle.putParcelable("hasLocation", deliveryPlace);
+        intent.putExtras(bundle);
+        intent.setClass(this, FinalizeActivity.class);
+        startActivity(intent);
     }
 }
