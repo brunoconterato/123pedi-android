@@ -61,7 +61,8 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this).build();
 
-        deliveryPlace = new DeliveryPlace();
+        deliveryPlace = DeliveryPlace.getInstance();
+        myLocation = new LatLng(deliveryPlace.getLatitude(), deliveryPlace.getLongitude());
     }
 
 
@@ -78,10 +79,14 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
 
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        map.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        map.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        // Move the camera
+        if (Math.abs(deliveryPlace.getLatitude() - 0) < 0.0001 && Math.abs(deliveryPlace.getLongitude() - 0) < 0.0001) {
+            LatLng goiania = new LatLng(-16.666667, -49.25);
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(goiania, 11));
+        } else
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 17));
+
+
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -298,13 +303,11 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
 
 
     public void updateDeliveryPlace(View view) {
-        Intent intent = new Intent();
-        Bundle bundle = new Bundle();
+        startActivity(new Intent(this, FinalizeActivity.class));
+    }
 
-        //Passando deliveryPlace para a activity FinalizeActivity
-        bundle.putParcelable("hasLocation", deliveryPlace);
-        intent.putExtras(bundle);
-        intent.setClass(this, FinalizeActivity.class);
-        startActivity(intent);
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(this, FinalizeActivity.class));
     }
 }

@@ -64,8 +64,8 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
         View row = inflater.inflate(R.layout.list_item, parent, false);
 
         //Inicializando Botões
-        Button addOne_button = (Button) row.findViewById(R.id.addOne_button);
-        Button minusOne_button = (Button) row.findViewById(R.id.minusOne_button);
+        Button addOne_button = (Button) row.findViewById(R.id.cart_addOne_button);
+        Button minusOne_button = (Button) row.findViewById(R.id.cart_minusOne_button);
         Button addToShoppingCart_button = (Button) row.findViewById(R.id.addToShoppingCart_button);
 
         final EditText quantity_editText;

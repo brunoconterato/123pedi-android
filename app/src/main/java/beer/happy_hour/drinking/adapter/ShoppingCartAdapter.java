@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import beer.happy_hour.drinking.R;
+import beer.happy_hour.drinking.listener.SubtotalTextView;
 import beer.happy_hour.drinking.model.ListItem;
 import beer.happy_hour.drinking.model.ShoppingCartSingleton;
 
@@ -24,6 +25,8 @@ public class ShoppingCartAdapter extends ArrayAdapter<ListItem> {
 
     private Context context;
     private ShoppingCartSingleton cart;
+
+    private SubtotalTextView subtotal_text_view;
 
     public ShoppingCartAdapter(Context context) {
         super(context, R.layout.shopping_cart_item, ShoppingCartSingleton.getInstance().getListItems());
@@ -41,8 +44,9 @@ public class ShoppingCartAdapter extends ArrayAdapter<ListItem> {
         View row = inflater.inflate(R.layout.shopping_cart_item, parent, false);
 
         //Inicializando Botões
-        Button addOne_button = (Button) row.findViewById(R.id.addOne_button);
-        Button minusOne_button = (Button) row.findViewById(R.id.minusOne_button);;
+        Button addOne_button = (Button) row.findViewById(R.id.cart_addOne_button);
+        Button minusOne_button = (Button) row.findViewById(R.id.cart_minusOne_button);
+        ;
         Button deleteFromShoppingCart_button = (Button) row.findViewById(R.id.deleteFromShoppingCart_button);
 
         final EditText quantity_editText;
@@ -51,7 +55,8 @@ public class ShoppingCartAdapter extends ArrayAdapter<ListItem> {
         TextView nome_text_view = (TextView) row.findViewById(R.id.name);
         TextView brand_text_view = (TextView) row.findViewById(R.id.brand);
         TextView price_text_view = (TextView) row.findViewById(R.id.price);
-        TextView subtotal_text_view = (TextView) row.findViewById(R.id.subtotal);
+
+        subtotal_text_view = (SubtotalTextView) row.findViewById(R.id.subtotal);
 
         //Inicializando EditText
         quantity_editText = (EditText) row.findViewById(R.id.quantity_editText);
@@ -66,7 +71,8 @@ public class ShoppingCartAdapter extends ArrayAdapter<ListItem> {
             @Override
             public void onClick(View view) {
                 Log.d("Click", "Botão +");
-                listItem.incrementQuantity();
+//                listItem.incrementQuantity();
+                cart.incrementItemQuantity(listItem);
                 quantity_editText.setText(Integer.toString(listItem.getQuantity()));
             }
         });
@@ -78,7 +84,8 @@ public class ShoppingCartAdapter extends ArrayAdapter<ListItem> {
 
                 try {
                     if (Integer.parseInt(quantity_editText.getText().toString()) > 1) {
-                        listItem.decrementQuantity();
+//                        listItem.decrementQuantity();
+                        cart.decrementItemQuantity(listItem);
                         quantity_editText.setText(Integer.toString(listItem.getQuantity()));
                     }
                 } catch (NumberFormatException e) {
@@ -125,7 +132,9 @@ public class ShoppingCartAdapter extends ArrayAdapter<ListItem> {
         nome_text_view.setText(listItem.getItem().getProduct().getName());
         brand_text_view.setText(listItem.getItem().getProduct().getBrand());
         price_text_view.setText(Double.toString(listItem.getItem().getPrice()));
+
         subtotal_text_view.setText("Subtotal: " + Double.toString(listItem.getItem().getPrice() * listItem.getQuantity()));
+        listItem.setListener(subtotal_text_view);
 
         return row;
     }

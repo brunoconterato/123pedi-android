@@ -2,11 +2,6 @@ package beer.happy_hour.drinking.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-
-import beer.happy_hour.drinking.R;
 
 /**
  * Created by brcon on 09/03/2017.
@@ -14,13 +9,27 @@ import beer.happy_hour.drinking.R;
 
 public class ListItem implements Parcelable{
 
+    public static final Creator<ListItem> CREATOR = new Creator<ListItem>() {
+        @Override
+        public ListItem createFromParcel(Parcel in) {
+            return new ListItem(in);
+        }
+
+        @Override
+        public ListItem[] newArray(int size) {
+            return new ListItem[size];
+        }
+    };
     private Item item;
     //Quantidade que o comprador deseja
     private int quantity;
+    private SubtotalChangeListener listener;
+    private double subtotal;
 
     public ListItem(Item item) {
         this.item = item;
         this.quantity = 0;
+        this.subtotal = 0;
     }
 
     public ListItem(Parcel in) {
@@ -37,14 +46,25 @@ public class ListItem implements Parcelable{
             this.quantity = quantity;
         else
             this.quantity = 0;
+
+        subtotal = item.getPrice() * quantity;
+        if (listener != null)
+            listener.onValueChanged(subtotal);
+
     }
 
     public void incrementQuantity(){
         this.quantity++;
+        subtotal = item.getPrice() * quantity;
+        if (listener != null)
+            listener.onValueChanged(subtotal);
     }
 
     public void decrementQuantity(){
         this.quantity--;
+        subtotal = item.getPrice() * quantity;
+        if (listener != null)
+            listener.onValueChanged(subtotal);
     }
 
     public Item getItem() {
@@ -53,6 +73,11 @@ public class ListItem implements Parcelable{
 
     public void setItem(Item item) {
         this.item = item;
+        quantity = 0;
+
+        subtotal = item.getPrice() * quantity;
+        if (listener != null)
+            listener.onValueChanged(subtotal);
     }
 
     @Override
@@ -67,18 +92,6 @@ public class ListItem implements Parcelable{
         out.writeParcelable(item, flags);
     }
 
-    public static final Creator<ListItem> CREATOR = new Creator<ListItem>() {
-        @Override
-        public ListItem createFromParcel(Parcel in) {
-            return new ListItem(in);
-        }
-
-        @Override
-        public ListItem[] newArray(int size) {
-            return new ListItem[size];
-        }
-    };
-
     @Override
     public String toString(){
         String str = "Name: " + item.getProduct().getName() + "\n" +
@@ -86,5 +99,13 @@ public class ListItem implements Parcelable{
                 "Category: " + item.getProduct().getCategory().getName();
 
         return str;
+    }
+
+    public void setListener(SubtotalChangeListener listener) {
+        this.listener = listener;
+    }
+
+    public interface SubtotalChangeListener {
+        void onValueChanged(double newValue);
     }
 }

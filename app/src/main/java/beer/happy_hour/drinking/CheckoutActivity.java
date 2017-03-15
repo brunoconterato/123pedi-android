@@ -11,11 +11,16 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import beer.happy_hour.drinking.adapter.ShoppingCartAdapter;
+import beer.happy_hour.drinking.listener.TotalTextView;
+import beer.happy_hour.drinking.model.ShoppingCartSingleton;
 
 public class CheckoutActivity extends Activity implements AdapterView.OnItemClickListener {
 
+    String TOTAL_SUFIX = "TOTAL: R$ ";
+    TotalTextView total_text_view;
     private ListView cartListView;
     private ShoppingCartAdapter shoppingCartAdapter;
+    private ShoppingCartSingleton cart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,17 +32,18 @@ public class CheckoutActivity extends Activity implements AdapterView.OnItemClic
 
         shoppingCartAdapter = new ShoppingCartAdapter(this);
         cartListView.setAdapter(shoppingCartAdapter);
-    }
 
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        cart = ShoppingCartSingleton.getInstance();
 
-
+        total_text_view = (TotalTextView) findViewById(R.id.total_text_view);
+        total_text_view.setText(TOTAL_SUFIX + Double.toString(cart.getTotal()));
+        cart.setListener(total_text_view);
     }
 
     @Override
     public void onBackPressed() {
         startActivity(new Intent(this, SearchActivity.class));
+        finish();
     }
 
     public void goToFinalizeActivity(View view) {
@@ -68,4 +74,9 @@ public class CheckoutActivity extends Activity implements AdapterView.OnItemClic
         }
         return (super.onOptionsItemSelected(item));
     }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+    }
+
 }

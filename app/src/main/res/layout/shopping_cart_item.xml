@@ -41,7 +41,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1" />
 
-        <TextView
+        <beer.happy_hour.drinking.listener.SubtotalTextView
             android:id="@+id/subtotal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -81,14 +81,14 @@
         android:orientation="vertical">
 
         <Button
-            android:id="@+id/addOne_button"
+            android:id="@+id/cart_addOne_button"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@drawable/ic_add_black_24dp" />
 
         <Button
-            android:id="@+id/minusOne_button"
+            android:id="@+id/cart_minusOne_button"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"

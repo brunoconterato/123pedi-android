@@ -9,10 +9,11 @@ import java.util.List;
 
 public class ShoppingCartSingleton {
 
+    private static ShoppingCartSingleton instance;
     private List<ListItem> listItems;
     private List<Item> items;
-
-    private static ShoppingCartSingleton instance;
+    private double total;
+    private TotalChangeListener listener;
 
     private ShoppingCartSingleton(){
         listItems = new ArrayList<ListItem>();
@@ -30,13 +31,58 @@ public class ShoppingCartSingleton {
         return instance;
     }
 
+    public double getTotal() {
+        return total;
+    }
+
+    public void setTotal(double total) {
+        this.total = total;
+        if (listener != null) {
+            listener.onValueChanged(total);
+        }
+    }
+
+    public void incrementItemQuantity(ListItem listItem) {
+        if (listItems.contains(listItem)) {
+            listItem.incrementQuantity();
+            total += listItem.getItem().getPrice();
+
+            if (listener != null) {
+                listener.onValueChanged(total);
+            }
+        }
+    }
+
+    public void decrementItemQuantity(ListItem listItem) {
+        if (listItems.contains(listItem)) {
+            listItem.decrementQuantity();
+            total -= listItem.getItem().getPrice();
+
+            if (listener != null) {
+                listener.onValueChanged(total);
+            }
+        }
+    }
+
     public void addToCart(ListItem listItem){
         if(listItem.getQuantity() > 0)
-            if(!listItems.contains(listItem))
+            if (!listItems.contains(listItem)) {
                 listItems.add(listItem);
+                total += listItem.getItem().getPrice() * listItem.getQuantity();
+
+                if (listener != null) {
+                    listener.onValueChanged(total);
+                }
+            }
             else{
                 int indexListItem = listItems.indexOf(listItem);
                 listItems.get(indexListItem).setQuantity(listItem.getQuantity());
+
+                total += listItem.getItem().getPrice() * listItem.getQuantity();
+
+                if (listener != null) {
+                    listener.onValueChanged(total);
+                }
             }
     }
 
@@ -46,12 +92,19 @@ public class ShoppingCartSingleton {
         for(ListItem item : listItems)
         {
             if(item.equals(listItem)) {
-                listItems.remove(item);
+                total -= item.getItem().getPrice() * item.getQuantity();
                 item.setQuantity(0);
+                listItems.remove(item);
+
+                total += listItem.getItem().getPrice() * listItem.getQuantity();
+
+                if (listener != null) {
+                    listener.onValueChanged(total);
+                }
+
                 //O Break serve para evitar o ConcurrentModificationException
                 break;
             }
-
         }
     }
 
@@ -72,4 +125,25 @@ public class ShoppingCartSingleton {
         return str;
     }
 
+    /**
+     * Sets a listener on the cart. The listener will be modified when the
+     * total changes.
+     *
+     * @param listener The
+     */
+    public void setListener(TotalChangeListener listener) {
+        this.listener = listener;
+    }
+
+    /**
+     * Callbacks
+     */
+    public interface TotalChangeListener {
+        /**
+         * Called when the value of the int changes.
+         *
+         * @param newValue The new value.
+         */
+        void onValueChanged(double newValue);
+    }
 }

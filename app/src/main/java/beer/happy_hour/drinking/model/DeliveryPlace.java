@@ -1,26 +1,14 @@
 package beer.happy_hour.drinking.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 /**
  * Created by brcon on 13/03/2017.
  */
 
-public class DeliveryPlace implements Parcelable {
-    public static final Creator<DeliveryPlace> CREATOR = new Creator<DeliveryPlace>() {
-        @Override
-        public DeliveryPlace createFromParcel(Parcel in) {
-            return new DeliveryPlace(in);
-        }
+//public class DeliveryPlace implements Parcelable {
+public class DeliveryPlace {
 
-        @Override
-        public DeliveryPlace[] newArray(int size) {
-            return new DeliveryPlace[size];
-        }
-    };
-    //id
-    private int id;
+    private static DeliveryPlace instance;
+
     //adress
     private String adress;
     private String cityState;
@@ -32,39 +20,56 @@ public class DeliveryPlace implements Parcelable {
     private double latitude;
     private double longitude;
 
-    public DeliveryPlace() {
+    private String Complement;
+
+    private DeliveryPlace() {
 
     }
 
-    public DeliveryPlace(Parcel in) {
-        id = in.readInt();
-        adress = in.readString();
-        cityState = in.readString();
-        country = in.readString();
-        zipCode = in.readString();
-        knownName = in.readString();
-        latitude = in.readDouble();
-        longitude = in.readDouble();
+    public static DeliveryPlace getInstance() {
+        if (instance == null) {
+            synchronized (DeliveryPlace.class) {
+                if (instance == null) {
+                    instance = new DeliveryPlace();
+                }
+            }
+        }
+
+        return instance;
     }
 
-    public DeliveryPlace(int id, String adress, String cityState, String country, String zipCode, String knownName, double latitude, double longitude) {
-        this.id = id;
-        this.adress = adress;
-        this.cityState = cityState;
-        this.country = country;
-        this.zipCode = zipCode;
-        this.knownName = knownName;
-        this.latitude = latitude;
-        this.longitude = longitude;
+    //    public DeliveryPlace() {
+//
+//    }
+
+//    public DeliveryPlace(Parcel in) {
+//        id = in.readInt();
+//        adress = in.readString();
+//        cityState = in.readString();
+//        country = in.readString();
+//        zipCode = in.readString();
+//        knownName = in.readString();
+//        latitude = in.readDouble();
+//        longitude = in.readDouble();
+//    }
+
+//    public DeliveryPlace(int id, String adress, String cityState, String country, String zipCode, String knownName, double latitude, double longitude) {
+//        this.id = id;
+//        this.adress = adress;
+//        this.cityState = cityState;
+//        this.country = country;
+//        this.zipCode = zipCode;
+//        this.knownName = knownName;
+//        this.latitude = latitude;
+//        this.longitude = longitude;
+//    }
+
+    public String getComplement() {
+        return Complement;
     }
 
-    public int getId() {
-        return id;
-
-    }
-
-    public void setId(int id) {
-        this.id = id;
+    public void setComplement(String complement) {
+        Complement = complement;
     }
 
     public String getCityState() {
@@ -136,20 +141,32 @@ public class DeliveryPlace implements Parcelable {
 
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel out, int flags) {
-        out.writeInt(id);
-        out.writeString(adress);
-        out.writeString(cityState);
-        out.writeString(country);
-        out.writeString(zipCode);
-        out.writeString(knownName);
-        out.writeDouble(latitude);
-        out.writeDouble(longitude);
-    }
+//    @Override
+//    public int describeContents() {
+//        return 0;
+//    }
+//
+//    @Override
+//    public void writeToParcel(Parcel out, int flags) {
+//        out.writeInt(id);
+//        out.writeString(adress);
+//        out.writeString(cityState);
+//        out.writeString(country);
+//        out.writeString(zipCode);
+//        out.writeString(knownName);
+//        out.writeDouble(latitude);
+//        out.writeDouble(longitude);
+//    }
+//
+//    public static final Creator<DeliveryPlace> CREATOR = new Creator<DeliveryPlace>() {
+//        @Override
+//        public DeliveryPlace createFromParcel(Parcel in) {
+//            return new DeliveryPlace(in);
+//        }
+//
+//        @Override
+//        public DeliveryPlace[] newArray(int size) {
+//            return new DeliveryPlace[size];
+//        }
+//    };
 }

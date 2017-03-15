@@ -20,19 +20,25 @@
             android:textSize="20dp" />
 
         <EditText
+            android:id="@+id/name_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Nome" />
+            android:hint="Nome"
+            android:inputType="textPersonName" />
 
         <EditText
+            android:id="@+id/phone_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Telefone" />
+            android:hint="Telefone"
+            android:inputType="number" />
 
         <EditText
+            android:id="@+id/email_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Email" />
+            android:hint="Email"
+            android:inputType="textEmailAddress" />
 
         <Button
             android:id="@+id/goToMap"
@@ -52,8 +58,7 @@
         <TextView
             android:id="@+id/adress_text_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Endereço" />
+            android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/citystate_text_view"
@@ -66,17 +71,32 @@
             android:layout_height="wrap_content" />
 
 
-        <TextView
-            android:id="@+id/zipcode_text_view"
+        <EditText
+            android:id="@+id/complement_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="CEP" />
+            android:hint="Complemento (nº, qd, lt etc)"
+            android:inputType="textPostalAddress" />
 
         <Button
             android:id="@+id/get_location_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Obter Localização" />
+
+        <Button
+            android:id="@+id/validate_phone_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="logValidatePhone"
+            android:text="Validate Phone" />
+
+        <Button
+            android:id="@+id/validate_email_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="logValidateEmail"
+            android:text="Validate Email" />
 
     </LinearLayout>
 
