@@ -1,4 +1,4 @@
-package beer.happy_hour.drinking;
+package beer.happy_hour.drinking.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,25 +8,22 @@ import android.widget.Toast;
 
 import com.facebook.login.widget.LoginButton;
 
+import beer.happy_hour.drinking.R;
+import beer.happy_hour.drinking.model.ShoppingCartSingleton;
+
 public class MainActivity extends AppCompatActivity {
 
     private LoginButton b;
     private int backButtonCount;
+
+    private ShoppingCartSingleton cart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        b = (LoginButton) findViewById(R.id.login_button);
-//
-//        b.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-//                startActivity(intent);
-//            }
-//        });
+        cart = ShoppingCartSingleton.getInstance();
 
     }
 
@@ -58,5 +55,12 @@ public class MainActivity extends AppCompatActivity {
         //Pode haver problema nesse this
         Intent intent = new Intent(this, SearchActivity.class);
         startActivity(intent);
+    }
+
+    public void goToCheckoutActivity(View view) {
+        if (cart.getItemsQuantity() > 0)
+            startActivity(new Intent(this, CheckoutActivity.class));
+        else
+            Toast.makeText(this.getApplicationContext(), "Carrinho vazio!", Toast.LENGTH_SHORT).show();
     }
 }

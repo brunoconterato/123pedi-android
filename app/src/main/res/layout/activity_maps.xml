@@ -3,6 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="beer.happy_hour.drinking.MapsActivity">
+    tools:context="beer.happy_hour.drinking.activity.MapsActivity">
 
 </android.support.constraint.ConstraintLayout>

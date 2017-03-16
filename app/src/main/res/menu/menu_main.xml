@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:theme="@style/AppTheme.AppBarOverlay"
-    tools:context=".MainActivity">
+    tools:context=".activity.MainActivity">
 
     <item
         android:id="@+id/add"

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="beer.happy_hour.drinking.CheckoutActivity">
+    tools:context="beer.happy_hour.drinking.activity.CheckoutActivity">
 
     <ListView
         android:id="@+id/cart_list_view"

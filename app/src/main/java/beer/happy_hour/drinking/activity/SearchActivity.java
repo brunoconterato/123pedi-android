@@ -1,4 +1,4 @@
-package beer.happy_hour.drinking;
+package beer.happy_hour.drinking.activity;
 
 import android.app.SearchManager;
 import android.content.Context;
@@ -17,10 +17,12 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import beer.happy_hour.drinking.Constants;
+import beer.happy_hour.drinking.LoadStockJSONTask;
+import beer.happy_hour.drinking.R;
 import beer.happy_hour.drinking.adapter.ListItemAdapter;
 import beer.happy_hour.drinking.model.Item;
 import beer.happy_hour.drinking.model.ListItem;
-import beer.happy_hour.drinking.model.ShoppingCartSingleton;
 import beer.happy_hour.drinking.repository.ListItemRepositorySingleton;
 
 public class SearchActivity extends AppCompatActivity implements LoadStockJSONTask.Listener,
@@ -34,8 +36,6 @@ public class SearchActivity extends AppCompatActivity implements LoadStockJSONTa
 //    private List<ListItem> listItemRepository;
     private ListItemRepositorySingleton listItemRepository;
     private ListItemAdapter listItemAdapter;
-
-    private ShoppingCartSingleton cart;
 
     private SearchView searchView;
 
@@ -62,8 +62,6 @@ public class SearchActivity extends AppCompatActivity implements LoadStockJSONTa
             loadListView();
         }
 
-        cart = ShoppingCartSingleton.getInstance();
-
         listItemAdapter = new ListItemAdapter(this);
 
         SearchManager searchManager = (SearchManager)
@@ -86,12 +84,9 @@ public class SearchActivity extends AppCompatActivity implements LoadStockJSONTa
         for(Item item : listItems){
             Log.d("ToString : ", item.toString());
             listItemRepository.add(new ListItem(item));
-//            listItemRepository.addToFilteredList(new ListItem(item));
         }
 
         Log.d("Lista Normal: ", listItemRepository.getList().toString());
-//        Log.d("Lista filtrada: ", listItemRepository.getFilteredList().toString());
-
 
         loadListView();
     }
@@ -119,8 +114,7 @@ public class SearchActivity extends AppCompatActivity implements LoadStockJSONTa
     //TODO: Fazer Funcionar
     @Override
     public void onItemClick(AdapterView adapterView, View view, int i, long l) {
-
-        Toast.makeText(this, "Item clicado", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this.getApplicationContext(), "Item clicado", Toast.LENGTH_SHORT).show();
     }
 
 
@@ -129,7 +123,6 @@ public class SearchActivity extends AppCompatActivity implements LoadStockJSONTa
         super.onSaveInstanceState(outState);
 
         List<ListItem> values = listItemRepository.getList();
-//        List<ListItem> values = listItemAdapter.getListItems();
         outState.putParcelableArrayList("key", (ArrayList<ListItem>) values);
     }
 

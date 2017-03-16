@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="beer.happy_hour.drinking.FinalizeActivity">
+    tools:context="beer.happy_hour.drinking.activity.FinalizeActivity">
 
     <LinearLayout
         android:layout_width="368dp"
@@ -97,6 +97,12 @@
             android:layout_height="wrap_content"
             android:onClick="logValidateEmail"
             android:text="Validate Email" />
+
+        <Button
+            android:id="@+id/finalize_order_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Concluir pedido" />
 
     </LinearLayout>
 

@@ -1,4 +1,4 @@
-package beer.happy_hour.drinking;
+package beer.happy_hour.drinking.activity;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -30,6 +30,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.List;
 import java.util.Locale;
 
+import beer.happy_hour.drinking.R;
 import beer.happy_hour.drinking.model.DeliveryPlace;
 
 public class MapsFragmentActivity extends FragmentActivity implements OnMapReadyCallback,
@@ -125,7 +126,7 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
                 setMyLocation(latLng);
 
                 //Setando Endereço
-                setMyLocationAdress(latLng);
+                setMyLocationAdress();
             }
         });
 
@@ -138,7 +139,7 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
         myLocation = latLng;
     }
 
-    public void setMyLocationAdress(LatLng latLng) {
+    public void setMyLocationAdress() {
         try {
             Geocoder geo = new Geocoder(MapsFragmentActivity.this.getApplicationContext(), Locale.getDefault());
             List<Address> addresses = geo.getFromLocation(myLocation.latitude, myLocation.longitude, 1);
@@ -152,31 +153,50 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
                     for (int i = 0; i <= 2; i++)
                         Log.d("AdressLine " + i, addresses.get(0).getAddressLine(i));
 
-                    //get current Street name
-//                    deliveryPlace.setAdress(addresses.get(0).getAddressLine(0));
+                    //get current adress line 1
                     deliveryPlace.setAdress(addresses.get(0).getAddressLine(0));
-
                     //get current city/state
                     deliveryPlace.setCityState(addresses.get(0).getAddressLine(1));
-
                     //get country
-                    deliveryPlace.setCountry(addresses.get(0).getCountryName());
-
+                    deliveryPlace.setCountryName(addresses.get(0).getCountryName());
                     //get postal code
                     deliveryPlace.setZipCode(addresses.get(0).getPostalCode());
-
                     //get place Name
-                    deliveryPlace.setKnownName(addresses.get(0).getFeatureName());
-
+                    deliveryPlace.setFeatureName(addresses.get(0).getFeatureName());
                     //get latitude
                     deliveryPlace.setLatitude(addresses.get(0).getLatitude());
-
                     //get longitude
                     deliveryPlace.setLongitude(addresses.get(0).getLongitude());
+                    //get country code
+                    deliveryPlace.setCountryCode(addresses.get(0).getCountryCode());
+                    //get state
+                    deliveryPlace.setAdminArea(addresses.get(0).getAdminArea());
+                    //get city
+                    deliveryPlace.setLocality(addresses.get(0).getLocality());
+                    //get "bairro"
+                    deliveryPlace.setSubLocality(addresses.get(0).getSubLocality());
+                    //get street
+                    deliveryPlace.setThoroughfare(addresses.get(0).getThoroughfare());
+                    //get aproximate number
+                    deliveryPlace.setSubThoroughfare(addresses.get(0).getSubThoroughfare());
 
                     Log.d("DeliveryPlace", deliveryPlace.toString());
 
                     Toast.makeText(getApplicationContext(), "Address:- " + addresses.get(0).getFeatureName() + addresses.get(0).getAdminArea() + addresses.get(0).getLocality(), Toast.LENGTH_LONG).show();
+
+                    Log.d("getAddressLine(0)", addresses.get(0).getAddressLine(0));
+                    Log.d("getAddressLine(1)", addresses.get(0).getAddressLine(1));
+                    Log.d("getAddressLine(2)", addresses.get(0).getAddressLine(2));
+                    Log.d("getAdminArea", addresses.get(0).getAdminArea());
+                    Log.d("getCountryCode", addresses.get(0).getCountryCode());
+                    Log.d("getCountryName", addresses.get(0).getCountryName());
+                    Log.d("getFeatureName", addresses.get(0).getFeatureName());
+                    Log.d("getLocality", addresses.get(0).getLocality());
+                    Log.d("getPostalCode", addresses.get(0).getPostalCode());
+                    Log.d("getSubAdminArea", addresses.get(0).getSubAdminArea());
+                    Log.d("getSubLocality", addresses.get(0).getSubLocality());
+                    Log.d("getSubThoroughfare", addresses.get(0).getSubThoroughfare());
+                    Log.d("getThoroughfare", addresses.get(0).getThoroughfare());
                 }
             }
         } catch (Exception e) {
@@ -220,7 +240,7 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
                     // Animating to the location position
                     map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 17));
 
-                    setMyLocationAdress(myLocation);
+                    setMyLocationAdress();
 
                     return true;
                 } else

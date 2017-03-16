@@ -1,8 +1,10 @@
-package beer.happy_hour.drinking;
+package beer.happy_hour.drinking.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,9 +14,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-
+import beer.happy_hour.drinking.GPSTracker;
+import beer.happy_hour.drinking.R;
 import beer.happy_hour.drinking.model.DeliveryPlace;
+import beer.happy_hour.drinking.model.User;
 import br.com.jansenfelipe.androidmask.MaskEditTextChangedListener;
 
 public class FinalizeActivity extends AppCompatActivity {
@@ -25,7 +28,7 @@ public class FinalizeActivity extends AppCompatActivity {
     GPSTracker gps;
 
     DeliveryPlace deliveryPlace;
-
+    User user;
 
     EditText name_edit_text;
     EditText phone_edit_text;
@@ -36,14 +39,6 @@ public class FinalizeActivity extends AppCompatActivity {
     TextView country_text_view;
 
     EditText complement_edit_text;
-
-    public static boolean isValidEmail(CharSequence target) {
-        if (target == null) {
-            return false;
-        } else {
-            return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,14 +74,58 @@ public class FinalizeActivity extends AppCompatActivity {
             }
         });
 
+        deliveryPlace = DeliveryPlace.getInstance();
+        user = User.getInstance();
+
         name_edit_text = (EditText) findViewById(R.id.name_edit_text);
         phone_edit_text = (EditText) findViewById(R.id.phone_edit_text);
         email_edit_text = (EditText) findViewById(R.id.email_edit_text);
 
-        MaskEditTextChangedListener maskPhone = new MaskEditTextChangedListener("(##) # ####-####", phone_edit_text);
-        phone_edit_text.addTextChangedListener(maskPhone);
+        name_edit_text.setText(user.getName());
+        name_edit_text.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-        deliveryPlace = DeliveryPlace.getInstance();
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                user.setName(name_edit_text.getText().toString());
+                Log.d("Nome", user.getName());
+            }
+        });
+
+        phone_edit_text.setText(user.getPhone());
+        phone_edit_text.addTextChangedListener(new UserPhoneTextListener("(##) # ####-####", phone_edit_text));
+
+        email_edit_text.setText(user.getEmail());
+        email_edit_text.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                user.setEmail(email_edit_text.getText().toString());
+                Log.d("Email", user.getEmail());
+            }
+        });
+
+
+//        MaskEditTextChangedListener maskPhone = new MaskEditTextChangedListener("(##) # ####-####", phone_edit_text);
+//        phone_edit_text.addTextChangedListener(maskPhone);
+
 
         adress_text_view = (TextView) findViewById(R.id.adress_text_view);
         citystate_text_view = (TextView) findViewById(R.id.citystate_text_view);
@@ -96,7 +135,7 @@ public class FinalizeActivity extends AppCompatActivity {
 
         adress_text_view.setText(deliveryPlace.getAdress());
         citystate_text_view.setText(deliveryPlace.getCityState());
-        country_text_view.setText(deliveryPlace.getCountry());
+        country_text_view.setText(deliveryPlace.getCountryName());
     }
 
     @Override
@@ -134,45 +173,28 @@ public class FinalizeActivity extends AppCompatActivity {
         startActivity(new Intent(this, CheckoutActivity.class));
     }
 
-    public boolean isValidPhone(String phone) {
-        //retira todos os caracteres menos os numeros
-        phone = phone.replace("(", "");
-        phone = phone.replace(")", "");
-        phone = phone.replace("-", "");
-        phone = phone.replace(" ", "");
-
-        //verifica se tem a qtde de numero correto
-        if (phone.length() != 11) return false;
-
-        //Se tiver 11 caracteres, verificar se começa com 9 o celular
-        if (Integer.parseInt(phone.substring(2, 3)) != 9) return false;
-
-        //DDDs validos
-        int[] codigosDDD = {11, 12, 13, 14, 15, 16, 17, 18, 19,
-                21, 22, 24, 27, 28, 31, 32, 33, 34,
-                35, 37, 38, 41, 42, 43, 44, 45, 46,
-                47, 48, 49, 51, 53, 54, 55, 61, 62,
-                64, 63, 65, 66, 67, 68, 69, 71, 73,
-                74, 75, 77, 79, 81, 82, 83, 84, 85,
-                86, 87, 88, 89, 91, 92, 93, 94, 95,
-                96, 97, 98, 99};
-
-        ArrayList DDDs_validos = new ArrayList();
-        for (int i : codigosDDD)
-            DDDs_validos.add(i);
-
-        //verifica se o DDD é valido (sim, da pra verificar rsrsrs)
-        if (!DDDs_validos.contains(Integer.parseInt(phone.substring(0, 2)))) return false;
-
-        //se passar por todas as validações acima, então está tudo certo
-        return true;
-    }
-
     public void logValidatePhone(View view) {
-        Log.d("isValidPhone", Boolean.toString(isValidPhone(phone_edit_text.getText().toString())));
+        Log.d("isValidPhone", Boolean.toString(user.isValidPhone(phone_edit_text.getText().toString())));
     }
 
     public void logValidateEmail(View view) {
-        Log.d("isValidEmail", Boolean.toString(isValidEmail(email_edit_text.getText().toString())));
+        Log.d("isValidEmail", Boolean.toString(user.isValidEmail(email_edit_text.getText().toString())));
+    }
+
+    private class UserPhoneTextListener extends MaskEditTextChangedListener implements TextWatcher {
+
+        User user;
+
+        public UserPhoneTextListener(String mask, EditText editText) {
+            super(mask, editText);
+
+            user = User.getInstance();
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            user.setPhone(phone_edit_text.getText().toString());
+            Log.d("Phone", user.getPhone());
+        }
     }
 }

@@ -11,13 +11,11 @@ public class ShoppingCartSingleton {
 
     private static ShoppingCartSingleton instance;
     private List<ListItem> listItems;
-    private List<Item> items;
     private double total;
     private TotalChangeListener listener;
 
     private ShoppingCartSingleton(){
         listItems = new ArrayList<ListItem>();
-        items = new ArrayList<Item>();
     }
 
     public static ShoppingCartSingleton getInstance(){
@@ -29,6 +27,10 @@ public class ShoppingCartSingleton {
             }
         }
         return instance;
+    }
+
+    public int getItemsQuantity() {
+        return listItems.size();
     }
 
     public double getTotal() {

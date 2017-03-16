@@ -11,16 +11,26 @@ public class DeliveryPlace {
 
     //adress
     private String adress;
+    private String thoroughfare;  //rua
+    private String subThoroughfare;  //numero aproximado
+    private String subLocality;  //bairro
+    private String locality;  //cidade
     private String cityState;
-    private String country;
+    private String adminArea; //state
+    private String countryName;
+    private String countryCode;
     private String zipCode;
     //place name
-    private String knownName;
+    private String featureName;  //nome do local, ou o numero aproximado (caso não tenha nome)
     //location adress
     private double latitude;
     private double longitude;
 
-    private String Complement;
+    private String complement;
+
+    //new data
+
+//    private String countryName;
 
     private DeliveryPlace() {
 
@@ -38,38 +48,60 @@ public class DeliveryPlace {
         return instance;
     }
 
-    //    public DeliveryPlace() {
-//
-//    }
+    public String getAdminArea() {
+        return adminArea;
+    }
 
-//    public DeliveryPlace(Parcel in) {
-//        id = in.readInt();
-//        adress = in.readString();
-//        cityState = in.readString();
-//        country = in.readString();
-//        zipCode = in.readString();
-//        knownName = in.readString();
-//        latitude = in.readDouble();
-//        longitude = in.readDouble();
-//    }
+    public void setAdminArea(String adminArea) {
+        this.adminArea = adminArea;
+    }
 
-//    public DeliveryPlace(int id, String adress, String cityState, String country, String zipCode, String knownName, double latitude, double longitude) {
-//        this.id = id;
-//        this.adress = adress;
-//        this.cityState = cityState;
-//        this.country = country;
-//        this.zipCode = zipCode;
-//        this.knownName = knownName;
-//        this.latitude = latitude;
-//        this.longitude = longitude;
-//    }
+    public String getCountryCode() {
+        return countryCode;
+    }
+
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
+    }
+
+    public String getLocality() {
+        return locality;
+    }
+
+    public void setLocality(String locality) {
+        this.locality = locality;
+    }
+
+    public String getSubLocality() {
+        return subLocality;
+    }
+
+    public void setSubLocality(String subLocality) {
+        this.subLocality = subLocality;
+    }
+
+    public String getThoroughfare() {
+        return thoroughfare;
+    }
+
+    public void setThoroughfare(String thoroughfare) {
+        this.thoroughfare = thoroughfare;
+    }
+
+    public String getSubThoroughfare() {
+        return subThoroughfare;
+    }
+
+    public void setSubThoroughfare(String subThoroughfare) {
+        this.subThoroughfare = subThoroughfare;
+    }
 
     public String getComplement() {
-        return Complement;
+        return complement;
     }
 
     public void setComplement(String complement) {
-        Complement = complement;
+        this.complement = complement;
     }
 
     public String getCityState() {
@@ -112,61 +144,39 @@ public class DeliveryPlace {
         this.zipCode = zipCode;
     }
 
-    public String getCountry() {
-        return country;
+    public String getCountryName() {
+        return countryName;
     }
 
-    public void setCountry(String country) {
-        this.country = country;
+    public void setCountryName(String countryName) {
+        this.countryName = countryName;
     }
 
-    public String getKnownName() {
-        return knownName;
+    public String getFeatureName() {
+        return featureName;
     }
 
-    public void setKnownName(String knownName) {
-        if (knownName != null)
-            this.knownName = knownName;
+    public void setFeatureName(String featureName) {
+        if (featureName != null)
+            this.featureName = featureName;
     }
 
     @Override
     public String toString() {
         return "Adress: " + adress +
+                "\nThoroughfare: " + thoroughfare +
+                "\nSub Thoroughfare: " + subThoroughfare +
+                "\nSub Locality: " + subLocality +
+                "\nLocality: " + locality +
                 "\nCity/State: " + cityState +
-                "\nCountry: " + country +
+                "\nAdmin Area: " + adminArea +
+                "\nCountry Name: " + countryName +
+                "\nCountry Code: " + countryCode +
                 "\nPostal CODE: " + zipCode +
-                "\n" + "Place Name: " + knownName +
+                "\n" + "Feature Name: " + featureName +
                 "\nLatitude: " + latitude +
-                "\nLongitude: " + longitude;
+                "\nLongitude: " + longitude +
+                "\ncomplement: " + complement;
 
     }
-
-//    @Override
-//    public int describeContents() {
-//        return 0;
-//    }
-//
-//    @Override
-//    public void writeToParcel(Parcel out, int flags) {
-//        out.writeInt(id);
-//        out.writeString(adress);
-//        out.writeString(cityState);
-//        out.writeString(country);
-//        out.writeString(zipCode);
-//        out.writeString(knownName);
-//        out.writeDouble(latitude);
-//        out.writeDouble(longitude);
-//    }
-//
-//    public static final Creator<DeliveryPlace> CREATOR = new Creator<DeliveryPlace>() {
-//        @Override
-//        public DeliveryPlace createFromParcel(Parcel in) {
-//            return new DeliveryPlace(in);
-//        }
-//
-//        @Override
-//        public DeliveryPlace[] newArray(int size) {
-//            return new DeliveryPlace[size];
-//        }
-//    };
 }

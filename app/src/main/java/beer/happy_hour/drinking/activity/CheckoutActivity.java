@@ -1,4 +1,4 @@
-package beer.happy_hour.drinking;
+package beer.happy_hour.drinking.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import beer.happy_hour.drinking.R;
 import beer.happy_hour.drinking.adapter.ShoppingCartAdapter;
 import beer.happy_hour.drinking.listener.TotalTextView;
 import beer.happy_hour.drinking.model.ShoppingCartSingleton;

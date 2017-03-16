@@ -1,7 +1,9 @@
-package beer.happy_hour.drinking;
+package beer.happy_hour.drinking.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+
+import beer.happy_hour.drinking.R;
 
 public class MapsActivity extends AppCompatActivity {
 

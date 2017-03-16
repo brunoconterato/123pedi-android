@@ -1,4 +1,4 @@
-package beer.happy_hour.drinking;
+package beer.happy_hour.drinking.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -11,6 +11,8 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+
+import beer.happy_hour.drinking.R;
 
 public class LoginActivity extends Activity {
 
