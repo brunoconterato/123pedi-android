@@ -14,11 +14,22 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import beer.happy_hour.drinking.GPSTracker;
 import beer.happy_hour.drinking.R;
+import beer.happy_hour.drinking.async_http_client.RestApiHttpClient;
 import beer.happy_hour.drinking.model.DeliveryPlace;
+import beer.happy_hour.drinking.model.Item;
+import beer.happy_hour.drinking.model.ListItem;
+import beer.happy_hour.drinking.model.ShoppingCartSingleton;
 import beer.happy_hour.drinking.model.User;
 import br.com.jansenfelipe.androidmask.MaskEditTextChangedListener;
+import cz.msebera.android.httpclient.Header;
 
 public class FinalizeActivity extends AppCompatActivity {
 
@@ -27,6 +38,7 @@ public class FinalizeActivity extends AppCompatActivity {
     // GPSTracker class
     GPSTracker gps;
 
+    ShoppingCartSingleton cart;
     DeliveryPlace deliveryPlace;
     User user;
 
@@ -74,6 +86,7 @@ public class FinalizeActivity extends AppCompatActivity {
             }
         });
 
+        cart = ShoppingCartSingleton.getInstance();
         deliveryPlace = DeliveryPlace.getInstance();
         user = User.getInstance();
 
@@ -122,7 +135,6 @@ public class FinalizeActivity extends AppCompatActivity {
             }
         });
 
-
 //        MaskEditTextChangedListener maskPhone = new MaskEditTextChangedListener("(##) # ####-####", phone_edit_text);
 //        phone_edit_text.addTextChangedListener(maskPhone);
 
@@ -132,6 +144,23 @@ public class FinalizeActivity extends AppCompatActivity {
         country_text_view = (TextView) findViewById(R.id.country_text_view);
 
         complement_edit_text = (EditText) findViewById(R.id.complement_edit_text);
+        complement_edit_text.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                deliveryPlace.setComplement(complement_edit_text.getText().toString());
+                Log.d("Complement : ", "" + deliveryPlace.getComplement());
+            }
+        });
 
         adress_text_view.setText(deliveryPlace.getAdress());
         citystate_text_view.setText(deliveryPlace.getCityState());
@@ -181,6 +210,64 @@ public class FinalizeActivity extends AppCompatActivity {
         Log.d("isValidEmail", Boolean.toString(user.isValidEmail(email_edit_text.getText().toString())));
     }
 
+    public void finalizeOrder(View view) {
+        RequestParams requestParams = new RequestParams();
+
+        int i = -1;
+        for (ListItem listItem : cart.getListItems()) {
+            i++;
+            Item item = listItem.getItem();
+            requestParams.put("stockitems_id[" + Integer.toString(i) + "]", Integer.toString(item.getId()));
+            requestParams.put("stockitems_quantity[" + i + "]", Integer.toString(listItem.getQuantity()));
+        }
+
+        requestParams.put("retailer_id", "1");
+        requestParams.put("name", user.getName());
+        requestParams.put("phone", user.getPhone());
+        requestParams.put("street_adress", deliveryPlace.getThoroughfare());
+        requestParams.put("adress_line_2", deliveryPlace.getComplement());
+        requestParams.put("neighborhood", deliveryPlace.getSubLocality());
+        requestParams.put("city", deliveryPlace.getLocality());
+        requestParams.put("state", deliveryPlace.getAdminArea());
+        requestParams.put("zipcode", deliveryPlace.getZipCode());
+        requestParams.put("email", user.getEmail());
+        requestParams.put("lat_coordinate", Double.toString(deliveryPlace.getLatitude()));
+        requestParams.put("long_coordinate", Double.toString(deliveryPlace.getLongitude()));
+
+        Log.d("Request Params", requestParams.toString());
+
+        RestApiHttpClient.post("http://happy-hour.beer/api/unregistered/orders", requestParams, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                Log.d("Success!!", "Object");
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                Log.d("Success!!", "Array");
+
+                JSONArray jsonArray = response;
+                Log.d("JSONArray", String.valueOf(jsonArray));
+            }
+        });
+
+//        OrderRestClient.post(Constants.BASE_ORDER_URL, requestParams, new AsyncHttpResponseHandler() {
+//            @Override
+//            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+////                Log.d("Request Params", requestParams.toString());
+//                Log.d("Order", "Success!");
+//            }
+//
+//            @Override
+//            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+//                Log.d("Failed: ", "" + statusCode);
+//                Log.d("Error : ", "" + error);
+//                Log.d("Headers : ", "" + headers.toString());
+//            }
+//        });
+
+    }
+
     private class UserPhoneTextListener extends MaskEditTextChangedListener implements TextWatcher {
 
         User user;
@@ -197,4 +284,121 @@ public class FinalizeActivity extends AppCompatActivity {
             Log.d("Phone", user.getPhone());
         }
     }
+
+//    public class SendPostRequest extends AsyncTask<String, Void, String> {
+//
+//        protected void onPreExecute(){}
+//
+//        protected String doInBackground(String... arg0) {
+//            try{
+//                URL url = new URL(Constants.BASE_ORDER_URL);
+//
+//                Log.d("URL", url.toString());
+//
+//                JSONObject postDataParams = new JSONObject();
+//
+//                int i=-1;
+//                for (ListItem listItem : cart.getListItems()) {
+//                    i++;
+//                    Item item = listItem.getItem();
+//                    postDataParams.put("stockitems_id[" + Integer.toString(i) + "]", Integer.toString(item.getId()));
+//                    postDataParams.put("stockitems_quantity[" + i + "]", Integer.toString(listItem.getQuantity()));
+//                }
+//
+//                postDataParams.put("name", user.getName());
+//                postDataParams.put("phone", user.getPhone());
+//                postDataParams.put("street_adress", deliveryPlace.getThoroughfare());
+//                postDataParams.put("adress_line2", deliveryPlace.getComplement());
+//                postDataParams.put("neighborhood", deliveryPlace.getSubLocality());
+//                postDataParams.put("city", deliveryPlace.getLocality());
+//                postDataParams.put("state", deliveryPlace.getAdminArea());
+//                postDataParams.put("zipcode", deliveryPlace.getZipCode());
+//                postDataParams.put("email", user.getEmail());
+//                postDataParams.put("lat_coordinate", Double.toString(deliveryPlace.getLatitude()));
+//                postDataParams.put("long_coordinate", Double.toString(deliveryPlace.getLongitude()));
+//                Log.e("params",postDataParams.toString());
+//
+//                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+//                conn.setReadTimeout(15000 /* milliseconds */);
+//                conn.setConnectTimeout(15000 /* milliseconds */);
+//                conn.setRequestMethod("POST");
+//                conn.setDoInput(true);
+//                conn.setDoOutput(true);
+//
+//                OutputStream os = conn.getOutputStream();
+//                BufferedWriter writer = new BufferedWriter(
+//                        new OutputStreamWriter(os, "UTF-8"));
+//
+//                Log.d("Str", getPostDataString(postDataParams));
+//                writer.write(getPostDataString(postDataParams));
+//
+//                writer.flush();
+//                writer.close();
+//                os.close();
+//
+//                int responseCode=conn.getResponseCode();
+//
+//                if (responseCode == HttpsURLConnection.HTTP_OK) {
+//
+//                    BufferedReader in=new BufferedReader(
+//                            new InputStreamReader(
+//                                    conn.getInputStream()));
+//                    StringBuffer sb = new StringBuffer("");
+//                    String line="";
+//
+//                    while((line = in.readLine()) != null) {
+//
+//                        sb.append(line);
+//                        break;
+//                    }
+//
+//                    in.close();
+//                    return sb.toString();
+//
+//                }
+//                else {
+//                    return new String("false : "+responseCode);
+//                }
+//            }
+//            catch(Exception e){
+//                return new String("Exception: " + e.getMessage());
+//            }
+//        }
+//
+//        @Override
+//        protected void onPostExecute(String result) {
+//            Toast.makeText(getApplicationContext(), result,
+//                    Toast.LENGTH_LONG).show();
+//        }
+//
+//        public String getPostDataString(JSONObject params) throws Exception {
+//
+//            Log.d("Entrou", "getPostDataString");
+//
+//            StringBuilder result = new StringBuilder();
+//            boolean first = true;
+//
+//            Iterator<String> itr = params.keys();
+//
+//            while(itr.hasNext()){
+//
+//                String key= itr.next();
+//                Object value = params.get(key);
+//
+//                if (first)
+//                    first = false;
+//                else
+//                    result.append("&");
+//
+//                result.append(URLEncoder.encode(key, "UTF-8"));
+//                result.append("=");
+//                result.append(URLEncoder.encode(value.toString(), "UTF-8"));
+//
+//            }
+//
+//
+//            Log.d("Post Data String", result.toString());
+//            return result.toString();
+//        }
+//    }
 }

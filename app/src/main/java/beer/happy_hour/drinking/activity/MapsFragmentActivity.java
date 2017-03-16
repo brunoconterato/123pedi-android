@@ -193,7 +193,7 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
                     Log.d("getFeatureName", addresses.get(0).getFeatureName());
                     Log.d("getLocality", addresses.get(0).getLocality());
                     Log.d("getPostalCode", addresses.get(0).getPostalCode());
-                    Log.d("getSubAdminArea", addresses.get(0).getSubAdminArea());
+//                    Log.d("getSubAdminArea", addresses.get(0).getSubAdminArea());
                     Log.d("getSubLocality", addresses.get(0).getSubLocality());
                     Log.d("getSubThoroughfare", addresses.get(0).getSubThoroughfare());
                     Log.d("getThoroughfare", addresses.get(0).getThoroughfare());
