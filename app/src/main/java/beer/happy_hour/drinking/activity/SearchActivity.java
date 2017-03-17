@@ -29,11 +29,9 @@ public class SearchActivity extends AppCompatActivity implements LoadStockJSONTa
                                                         AdapterView.OnItemClickListener,
                                                         SearchView.OnQueryTextListener{
 
-    //public static final String URL = "https://api.learn2crack.com/android/jsonandroid/";
     public static final String URL = "http://happy-hour.beer/api/search/stocksearch";
     //Show listview
     private ListView mListView;
-//    private List<ListItem> listItemRepository;
     private ListItemRepositorySingleton listItemRepository;
     private ListItemAdapter listItemAdapter;
 

@@ -138,12 +138,12 @@ public class FinalizeActivity extends AppCompatActivity {
 //        MaskEditTextChangedListener maskPhone = new MaskEditTextChangedListener("(##) # ####-####", phone_edit_text);
 //        phone_edit_text.addTextChangedListener(maskPhone);
 
-
         adress_text_view = (TextView) findViewById(R.id.adress_text_view);
         citystate_text_view = (TextView) findViewById(R.id.citystate_text_view);
         country_text_view = (TextView) findViewById(R.id.country_text_view);
 
         complement_edit_text = (EditText) findViewById(R.id.complement_edit_text);
+        complement_edit_text.setText(deliveryPlace.getComplement());
         complement_edit_text.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {

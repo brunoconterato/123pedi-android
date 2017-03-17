@@ -1,16 +1,21 @@
 package beer.happy_hour.drinking.activity;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Toast;
 
@@ -27,16 +32,29 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import beer.happy_hour.drinking.GeocodeJSONParser;
 import beer.happy_hour.drinking.R;
 import beer.happy_hour.drinking.model.DeliveryPlace;
 
 public class MapsFragmentActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener {
+        LocationListener,
+        SearchView.OnQueryTextListener {
 
     private GoogleMap map;
     private LatLng myLocation;
@@ -47,6 +65,10 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
 
     private long UPDATE_INTERVAL = 10 * 1000;  /* 10 secs */
     private long FASTEST_INTERVAL = 2000; /* 2 sec */
+
+    //    private Button mBtnFind;
+//    private EditText etPlace;
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +86,16 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
 
         deliveryPlace = DeliveryPlace.getInstance();
         myLocation = new LatLng(deliveryPlace.getLatitude(), deliveryPlace.getLongitude());
+
+        //SearchView for Search
+        SearchManager searchManager = (SearchManager)
+                getSystemService(Context.SEARCH_SERVICE);
+
+        searchView = (SearchView) findViewById(R.id.map_search_view);
+
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setSubmitButtonEnabled(true);
+        searchView.setOnQueryTextListener(this);
     }
 
 
@@ -329,5 +361,195 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
     @Override
     public void onBackPressed() {
         startActivity(new Intent(this, FinalizeActivity.class));
+    }
+
+    //Implementation for SearchView.OnQueryTextListener
+    @Override
+    public boolean onQueryTextSubmit(String location) {
+
+        if (location == null || location.equals("")) {
+            Toast.makeText(getBaseContext(), "No Place is entered", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        String url = "https://maps.googleapis.com/maps/api/geocode/json?";
+
+        try {
+            // encoding special characters like space in the user input place
+            location = URLEncoder.encode(location, "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        String address = "address=" + location;
+
+        String sensor = "sensor=false";
+
+        // url , from where the geocoding data is fetched
+        url = url + address + "&" + sensor;
+
+        // Instantiating DownloadTask to get places from Google Geocoding service
+        // in a non-ui thread
+        DownloadTask downloadTask = new DownloadTask();
+
+        // Start downloading the geocoding places
+        downloadTask.execute(url);
+
+        return true;
+    }
+
+    //Implementation for SearchView.OnQueryTextListener
+    @Override
+    public boolean onQueryTextChange(String s) {
+        return false;
+    }
+
+    //MapSearch Method
+    private String downloadUrl(String strUrl) throws IOException {
+        String data = "";
+        InputStream iStream = null;
+        HttpURLConnection urlConnection = null;
+        try {
+            URL url = new URL(strUrl);
+            // Creating an http connection to communicate with url
+            urlConnection = (HttpURLConnection) url.openConnection();
+
+            // Connecting to url
+            urlConnection.connect();
+
+            // Reading data from url
+            iStream = urlConnection.getInputStream();
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(iStream));
+
+            StringBuffer sb = new StringBuffer();
+
+            String line = "";
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
+            }
+
+            data = sb.toString();
+            br.close();
+
+        } catch (Exception e) {
+            Log.d("Exception in url", e.toString());
+        } finally {
+            iStream.close();
+            urlConnection.disconnect();
+        }
+
+        return data;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    /**
+     * For map search
+     * <p>
+     * A class, to download Places from Geocoding webservice
+     */
+    private class DownloadTask extends AsyncTask<String, Integer, String> {
+
+        String data = null;
+
+        // Invoked by execute() method of this object
+        @Override
+        protected String doInBackground(String... url) {
+            try {
+                data = downloadUrl(url[0]);
+            } catch (Exception e) {
+                Log.d("Background Task", e.toString());
+            }
+            return data;
+        }
+
+        // Executed after the complete execution of doInBackground() method
+        @Override
+        protected void onPostExecute(String result) {
+
+            // Instantiating ParserTask which parses the json data from Geocoding webservice
+            // in a non-ui thread
+            ParserTask parserTask = new ParserTask();
+
+            // Start parsing the places in JSON format
+            // Invokes the "doInBackground()" method of the class ParseTask
+            parserTask.execute(result);
+        }
+    }
+
+    /**
+     * For map search
+     * <p>
+     * A class to parse the Geocoding Places in non-ui thread
+     */
+    private class ParserTask extends AsyncTask<String, Integer, List<HashMap<String, String>>> {
+
+        JSONObject jObject;
+
+        // Invoked by execute() method of this object
+        @Override
+        protected List<HashMap<String, String>> doInBackground(String... jsonData) {
+
+            List<HashMap<String, String>> places = null;
+            GeocodeJSONParser parser = new GeocodeJSONParser();
+
+            try {
+                jObject = new JSONObject(jsonData[0]);
+
+                /** Getting the parsed data as a an ArrayList */
+                places = parser.parse(jObject);
+
+            } catch (Exception e) {
+                Log.d("Exception", e.toString());
+            }
+            return places;
+        }
+
+        // Executed after the complete execution of doInBackground() method
+        @Override
+        protected void onPostExecute(List<HashMap<String, String>> list) {
+
+            // Clears all the existing markers
+            map.clear();
+
+            for (int i = 0; i < list.size(); i++) {
+
+                // Creating a marker
+                MarkerOptions markerOptions = new MarkerOptions();
+
+                // Getting a place from the places list
+                HashMap<String, String> hmPlace = list.get(i);
+
+                // Getting latitude of the place
+                double lat = Double.parseDouble(hmPlace.get("lat"));
+
+                // Getting longitude of the place
+                double lng = Double.parseDouble(hmPlace.get("lng"));
+
+                // Getting name
+                String name = hmPlace.get("formatted_address");
+
+                LatLng latLng = new LatLng(lat, lng);
+
+                // Setting the position for the marker
+                markerOptions.position(latLng);
+
+                // Setting the title for the marker
+                markerOptions.title(name);
+
+                // Placing a marker on the touched position
+                map.addMarker(markerOptions);
+
+                // Locate the first location
+                if (i == 0)
+                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
+            }
+        }
     }
 }
