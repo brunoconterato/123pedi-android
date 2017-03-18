@@ -63,8 +63,8 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
 
-    private long UPDATE_INTERVAL = 10 * 1000;  /* 10 secs */
-    private long FASTEST_INTERVAL = 2000; /* 2 sec */
+//    private long UPDATE_INTERVAL = 10 * 1000;  /* 10 secs */
+//    private long FASTEST_INTERVAL = 2000; /* 2 sec */
 
     //    private Button mBtnFind;
 //    private EditText etPlace;
@@ -146,13 +146,13 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
                 markerOptions.title(latLng.latitude + " : " + latLng.longitude);
 
                 // Clears the previously touched position
-                map.clear();
+//                map.clear();
 
                 // Animating to the touched position
                 map.animateCamera(CameraUpdateFactory.newLatLng(latLng));
 
-                // Placing a marker on the touched position
-                map.addMarker(markerOptions);
+//                // Placing a marker on the touched position
+//                map.addMarker(markerOptions);
 
                 //Capturando localização
                 setMyLocation(latLng);
@@ -162,9 +162,16 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
             }
         });
 
-//        map.setOnMyLocationChangeListener(myLocationChangeListener());
-
         map.setOnMyLocationButtonClickListener(onMyLocationButtonClickListener());
+
+        map.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
+            @Override
+            public void onCameraIdle() {
+                myLocation = map.getCameraPosition().target;
+
+                setMyLocationAdress();
+            }
+        });
     }
 
     public void setMyLocation(LatLng latLng) {
@@ -214,7 +221,7 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
 
                     Log.d("DeliveryPlace", deliveryPlace.toString());
 
-                    Toast.makeText(getApplicationContext(), "Address:- " + addresses.get(0).getFeatureName() + addresses.get(0).getAdminArea() + addresses.get(0).getLocality(), Toast.LENGTH_LONG).show();
+//                    Toast.makeText(getApplicationContext(), "Address:- " + addresses.get(0).getFeatureName() + addresses.get(0).getAdminArea() + addresses.get(0).getLocality(), Toast.LENGTH_LONG).show();
 
                     Log.d("getAddressLine(0)", addresses.get(0).getAddressLine(0));
                     Log.d("getAddressLine(1)", addresses.get(0).getAddressLine(1));
@@ -241,53 +248,57 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
 
             @Override
             public boolean onMyLocationButtonClick() {
-//                // Getting LocationManager object from System Service LOCATION_SERVICE
-//                LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-//
-//                // Creating a criteria object to retrieve provider
-//                Criteria criteria = new Criteria();
-//
-//                // Getting the name of the best provider
-//                String provider = locationManager.getBestProvider(criteria, true);
-//
-//                // Getting Current Location
-//                Location location = locationManager.getLastKnownLocation(provider);
 
                 Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
-                if (location != null) {
-                    // Getting latitude of the current location
-                    double latitude = location.getLatitude();
+                new LocationGetter().execute();
 
-                    // Getting longitude of the current location
-                    double longitude = location.getLongitude();
-
-                    myLocation = new LatLng(latitude, longitude);
-
-                    map.clear();
-
-                    Marker marker;
-                    marker = map.addMarker(new MarkerOptions().position(myLocation));
-
-                    // Animating to the location position
-                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 17));
-
-                    setMyLocationAdress();
-
-                    return true;
-                } else
-                    return false;
-
+                return true;
             }
         };
     }
 
+    public class LocationGetter extends AsyncTask<Void, Void, Location> {
+
+        @Override
+        protected Location doInBackground(Void... voids) {
+            Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+
+            return location;
+        }
+
+        @Override
+        protected void onPostExecute(Location location) {
+            if (location != null) {
+                // Getting latitude of the current location
+                double latitude = location.getLatitude();
+
+                // Getting longitude of the current location
+                double longitude = location.getLongitude();
+
+                myLocation = new LatLng(latitude, longitude);
+
+//                map.clear();
+
+                Marker marker;
+//                marker = map.addMarker(new MarkerOptions().position(myLocation));
+
+                // Animating to the location position
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 17));
+
+                setMyLocationAdress();
+            }
+        }
+    }
+
+    @Override
     protected void onStart() {
         super.onStart();
         // Connect the client.
         mGoogleApiClient.connect();
     }
 
+    @Override
     protected void onStop() {
         // Disconnecting the client invalidates it.
         LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
@@ -310,7 +321,7 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
             LatLng latLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
         }
         // Begin polling for new location updates.
-        startLocationUpdates();
+//        startLocationUpdates();
     }
 
     @Override
@@ -322,39 +333,29 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
         }
     }
 
-    // Trigger new location updates at interval
-    protected void startLocationUpdates() {
-        // Create the location request
-        mLocationRequest = LocationRequest.create()
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setInterval(UPDATE_INTERVAL)
-                .setFastestInterval(FASTEST_INTERVAL);
-        // Request location updates
-        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-    }
+//    // Trigger new location updates at interval
+//    protected void startLocationUpdates() {
+//        // Create the location request
+//        mLocationRequest = LocationRequest.create()
+//                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+//                .setInterval(UPDATE_INTERVAL)
+//                .setFastestInterval(FASTEST_INTERVAL);
+//        // Request location updates
+//        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+//    }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
 
+    @Override
     public void onLocationChanged(Location location) {
-        // New location has now been determined
-        String msg = "Updated Location: " +
-                Double.toString(location.getLatitude()) + "," +
-                Double.toString(location.getLongitude());
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-        // You can now create a LatLng Object for use with maps
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-    }
-
-    //Só implementar se for usar o AsyncTask GetAddressTask
-    public void callBackDataFromAsyncTask(DeliveryPlace address) {
 
     }
 
 
-    public void updateDeliveryPlace(View view) {
+    public void returnToDeliveryPlace(View view) {
         startActivity(new Intent(this, FinalizeActivity.class));
     }
 
@@ -513,18 +514,18 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
 
         // Executed after the complete execution of doInBackground() method
         @Override
-        protected void onPostExecute(List<HashMap<String, String>> list) {
+        protected void onPostExecute(List<HashMap<String, String>> placesList) {
 
             // Clears all the existing markers
-            map.clear();
+//            map.clear();
 
-            for (int i = 0; i < list.size(); i++) {
+            for (int i = 0; i < placesList.size(); i++) {
 
-                // Creating a marker
-                MarkerOptions markerOptions = new MarkerOptions();
+//                // Creating a marker
+//                MarkerOptions markerOptions = new MarkerOptions();
 
-                // Getting a place from the places list
-                HashMap<String, String> hmPlace = list.get(i);
+                // Getting a place from the places placesList
+                HashMap<String, String> hmPlace = placesList.get(i);
 
                 // Getting latitude of the place
                 double lat = Double.parseDouble(hmPlace.get("lat"));
@@ -537,14 +538,14 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
 
                 LatLng latLng = new LatLng(lat, lng);
 
-                // Setting the position for the marker
-                markerOptions.position(latLng);
-
-                // Setting the title for the marker
-                markerOptions.title(name);
-
-                // Placing a marker on the touched position
-                map.addMarker(markerOptions);
+//                // Setting the position for the marker
+//                markerOptions.position(latLng);
+//
+//                // Setting the title for the marker
+//                markerOptions.title(name);
+//
+//                // Placing a marker on the touched position
+//                map.addMarker(markerOptions);
 
                 // Locate the first location
                 if (i == 0)

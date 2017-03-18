@@ -15,21 +15,32 @@
         android:layout_height="match_parent"
         android:layout_below="@id/map_search_view">
 
-        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/map"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/map_search_view"
-            tools:context="beer.happy_hour.drinking.activity.MapsFragmentActivity" />
+            android:layout_height="match_parent">
+
+            <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context="beer.happy_hour.drinking.activity.MapsFragmentActivity" />
+
+            <ImageButton
+                android:background="@drawable/ic_antu_drink_beer_svg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"/>
+
+        </RelativeLayout>
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="65dp"
             android:layout_below="@id/map"
             android:layout_gravity="bottom"
-            android:onClick="updateDeliveryPlace"
+            android:onClick="returnToDeliveryPlace"
             android:text="Usar local selecionado" />
 
 
