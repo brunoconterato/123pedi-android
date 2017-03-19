@@ -1,8 +1,8 @@
 package beer.happy_hour.drinking.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,7 +16,7 @@ import beer.happy_hour.drinking.adapter.ShoppingCartAdapter;
 import beer.happy_hour.drinking.listener.TotalTextView;
 import beer.happy_hour.drinking.model.ShoppingCartSingleton;
 
-public class CheckoutActivity extends Activity implements AdapterView.OnItemClickListener {
+public class CheckoutActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     String TOTAL_SUFIX = "TOTAL: R$ ";
     TotalTextView total_text_view;
