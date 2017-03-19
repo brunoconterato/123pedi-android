@@ -12,8 +12,7 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/map_search_view">
+        android:layout_height="match_parent">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -28,10 +27,10 @@
                 tools:context="beer.happy_hour.drinking.activity.MapsFragmentActivity" />
 
             <ImageButton
-                android:background="@drawable/ic_antu_drink_beer_svg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"/>
+                android:layout_centerInParent="true"
+                android:background="@drawable/ic_antu_drink_beer_svg" />
 
         </RelativeLayout>
 

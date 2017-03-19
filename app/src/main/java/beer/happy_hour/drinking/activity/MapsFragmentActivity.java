@@ -1,5 +1,6 @@
 package beer.happy_hour.drinking.activity;
 
+import android.Manifest;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -29,8 +30,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONObject;
 
@@ -63,8 +62,8 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
 
-//    private long UPDATE_INTERVAL = 10 * 1000;  /* 10 secs */
-//    private long FASTEST_INTERVAL = 2000; /* 2 sec */
+    private long UPDATE_INTERVAL = 10 * 1000;  /* 10 secs */
+    private long FASTEST_INTERVAL = 2 * 1000; /* 2 sec */
 
     //    private Button mBtnFind;
 //    private EditText etPlace;
@@ -119,8 +118,7 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
         } else
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 17));
 
-
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
@@ -132,36 +130,6 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
         }
         map.setMyLocationEnabled(true);
 
-        map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-            @Override
-            public void onMapClick(LatLng latLng) {
-                // Creating a marker
-                MarkerOptions markerOptions = new MarkerOptions();
-
-                // Setting the position for the marker
-                markerOptions.position(latLng);
-
-                // Setting the title for the marker.
-                // This will be displayed on taping the marker
-                markerOptions.title(latLng.latitude + " : " + latLng.longitude);
-
-                // Clears the previously touched position
-//                map.clear();
-
-                // Animating to the touched position
-                map.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-
-//                // Placing a marker on the touched position
-//                map.addMarker(markerOptions);
-
-                //Capturando localização
-                setMyLocation(latLng);
-
-                //Setando Endereço
-                setMyLocationAdress();
-            }
-        });
-
         map.setOnMyLocationButtonClickListener(onMyLocationButtonClickListener());
 
         map.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
@@ -169,79 +137,80 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
             public void onCameraIdle() {
                 myLocation = map.getCameraPosition().target;
 
-                setMyLocationAdress();
+//                setMyLocationAdress();
             }
         });
     }
 
-    public void setMyLocation(LatLng latLng) {
-        myLocation = latLng;
-    }
+//    public void setMyLocation(LatLng latLng) {
+//        myLocation = latLng;
+//    }
 
-    public void setMyLocationAdress() {
-        try {
-            Geocoder geo = new Geocoder(MapsFragmentActivity.this.getApplicationContext(), Locale.getDefault());
-            List<Address> addresses = geo.getFromLocation(myLocation.latitude, myLocation.longitude, 1);
-            if (addresses.isEmpty()) {
-                Log.d("Location", "Waiting for Location");
-            } else {
-                if (addresses.size() > 0) {
-                    Log.d("Location", addresses.get(0).getAddressLine(0) + ", " + addresses.get(0).getFeatureName() + ", " + addresses.get(0).getLocality() + ", " + addresses.get(0).getAdminArea() + ", " + addresses.get(0).getCountryName());
-//                    yourtextfieldname.setText(addresses.get(0).getFeatureName() + ", " + addresses.get(0).getLocality() +", " + addresses.get(0).getAdminArea() + ", " + addresses.get(0).getCountryName());
-
-                    for (int i = 0; i <= 2; i++)
-                        Log.d("AdressLine " + i, addresses.get(0).getAddressLine(i));
-
-                    //get current adress line 1
-                    deliveryPlace.setAdress(addresses.get(0).getAddressLine(0));
-                    //get current city/state
-                    deliveryPlace.setCityState(addresses.get(0).getAddressLine(1));
-                    //get country
-                    deliveryPlace.setCountryName(addresses.get(0).getCountryName());
-                    //get postal code
-                    deliveryPlace.setZipCode(addresses.get(0).getPostalCode());
-                    //get place Name
-                    deliveryPlace.setFeatureName(addresses.get(0).getFeatureName());
-                    //get latitude
-                    deliveryPlace.setLatitude(addresses.get(0).getLatitude());
-                    //get longitude
-                    deliveryPlace.setLongitude(addresses.get(0).getLongitude());
-                    //get country code
-                    deliveryPlace.setCountryCode(addresses.get(0).getCountryCode());
-                    //get state
-                    deliveryPlace.setAdminArea(addresses.get(0).getAdminArea());
-                    //get city
-                    deliveryPlace.setLocality(addresses.get(0).getLocality());
-                    //get "bairro"
-                    deliveryPlace.setSubLocality(addresses.get(0).getSubLocality());
-                    //get street
-                    deliveryPlace.setThoroughfare(addresses.get(0).getThoroughfare());
-                    //get aproximate number
-                    deliveryPlace.setSubThoroughfare(addresses.get(0).getSubThoroughfare());
-
-                    Log.d("DeliveryPlace", deliveryPlace.toString());
-
-//                    Toast.makeText(getApplicationContext(), "Address:- " + addresses.get(0).getFeatureName() + addresses.get(0).getAdminArea() + addresses.get(0).getLocality(), Toast.LENGTH_LONG).show();
-
-                    Log.d("getAddressLine(0)", addresses.get(0).getAddressLine(0));
-                    Log.d("getAddressLine(1)", addresses.get(0).getAddressLine(1));
-                    Log.d("getAddressLine(2)", addresses.get(0).getAddressLine(2));
-                    Log.d("getAdminArea", addresses.get(0).getAdminArea());
-                    Log.d("getCountryCode", addresses.get(0).getCountryCode());
-                    Log.d("getCountryName", addresses.get(0).getCountryName());
-                    Log.d("getFeatureName", addresses.get(0).getFeatureName());
-                    Log.d("getLocality", addresses.get(0).getLocality());
-                    Log.d("getPostalCode", addresses.get(0).getPostalCode());
-//                    Log.d("getSubAdminArea", addresses.get(0).getSubAdminArea());
-                    Log.d("getSubLocality", addresses.get(0).getSubLocality());
-                    Log.d("getSubThoroughfare", addresses.get(0).getSubThoroughfare());
-                    Log.d("getThoroughfare", addresses.get(0).getThoroughfare());
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace(); // getFromLocation() may sometimes fail
-        }
-    }
+//    public void setMyLocationAdress() {
+//        try {
+//            Geocoder geo = new Geocoder(MapsFragmentActivity.this.getApplicationContext(), Locale.getDefault());
+//            List<Address> addresses = geo.getFromLocation(myLocation.latitude, myLocation.longitude, 1);
+//
+//            if (addresses.isEmpty()) {
+//                Log.d("Location", "Waiting for Location");
+//            } else {
+//                if (addresses.size() > 0) {
+//                    Log.d("Location", addresses.get(0).getAddressLine(0) + ", " + addresses.get(0).getFeatureName() + ", " + addresses.get(0).getLocality() + ", " + addresses.get(0).getAdminArea() + ", " + addresses.get(0).getCountryName());
+////                    yourtextfieldname.setText(addresses.get(0).getFeatureName() + ", " + addresses.get(0).getLocality() +", " + addresses.get(0).getAdminArea() + ", " + addresses.get(0).getCountryName());
+//
+//                    for (int i = 0; i <= 2; i++)
+//                        Log.d("AdressLine " + i, addresses.get(0).getAddressLine(i));
+//
+//                    //get current adress line 1
+//                    deliveryPlace.setAdress(addresses.get(0).getAddressLine(0));
+//                    //get current city/state
+//                    deliveryPlace.setCityState(addresses.get(0).getAddressLine(1));
+//                    //get country
+//                    deliveryPlace.setCountryName(addresses.get(0).getCountryName());
+//                    //get postal code
+//                    deliveryPlace.setZipCode(addresses.get(0).getPostalCode());
+//                    //get place Name
+//                    deliveryPlace.setFeatureName(addresses.get(0).getFeatureName());
+//                    //get latitude
+//                    deliveryPlace.setLatitude(addresses.get(0).getLatitude());
+//                    //get longitude
+//                    deliveryPlace.setLongitude(addresses.get(0).getLongitude());
+//                    //get country code
+//                    deliveryPlace.setCountryCode(addresses.get(0).getCountryCode());
+//                    //get state
+//                    deliveryPlace.setAdminArea(addresses.get(0).getAdminArea());
+//                    //get city
+//                    deliveryPlace.setLocality(addresses.get(0).getLocality());
+//                    //get "bairro"
+//                    deliveryPlace.setSubLocality(addresses.get(0).getSubLocality());
+//                    //get street
+//                    deliveryPlace.setThoroughfare(addresses.get(0).getThoroughfare());
+//                    //get aproximate number
+//                    deliveryPlace.setSubThoroughfare(addresses.get(0).getSubThoroughfare());
+//
+//                    Log.d("DeliveryPlace", deliveryPlace.toString());
+//
+////                    Toast.makeText(getApplicationContext(), "Address:- " + addresses.get(0).getFeatureName() + addresses.get(0).getAdminArea() + addresses.get(0).getLocality(), Toast.LENGTH_LONG).show();
+//
+//                    Log.d("getAddressLine(0)", addresses.get(0).getAddressLine(0));
+//                    Log.d("getAddressLine(1)", addresses.get(0).getAddressLine(1));
+//                    Log.d("getAddressLine(2)", addresses.get(0).getAddressLine(2));
+//                    Log.d("getAdminArea", addresses.get(0).getAdminArea());
+//                    Log.d("getCountryCode", addresses.get(0).getCountryCode());
+//                    Log.d("getCountryName", addresses.get(0).getCountryName());
+//                    Log.d("getFeatureName", addresses.get(0).getFeatureName());
+//                    Log.d("getLocality", addresses.get(0).getLocality());
+//                    Log.d("getPostalCode", addresses.get(0).getPostalCode());
+////                    Log.d("getSubAdminArea", addresses.get(0).getSubAdminArea());
+//                    Log.d("getSubLocality", addresses.get(0).getSubLocality());
+//                    Log.d("getSubThoroughfare", addresses.get(0).getSubThoroughfare());
+//                    Log.d("getThoroughfare", addresses.get(0).getThoroughfare());
+//                }
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace(); // getFromLocation() may sometimes fail
+//        }
+//}
 
     private GoogleMap.OnMyLocationButtonClickListener onMyLocationButtonClickListener() {
         return new GoogleMap.OnMyLocationButtonClickListener() {
@@ -250,46 +219,49 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
             public boolean onMyLocationButtonClick() {
 
                 Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+                //Set myLocation
+                new LocationSetter().execute(location);
 
-                new LocationGetter().execute();
+                //Move camera to myLocation
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 17));
 
                 return true;
             }
         };
     }
 
-    public class LocationGetter extends AsyncTask<Void, Void, Location> {
-
-        @Override
-        protected Location doInBackground(Void... voids) {
-            Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-
-            return location;
-        }
-
-        @Override
-        protected void onPostExecute(Location location) {
-            if (location != null) {
-                // Getting latitude of the current location
-                double latitude = location.getLatitude();
-
-                // Getting longitude of the current location
-                double longitude = location.getLongitude();
-
-                myLocation = new LatLng(latitude, longitude);
-
-//                map.clear();
-
-                Marker marker;
-//                marker = map.addMarker(new MarkerOptions().position(myLocation));
-
-                // Animating to the location position
-                map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 17));
-
-                setMyLocationAdress();
-            }
-        }
-    }
+//public class LastLocationGetter extends AsyncTask<Void, Void, Location> {
+//
+//    @Override
+//    protected Location doInBackground(Void... voids) {
+//
+//        Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+//            return location;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Location location) {
+//            if (location != null) {
+//                // Getting latitude of the current location
+//                double latitude = location.getLatitude();
+//
+//                // Getting longitude of the current location
+//                double longitude = location.getLongitude();
+//
+//                myLocation = new LatLng(latitude, longitude);
+//
+////                map.clear();
+//
+////                Marker marker;
+////                marker = map.addMarker(new MarkerOptions().position(myLocation));
+//
+//                // Animating to the location position
+//                map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 17));
+//
+//                new LocationSetter().execute();
+//            }
+//        }
+//    }
 
     @Override
     protected void onStart() {
@@ -320,8 +292,9 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
             Log.d("DEBUG", "current location: " + mCurrentLocation.toString());
             LatLng latLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
         }
+
         // Begin polling for new location updates.
-//        startLocationUpdates();
+        startLocationUpdates();
     }
 
     @Override
@@ -333,16 +306,16 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
         }
     }
 
-//    // Trigger new location updates at interval
-//    protected void startLocationUpdates() {
-//        // Create the location request
-//        mLocationRequest = LocationRequest.create()
-//                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-//                .setInterval(UPDATE_INTERVAL)
-//                .setFastestInterval(FASTEST_INTERVAL);
-//        // Request location updates
-//        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-//    }
+    // Trigger new location updates at interval
+    protected void startLocationUpdates() {
+        // Create the location request
+        mLocationRequest = LocationRequest.create()
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                .setInterval(UPDATE_INTERVAL)
+                .setFastestInterval(FASTEST_INTERVAL);
+        // Request location updates
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+    }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -353,7 +326,6 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
     public void onLocationChanged(Location location) {
 
     }
-
 
     public void returnToDeliveryPlace(View view) {
         startActivity(new Intent(this, FinalizeActivity.class));
@@ -448,6 +420,77 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
+    }
+
+    public class LocationSetter extends AsyncTask<Location, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Location... locations) {
+            try {
+                Geocoder geo = new Geocoder(MapsFragmentActivity.this.getApplicationContext(), Locale.getDefault());
+                List<Address> addresses = geo.getFromLocation(locations[0].getLatitude(), locations[0].getLongitude(), 1);
+
+                if (addresses.isEmpty()) {
+                    Log.d("Location", "Waiting for Location");
+                } else {
+                    if (addresses.size() > 0) {
+                        Log.d("Location", addresses.get(0).getAddressLine(0) + ", " + addresses.get(0).getFeatureName() + ", " + addresses.get(0).getLocality() + ", " + addresses.get(0).getAdminArea() + ", " + addresses.get(0).getCountryName());
+//                    yourtextfieldname.setText(addresses.get(0).getFeatureName() + ", " + addresses.get(0).getLocality() +", " + addresses.get(0).getAdminArea() + ", " + addresses.get(0).getCountryName());
+
+                        for (int i = 0; i <= 2; i++)
+                            Log.d("AdressLine " + i, addresses.get(0).getAddressLine(i));
+
+                        //get current adress line 1
+                        deliveryPlace.setAdress(addresses.get(0).getAddressLine(0));
+                        //get current city/state
+                        deliveryPlace.setCityState(addresses.get(0).getAddressLine(1));
+                        //get country
+                        deliveryPlace.setCountryName(addresses.get(0).getCountryName());
+                        //get postal code
+                        deliveryPlace.setZipCode(addresses.get(0).getPostalCode());
+                        //get place Name
+                        deliveryPlace.setFeatureName(addresses.get(0).getFeatureName());
+                        //get latitude
+                        deliveryPlace.setLatitude(addresses.get(0).getLatitude());
+                        //get longitude
+                        deliveryPlace.setLongitude(addresses.get(0).getLongitude());
+                        //get country code
+                        deliveryPlace.setCountryCode(addresses.get(0).getCountryCode());
+                        //get state
+                        deliveryPlace.setAdminArea(addresses.get(0).getAdminArea());
+                        //get city
+                        deliveryPlace.setLocality(addresses.get(0).getLocality());
+                        //get "bairro"
+                        deliveryPlace.setSubLocality(addresses.get(0).getSubLocality());
+                        //get street
+                        deliveryPlace.setThoroughfare(addresses.get(0).getThoroughfare());
+                        //get aproximate number
+                        deliveryPlace.setSubThoroughfare(addresses.get(0).getSubThoroughfare());
+
+                        Log.d("DeliveryPlace", deliveryPlace.toString());
+
+//                    Toast.makeText(getApplicationContext(), "Address:- " + addresses.get(0).getFeatureName() + addresses.get(0).getAdminArea() + addresses.get(0).getLocality(), Toast.LENGTH_LONG).show();
+
+                        Log.d("getAddressLine(0)", addresses.get(0).getAddressLine(0));
+                        Log.d("getAddressLine(1)", addresses.get(0).getAddressLine(1));
+                        Log.d("getAddressLine(2)", addresses.get(0).getAddressLine(2));
+                        Log.d("getAdminArea", addresses.get(0).getAdminArea());
+                        Log.d("getCountryCode", addresses.get(0).getCountryCode());
+                        Log.d("getCountryName", addresses.get(0).getCountryName());
+                        Log.d("getFeatureName", addresses.get(0).getFeatureName());
+                        Log.d("getLocality", addresses.get(0).getLocality());
+                        Log.d("getPostalCode", addresses.get(0).getPostalCode());
+                        Log.d("getSubLocality", addresses.get(0).getSubLocality());
+                        Log.d("getSubThoroughfare", addresses.get(0).getSubThoroughfare());
+                        Log.d("getThoroughfare", addresses.get(0).getThoroughfare());
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace(); // getFromLocation() may sometimes fail
+            }
+
+            return null;
+        }
     }
 
     /**
