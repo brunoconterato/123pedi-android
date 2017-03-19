@@ -3,6 +3,7 @@ package beer.happy_hour.drinking.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -53,6 +54,7 @@ public class CheckoutActivity extends Activity implements AdapterView.OnItemClic
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        Log.d("Menu", "onCreateMenu");
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
@@ -79,5 +81,4 @@ public class CheckoutActivity extends Activity implements AdapterView.OnItemClic
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
     }
-
 }
