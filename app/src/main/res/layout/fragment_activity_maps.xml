@@ -1,48 +1,46 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".activity.MapsFragmentActivity">
 
-    <android.support.v7.widget.SearchView
+    <SearchView
         android:id="@+id/map_search_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="5"
         android:background="@android:color/white" />
 
-    <FrameLayout
+    <RelativeLayout
+        android:id="@+id/map_with_pin"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_weight="1">
 
-        <RelativeLayout
+        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            tools:context="beer.happy_hour.drinking.activity.MapsFragmentActivity" />
 
-            <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:id="@+id/map"
-                android:name="com.google.android.gms.maps.SupportMapFragment"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:context="beer.happy_hour.drinking.activity.MapsFragmentActivity" />
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@drawable/ic_antu_drink_beer_svg" />
 
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:background="@drawable/ic_antu_drink_beer_svg" />
+    </RelativeLayout>
 
-        </RelativeLayout>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/map_with_pin"
+        android:layout_gravity="bottom"
+        android:layout_weight="5"
+        android:onClick="returnToDeliveryPlace"
+        android:text="Usar local selecionado" />
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="65dp"
-            android:layout_below="@id/map"
-            android:layout_gravity="bottom"
-            android:onClick="returnToDeliveryPlace"
-            android:text="Usar local selecionado" />
-
-
-    </FrameLayout>
-
-</RelativeLayout>
+</LinearLayout>

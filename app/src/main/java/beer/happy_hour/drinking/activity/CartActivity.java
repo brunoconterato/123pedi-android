@@ -16,7 +16,7 @@ import beer.happy_hour.drinking.adapter.ShoppingCartAdapter;
 import beer.happy_hour.drinking.listener.TotalTextView;
 import beer.happy_hour.drinking.model.ShoppingCartSingleton;
 
-public class CheckoutActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+public class CartActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     String TOTAL_SUFIX = "TOTAL: R$ ";
     TotalTextView total_text_view;
@@ -27,7 +27,7 @@ public class CheckoutActivity extends AppCompatActivity implements AdapterView.O
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_checkout);
+        setContentView(R.layout.activity_cart);
 
         cartListView = (ListView) findViewById(R.id.cart_list_view);
         cartListView.setOnItemClickListener(this);

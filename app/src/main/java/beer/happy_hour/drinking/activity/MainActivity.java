@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void goToCheckoutActivity(View view) {
         if (cart.getItemsQuantity() > 0)
-            startActivity(new Intent(this, CheckoutActivity.class));
+            startActivity(new Intent(this, CartActivity.class));
         else
             Toast.makeText(this.getApplicationContext(), "Carrinho vazio!", Toast.LENGTH_SHORT).show();
     }

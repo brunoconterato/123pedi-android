@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_confirmation"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="beer.happy_hour.drinking.activity.BriefActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="CONFIRMAÇÃO DE COMPRA"
+            android:textSize="26sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Informações de Contato"
+            android:textSize="22sp" />
+
+        <TextView
+            android:id="@+id/contact_brief_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Contato"
+            android:textSize="12sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Endereço"
+            android:textSize="22sp" />
+
+        <TextView
+            android:id="@+id/address_brief_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Meu endereço"
+            android:textSize="12sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Produtos"
+            android:textSize="22sp" />
+
+        <ListView
+            android:id="@+id/brief_items_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </ListView>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Método de Pagamento"
+            android:textSize="22sp" />
+
+        <TextView
+            android:id="@+id/payment_confirmation_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <CheckBox
+            android:id="@+id/majority_confirmation_checkBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/majority_confirmation"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Finalizar Pedido" />
+
+    </LinearLayout>
+</ScrollView>

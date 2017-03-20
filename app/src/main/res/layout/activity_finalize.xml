@@ -5,12 +5,11 @@
     android:layout_height="match_parent"
     tools:context="beer.happy_hour.drinking.activity.FinalizeActivity">
 
+
     <LinearLayout
-        android:layout_width="368dp"
-        android:layout_height="551dp"
-        android:orientation="vertical"
-        tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="8dp">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <TextView
             android:layout_width="match_parent"
@@ -84,26 +83,46 @@
             android:layout_height="wrap_content"
             android:text="Obter Localização" />
 
-        <Button
-            android:id="@+id/validate_phone_button"
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="logValidatePhone"
-            android:text="Validate Phone" />
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:text="Método de Pagamento"
+            android:textSize="20dp" />
 
-        <Button
-            android:id="@+id/validate_email_button"
+        <RadioGroup
+            android:id="@+id/payment_radio_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RadioButton
+                android:id="@+id/credit_card_radio_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Cartão de Crédito" />
+
+            <RadioButton
+                android:id="@+id/money_radio_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Dinheiro" />
+
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/test_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="logValidateEmail"
-            android:text="Validate Email" />
+            android:text="Texto" />
 
         <Button
             android:id="@+id/finalize_order_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="finalizeOrder"
-            android:text="Concluir pedido" />
+            android:onClick="goToBriefActivity"
+            android:text="Ir para Resumo do Pedido" />
+
 
     </LinearLayout>
 

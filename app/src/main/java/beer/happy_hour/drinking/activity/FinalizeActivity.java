@@ -11,28 +11,21 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import beer.happy_hour.drinking.GPSTracker;
 import beer.happy_hour.drinking.R;
-import beer.happy_hour.drinking.async_http_client.RestApiHttpClient;
 import beer.happy_hour.drinking.model.DeliveryPlace;
-import beer.happy_hour.drinking.model.Item;
-import beer.happy_hour.drinking.model.ListItem;
 import beer.happy_hour.drinking.model.ShoppingCartSingleton;
 import beer.happy_hour.drinking.model.User;
 import br.com.jansenfelipe.androidmask.MaskEditTextChangedListener;
-import cz.msebera.android.httpclient.Header;
 
 public class FinalizeActivity extends AppCompatActivity {
 
+    //TODO: escluir ese button
     //Location Variables (Not Google Map API)
     Button get_location_button;
     // GPSTracker class
@@ -52,6 +45,12 @@ public class FinalizeActivity extends AppCompatActivity {
 
     EditText complement_edit_text;
 
+    RadioGroup paymentRadioGroup;
+    RadioButton creditcard_radio_button;
+    RadioButton money_radio_button;
+
+    TextView test_text_view;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +58,9 @@ public class FinalizeActivity extends AppCompatActivity {
 
         //Not from google mapFragment api
         get_location_button = (Button) findViewById(R.id.get_location_button);
+
+        get_location_button.setVisibility(View.GONE);
+        ;
 
         // show location button click event
         get_location_button.setOnClickListener(new View.OnClickListener() {
@@ -165,6 +167,28 @@ public class FinalizeActivity extends AppCompatActivity {
         adress_text_view.setText(deliveryPlace.getAdress());
         citystate_text_view.setText(deliveryPlace.getCityState());
         country_text_view.setText(deliveryPlace.getCountryName());
+
+
+        test_text_view = (TextView) findViewById(R.id.test_text_view);
+
+        paymentRadioGroup = (RadioGroup) findViewById(R.id.payment_radio_group);
+        creditcard_radio_button = (RadioButton) findViewById(R.id.credit_card_radio_button);
+        money_radio_button = (RadioButton) findViewById(R.id.money_radio_button);
+
+
+        paymentRadioGroup.clearCheck();
+
+        paymentRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int buttonId) {
+                switch (buttonId) {
+                    case 0:
+                        test_text_view.setText("Cartão escolhido");
+                    case 1:
+                        test_text_view.setText("Dinheiro escolhido");
+                }
+            }
+        });
     }
 
     @Override
@@ -199,7 +223,7 @@ public class FinalizeActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(this, CheckoutActivity.class));
+        startActivity(new Intent(this, CartActivity.class));
     }
 
     public void logValidatePhone(View view) {
@@ -210,62 +234,8 @@ public class FinalizeActivity extends AppCompatActivity {
         Log.d("isValidEmail", Boolean.toString(user.isValidEmail(email_edit_text.getText().toString())));
     }
 
-    public void finalizeOrder(View view) {
-        RequestParams requestParams = new RequestParams();
-
-        int i = -1;
-        for (ListItem listItem : cart.getListItems()) {
-            i++;
-            Item item = listItem.getItem();
-            requestParams.put("stockitems_id[" + Integer.toString(i) + "]", Integer.toString(item.getId()));
-            requestParams.put("stockitems_quantity[" + i + "]", Integer.toString(listItem.getQuantity()));
-        }
-
-        requestParams.put("retailer_id", "1");
-        requestParams.put("name", user.getName());
-        requestParams.put("phone", user.getPhone());
-        requestParams.put("street_adress", deliveryPlace.getThoroughfare());
-        requestParams.put("adress_line_2", deliveryPlace.getComplement());
-        requestParams.put("neighborhood", deliveryPlace.getSubLocality());
-        requestParams.put("city", deliveryPlace.getLocality());
-        requestParams.put("state", deliveryPlace.getAdminArea());
-        requestParams.put("zipcode", deliveryPlace.getZipCode());
-        requestParams.put("email", user.getEmail());
-        requestParams.put("lat_coordinate", Double.toString(deliveryPlace.getLatitude()));
-        requestParams.put("long_coordinate", Double.toString(deliveryPlace.getLongitude()));
-
-        Log.d("Request Params", requestParams.toString());
-
-        RestApiHttpClient.post("http://happy-hour.beer/api/unregistered/orders", requestParams, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                Log.d("Success!!", "Object");
-            }
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                Log.d("Success!!", "Array");
-
-                JSONArray jsonArray = response;
-                Log.d("JSONArray", String.valueOf(jsonArray));
-            }
-        });
-
-//        OrderRestClient.post(Constants.BASE_ORDER_URL, requestParams, new AsyncHttpResponseHandler() {
-//            @Override
-//            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-////                Log.d("Request Params", requestParams.toString());
-//                Log.d("Order", "Success!");
-//            }
-//
-//            @Override
-//            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-//                Log.d("Failed: ", "" + statusCode);
-//                Log.d("Error : ", "" + error);
-//                Log.d("Headers : ", "" + headers.toString());
-//            }
-//        });
-
+    public void goToBriefActivity(View view) {
+        startActivity(new Intent(this, BriefActivity.class));
     }
 
     private class UserPhoneTextListener extends MaskEditTextChangedListener implements TextWatcher {

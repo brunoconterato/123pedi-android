@@ -7,4 +7,11 @@
     <string name="search_hint">Search Hint String</string>
     <string name="google_maps_key">AIzaSyDLrczQeMGcHqRrRfVHOGp02N40he5FHxQ</string>
     <string name="title_activity_maps">Mapa</string>
+
+    <string name="majority_confirmation">Você confirma ter MAIS DE 18 anos e está ciente de que será exigido documento de identificação oficial com foto no ato da entrega</string>
+
+    <string-array name="planets_array">
+        <item>Cartão de Crédito</item>
+        <item>Dinheiro</item>
+    </string-array>
 </resources>

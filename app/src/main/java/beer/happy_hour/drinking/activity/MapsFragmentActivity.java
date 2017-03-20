@@ -14,10 +14,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -41,6 +41,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -56,7 +57,8 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
         SearchView.OnQueryTextListener {
 
     private GoogleMap map;
-    //    private LatLng myLocation;
+    private LatLng myCurrentLatLngLocation;
+
     private DeliveryPlace deliveryPlace;
 
     private GoogleApiClient mGoogleApiClient;
@@ -65,8 +67,6 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
     private long UPDATE_INTERVAL = 10 * 1000;  /* 10 secs */
     private long FASTEST_INTERVAL = 2 * 1000; /* 2 sec */
 
-    //    private Button mBtnFind;
-//    private EditText etPlace;
     private SearchView searchView;
 
     @Override
@@ -84,7 +84,7 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
                 .addOnConnectionFailedListener(this).build();
 
         deliveryPlace = DeliveryPlace.getInstance();
-//        LatLng myLocation = new LatLng(deliveryPlace.getLatitude(), deliveryPlace.getLongitude());
+//        LatLng myCurrentLatLngLocation = new LatLng(deliveryPlace.getLatitude(), deliveryPlace.getLongitude());
 
         //SearchView for Search
         SearchManager searchManager = (SearchManager)
@@ -147,13 +147,13 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
     }
 
 //    public void setMyLocation(LatLng latLng) {
-//        myLocation = latLng;
+//        myCurrentLatLngLocation = latLng;
 //    }
 
 //    public void setMyLocationAdress() {
 //        try {
 //            Geocoder geo = new Geocoder(MapsFragmentActivity.this.getApplicationContext(), Locale.getDefault());
-//            List<Address> addresses = geo.getFromLocation(myLocation.latitude, myLocation.longitude, 1);
+//            List<Address> addresses = geo.getFromLocation(myCurrentLatLngLocation.latitude, myCurrentLatLngLocation.longitude, 1);
 //
 //            if (addresses.isEmpty()) {
 //                Log.d("Location", "Waiting for Location");
@@ -223,10 +223,10 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
             public boolean onMyLocationButtonClick() {
 
                 Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-                //Set myLocation
+                //Set myCurrentLatLngLocation
                 new LocationSetter().execute(location);
 
-                //Move camera to myLocation
+                //Move camera to myCurrentLatLngLocation
                 map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 17));
 
                 return true;
@@ -252,12 +252,12 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
 //                // Getting longitude of the current location
 //                double longitude = location.getLongitude();
 //
-//                myLocation = new LatLng(latitude, longitude);
+//                myCurrentLatLngLocation = new LatLng(latitude, longitude);
 //
 ////                map.clear();
 //
 ////                Marker marker;
-////                marker = map.addMarker(new MarkerOptions().position(myLocation));
+////                marker = map.addMarker(new MarkerOptions().position(myCurrentLatLngLocation));
 //
 //                // Animating to the location position
 //                map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 17));
@@ -487,6 +487,8 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
                         Log.d("getSubLocality", addresses.get(0).getSubLocality());
                         Log.d("getSubThoroughfare", addresses.get(0).getSubThoroughfare());
                         Log.d("getThoroughfare", addresses.get(0).getThoroughfare());
+
+                        myCurrentLatLngLocation = new LatLng(locations[0].getLatitude(), locations[0].getLongitude());
                     }
                 }
             } catch (Exception e) {
@@ -556,15 +558,35 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
             } catch (Exception e) {
                 Log.d("Exception", e.toString());
             }
+
+            //TODO: resolver a excepiton quando manda procurar endereço
+            places.sort(new Comparator<HashMap<String, String>>() {
+                @Override
+                public int compare(HashMap<String, String> place1, HashMap<String, String> place2) {
+                    /* For stringHashMap */
+
+                    double lat1 = Double.parseDouble(place1.get("lat"));
+                    double lng1 = Double.parseDouble(place1.get("lng"));
+                    LatLng latLng1 = new LatLng(lat1, lng1);
+
+                    /* For place2 */
+                    double lat2 = Double.parseDouble(place2.get("lat"));
+                    double lng2 = Double.parseDouble(place2.get("lng"));
+                    LatLng latLng2 = new LatLng(lat2, lng2);
+
+                    if (calculateDistance(myCurrentLatLngLocation, latLng1) > calculateDistance(myCurrentLatLngLocation, latLng2))
+                        return 0;
+                    else
+                        return 1;
+                }
+            });
+
             return places;
         }
 
         // Executed after the complete execution of doInBackground() method
         @Override
         protected void onPostExecute(List<HashMap<String, String>> placesList) {
-
-            // Clears all the existing markers
-//            map.clear();
 
             for (int i = 0; i < placesList.size(); i++) {
 
@@ -595,9 +617,20 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
 //                map.addMarker(markerOptions);
 
                 // Locate the first location
-                if (i == 0)
+                if (i == 0) {
                     map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
+                    break;  //Por enquanto, vamos capturar um só lugar
+                }
             }
+        }
+
+        private double calculateDistance(LatLng place1, LatLng place2) {
+            float results[] = new float[0];
+            Location.distanceBetween(place1.latitude, place1.longitude,
+                    place2.latitude, place2.longitude,
+                    results);
+
+            return (double) results[0];
         }
     }
 }

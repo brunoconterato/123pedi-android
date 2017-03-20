@@ -164,7 +164,7 @@ public class SearchActivity extends AppCompatActivity implements LoadStockJSONTa
     }
 
     public void viewShoppingCart(View view){
-        Intent intent = new Intent(this, CheckoutActivity.class);
+        Intent intent = new Intent(this, CartActivity.class);
         startActivity(intent);
         finish();
     }
