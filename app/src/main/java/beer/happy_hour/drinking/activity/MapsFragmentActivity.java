@@ -332,12 +332,12 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
     }
 
     public void returnToDeliveryPlace(View view) {
-        startActivity(new Intent(this, FinalizeActivity.class));
+        startActivity(new Intent(this, OrderDetailsActivity.class));
     }
 
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(this, FinalizeActivity.class));
+        startActivity(new Intent(this, OrderDetailsActivity.class));
     }
 
     //Implementation for SearchView.OnQueryTextListener

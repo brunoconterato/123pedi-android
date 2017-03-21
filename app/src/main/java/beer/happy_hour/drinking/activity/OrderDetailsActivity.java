@@ -23,7 +23,7 @@ import beer.happy_hour.drinking.model.ShoppingCartSingleton;
 import beer.happy_hour.drinking.model.User;
 import br.com.jansenfelipe.androidmask.MaskEditTextChangedListener;
 
-public class FinalizeActivity extends AppCompatActivity {
+public class OrderDetailsActivity extends AppCompatActivity {
 
     //TODO: escluir ese button
     //Location Variables (Not Google Map API)
@@ -54,7 +54,7 @@ public class FinalizeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_finalize);
+        setContentView(R.layout.activity_order_details);
 
         //Not from google mapFragment api
         get_location_button = (Button) findViewById(R.id.get_location_button);
@@ -68,7 +68,7 @@ public class FinalizeActivity extends AppCompatActivity {
             @Override
             public void onClick(View arg0) {
                 // create class object
-                gps = new GPSTracker(FinalizeActivity.this);
+                gps = new GPSTracker(OrderDetailsActivity.this);
 
                 // check if GPS enabled
                 if (gps.canGetLocation()) {

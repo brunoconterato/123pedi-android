@@ -4,9 +4,17 @@
     android:layout_height="match_parent"
     android:orientation="horizontal">
 
+    <ImageButton
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="4"
+        android:background="@android:drawable/btn_star"
+        android:padding="10dp" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_weight="1"
         android:orientation="vertical">
 
         <TextView
@@ -15,7 +23,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:textColor="@android:color/black"
-            android:textSize="12sp" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/brief_item_brand_text_view"
@@ -23,7 +31,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:textColor="@android:color/black"
-            android:textSize="12sp" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/brief_item_quantity_text_view"
@@ -31,7 +39,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:textColor="@android:color/black"
-            android:textSize="12sp" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/brief_item_price_text_view"
@@ -39,7 +47,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:textColor="@android:color/black"
-            android:textSize="12sp" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/brief_item_subtotal_text_view"
@@ -47,7 +55,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:textColor="@android:color/black"
-            android:textSize="12sp" />
+            android:textSize="18sp" />
 
     </LinearLayout>
 

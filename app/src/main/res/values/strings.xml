@@ -9,6 +9,7 @@
     <string name="title_activity_maps">Mapa</string>
 
     <string name="majority_confirmation">Você confirma ter MAIS DE 18 anos e está ciente de que será exigido documento de identificação oficial com foto no ato da entrega</string>
+    <string name="majority_popup_message">Você precisa confirmar que possui mais de 18 anos completos para confirmar o pedido</string>
 
     <string-array name="planets_array">
         <item>Cartão de Crédito</item>

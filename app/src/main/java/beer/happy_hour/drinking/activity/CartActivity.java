@@ -18,8 +18,8 @@ import beer.happy_hour.drinking.model.ShoppingCartSingleton;
 
 public class CartActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
-    String TOTAL_SUFIX = "TOTAL: R$ ";
-    TotalTextView total_text_view;
+    private String TOTAL_SUFIX = "TOTAL: R$ ";
+    private TotalTextView total_text_view;
     private ListView cartListView;
     private ShoppingCartAdapter shoppingCartAdapter;
     private ShoppingCartSingleton cart;
@@ -49,7 +49,7 @@ public class CartActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void goToFinalizeActivity(View view) {
-        startActivity(new Intent(this, FinalizeActivity.class));
+        startActivity(new Intent(this, OrderDetailsActivity.class));
     }
 
     @Override

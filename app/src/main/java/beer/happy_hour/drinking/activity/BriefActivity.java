@@ -1,43 +1,47 @@
 package beer.happy_hour.drinking.activity;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.ListView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import beer.happy_hour.drinking.R;
-import beer.happy_hour.drinking.adapter.BriefItemsAdapter;
-import beer.happy_hour.drinking.async_http_client.RestApiHttpClient;
+import beer.happy_hour.drinking.generate_order_async.GenerateOrderAPIAsync;
 import beer.happy_hour.drinking.model.DeliveryPlace;
-import beer.happy_hour.drinking.model.Item;
 import beer.happy_hour.drinking.model.ListItem;
 import beer.happy_hour.drinking.model.ShoppingCartSingleton;
 import beer.happy_hour.drinking.model.User;
-import cz.msebera.android.httpclient.Header;
 
-public class BriefActivity extends AppCompatActivity {
+public class BriefActivity extends AppCompatActivity implements GenerateOrderAPIAsync.Listener {
 
+    ProgressDialog finalProgressDialog;
     private User user;
     private DeliveryPlace deliveryPlace;
     private ShoppingCartSingleton cart;
-
     private TextView contact_brief_text_view;
     private TextView address_brief_text_view;
-
-    private ListView items_brief_list_view;
-    private ArrayAdapter<ListItem> adapter;
-
+    //    private ArrayAdapter<ListItem> adapter;
+    private LinearLayout items_brief_linear_layout;
     private CheckBox majority_check_box;
+    private LayoutParams popUpParams;
+    private LinearLayout popUpContainerLayout;
+    private PopupWindow popUpWindow;
+    private Button closePopUpButton;
+    private TextView popUpTextView;
+    private TextView items_quantity_brief_text_view;
+    private TextView total_brief_text_view;
+    private String ITEMS_QUANTITY_SUFIX = "Quantidade de items: R$ ";
+    private String TOTAL_SUFIX = "Total: R$ ";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,76 +67,107 @@ public class BriefActivity extends AppCompatActivity {
                 + "\nPaís: " + deliveryPlace.getCountryName()
         );
 
-        items_brief_list_view = (ListView) findViewById(R.id.brief_items_list_view);
-        adapter = new BriefItemsAdapter(this.getApplicationContext());
-        items_brief_list_view.setAdapter(adapter);
-        items_brief_list_view.setScrollBarSize(cart.getItemsQuantity());
+        items_brief_linear_layout = (LinearLayout) findViewById(R.id.brief_items_list_view);
+        items_brief_linear_layout.setOrientation(LinearLayout.VERTICAL);
+
+        LayoutInflater inflater = (LayoutInflater) this.getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        //Populating ListView with brief_item for all products, each using the brief_item layout
+        for (ListItem listItem : cart.getListItems()) {
+            View row = inflater.inflate(R.layout.brief_item, null);
+
+            TextView brief_item_name_text_view = (TextView) row.findViewById(R.id.brief_item_name_text_view);
+            TextView brief_item_brand_text_view = (TextView) row.findViewById(R.id.brief_item_brand_text_view);
+            TextView brief_item_quantity_text_view = (TextView) row.findViewById(R.id.brief_item_quantity_text_view);
+            TextView brief_item_price_text_view = (TextView) row.findViewById(R.id.brief_item_price_text_view);
+            TextView brief_item_subtotal_text_view = (TextView) row.findViewById(R.id.brief_item_subtotal_text_view);
+
+            ImageView brief_item_image_view = (ImageView) row.findViewById(R.id.brief_item_image_view);
+
+            brief_item_name_text_view.setText(listItem.getItem().getProduct().getName());
+            brief_item_brand_text_view.setText(listItem.getItem().getProduct().getBrand());
+            brief_item_quantity_text_view.setText(Double.toString(listItem.getQuantity()));
+            brief_item_price_text_view.setText(Double.toString(listItem.getItem().getPrice()));
+            brief_item_subtotal_text_view.setText(Double.toString(listItem.getItem().getPrice() * listItem.getQuantity()));
+
+            //TODO: definir image view: brief_item_image_view.setImageDrawable();
+
+            items_brief_linear_layout.addView(row);
+        }
+
+        items_quantity_brief_text_view = (TextView) findViewById(R.id.items_quantity_brief_text_view);
+        total_brief_text_view = (TextView) findViewById(R.id.total_brief_text_view);
+
+        items_quantity_brief_text_view.setText(ITEMS_QUANTITY_SUFIX + Double.toString(cart.getItemsQuantity()));
+        total_brief_text_view.setText(TOTAL_SUFIX + Double.toString(cart.getTotal()));
+
+//        adapter = new BriefItemsAdapter(this.getApplicationContext());
+//        items_brief_linear_layout.setAdapter(adapter);
+
+
+//        items_brief_linear_layout.setScrollBarSize(cart.getItemsQuantity());
 
         majority_check_box = (CheckBox) findViewById(R.id.majority_confirmation_checkBox);
-    }
 
-    private void generateOrder(View view) {
-        if (majority_check_box.isChecked()) {
-            RequestParams requestParams = new RequestParams();
 
-            int i = -1;
-            for (ListItem listItem : cart.getListItems()) {
-                i++;
-                Item item = listItem.getItem();
-                requestParams.put("stockitems_id[" + Integer.toString(i) + "]", Integer.toString(item.getId()));
-                requestParams.put("stockitems_quantity[" + i + "]", Integer.toString(listItem.getQuantity()));
-            }
+        //Initiating popup window
+        try {
+            popUpContainerLayout = new LinearLayout(this);
+//            popUpMainLayout = new LinearLayout(this);
+            popUpWindow = new PopupWindow(this);
 
-            requestParams.put("retailer_id", "1");
-            requestParams.put("name", user.getName());
-            requestParams.put("phone", user.getPhone());
-            requestParams.put("street_adress", deliveryPlace.getThoroughfare());
-            requestParams.put("adress_line_2", deliveryPlace.getComplement());
-            requestParams.put("neighborhood", deliveryPlace.getSubLocality());
-            requestParams.put("city", deliveryPlace.getLocality());
-            requestParams.put("state", deliveryPlace.getAdminArea());
-            requestParams.put("zipcode", deliveryPlace.getZipCode());
-            requestParams.put("email", user.getEmail());
-            requestParams.put("lat_coordinate", Double.toString(deliveryPlace.getLatitude()));
-            requestParams.put("long_coordinate", Double.toString(deliveryPlace.getLongitude()));
+            popUpTextView = new TextView(this);
+            popUpTextView.setText(R.string.majority_popup_message);
+            popUpTextView.setTextSize(35);
 
-            Log.d("Request Params", requestParams.toString());
+            popUpParams = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
+                    LayoutParams.WRAP_CONTENT);
 
-            RestApiHttpClient.post("http://happy-hour.beer/api/unregistered/orders", requestParams, new JsonHttpResponseHandler() {
+
+            closePopUpButton = new Button(this);
+            closePopUpButton.setTextSize(35);
+            closePopUpButton.setText("Ok");
+            closePopUpButton.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    Log.d("Success!!", "Object");
-                }
-
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                    Log.d("Success!!", "Array");
-
-                    JSONArray jsonArray = response;
-                    Log.d("JSONArray", String.valueOf(jsonArray));
+                public void onClick(View view) {
+                    popUpWindow.dismiss();
                 }
             });
 
-            //    OrderRestClient.post(Constants.BASE_ORDER_URL, requestParams, new AsyncHttpResponseHandler() {
-            //            @Override
-            //            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-            ////                Log.d("Request Params", requestParams.toString());
-            //                Log.d("Order", "Success!");
-            //            }
-            //
-            //            @Override
-            //            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-            //                Log.d("Failed: ", "" + statusCode);
-            //                Log.d("Error : ", "" + error);
-            //                Log.d("Headers : ", "" + headers.toString());
-            //            }
-            //        });
-        } else {
+            popUpContainerLayout.setOrientation(LinearLayout.VERTICAL);
+            popUpContainerLayout.addView(popUpTextView, popUpParams);
+            popUpContainerLayout.addView(closePopUpButton, LayoutParams.MATCH_PARENT);
+            popUpContainerLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
 
+            popUpWindow.setContentView(popUpContainerLayout);
+//            popUpMainLayout.addView(closePopUpButton, popUpParams);
+//            setContentView(popUpMainLayout);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        finalProgressDialog = new ProgressDialog(this);
+        finalProgressDialog.setMessage("Finalizando. Aguarde um momento..");
+        finalProgressDialog.setIndeterminate(true);
+        finalProgressDialog.setCancelable(true);
+        finalProgressDialog.show();
+
+    }
+
+    public void generateOrder(View view) {
+        if (majority_check_box.isChecked()) {
+            GenerateOrderAPIAsync orderGenerator = new GenerateOrderAPIAsync();
+            orderGenerator.execute();
+        } else {
+            popUpWindow.showAtLocation(popUpContainerLayout, Gravity.BOTTOM, 0, 0);
+//            popUpWindow.update(300,300);
         }
     }
 
-    private void initiatePopUpWindow(View view) {
 
+    //Código para realizar após ordem estar gerada na nossa API
+    @Override
+    public void onGeneratedAPIOrder() {
+        //TODO: if(succesInTransaction) e (PagamentoEmCartão) -> Inicie API de pagamento
     }
 }

@@ -29,7 +29,6 @@ public class SearchActivity extends AppCompatActivity implements LoadStockJSONTa
                                                         AdapterView.OnItemClickListener,
                                                         SearchView.OnQueryTextListener{
 
-    public static final String URL = "http://happy-hour.beer/api/search/stocksearch";
     //Show listview
     private ListView mListView;
     private ListItemRepositorySingleton listItemRepository;
@@ -52,7 +51,7 @@ public class SearchActivity extends AppCompatActivity implements LoadStockJSONTa
                 && listItemRepository.isEmpty()) {
 
             //Show listiew
-            new LoadStockJSONTask(this).execute(URL);
+            new LoadStockJSONTask(this).execute(Constants.BASE_STOCK_URL);
         }
         else {
             Log.d("Entrou: ", "else");
