@@ -31,7 +31,7 @@ public class BriefActivity extends AppCompatActivity implements GenerateOrderAPI
     private TextView contact_brief_text_view;
     private TextView address_brief_text_view;
     //    private ArrayAdapter<ListItem> adapter;
-    private LinearLayout items_brief_linear_layout;
+//    private LinearLayout items_brief_linear_layout;
     private CheckBox majority_check_box;
     private LayoutParams popUpParams;
     private LinearLayout popUpContainerLayout;
@@ -40,8 +40,23 @@ public class BriefActivity extends AppCompatActivity implements GenerateOrderAPI
     private TextView popUpTextView;
     private TextView items_quantity_brief_text_view;
     private TextView total_brief_text_view;
-    private String ITEMS_QUANTITY_SUFIX = "Quantidade de items: R$ ";
-    private String TOTAL_SUFIX = "Total: R$ ";
+
+    private String USER_NAME_PREFIX = "Nome: ";
+    private String USER_PHONE_PREFIX = "Telefone: ";
+    private String USER_EMAIL_PREFIX = "Email: ";
+
+    private String DELIVERYPLACE_ADRESS_PREFIX = "Endereço: ";
+    private String DELIVERYPLACE_CITYSTATE_PREFIX = "Cidade: ";
+    private String DELIVERYPLACE_COUNTRY_PREFIX = "Pais: ";
+
+    private String ITEMS_QUANTITY_PREFIX = "Quantidade de produtos: ";
+    private String TOTAL_PREFIX = "Total: R$ ";
+
+    private String ITEM_QUANTITY_SUFIX = "Quantidade: ";
+    private String ITEM_PRICE_SUFIX = "Preço: ";
+    private String ITEM_SUBTOTAL_SUFIX = "Subtotal: ";
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,19 +71,19 @@ public class BriefActivity extends AppCompatActivity implements GenerateOrderAPI
         address_brief_text_view = (TextView) findViewById(R.id.address_brief_text_view);
 
         contact_brief_text_view.setText(""
-                + "Nome: " + user.getName()
-                + "\nTelefone: " + user.getPhone()
-                + "\nEmail: " + user.getEmail()
+                + USER_NAME_PREFIX + user.getName()
+                + "\n" + USER_PHONE_PREFIX + user.getPhone()
+                + "\n" + USER_EMAIL_PREFIX + user.getEmail()
         );
 
         address_brief_text_view.setText(""
-                + "Endereço: " + deliveryPlace.getAdress()
-                + "\nCidade: " + deliveryPlace.getCityState()
-                + "\nPaís: " + deliveryPlace.getCountryName()
+                + DELIVERYPLACE_ADRESS_PREFIX + deliveryPlace.getAdress()
+                + "\n" + DELIVERYPLACE_CITYSTATE_PREFIX + deliveryPlace.getCityState()
+                + "\n" + DELIVERYPLACE_COUNTRY_PREFIX + deliveryPlace.getCountryName()
         );
 
-        items_brief_linear_layout = (LinearLayout) findViewById(R.id.brief_items_list_view);
-        items_brief_linear_layout.setOrientation(LinearLayout.VERTICAL);
+//        items_brief_linear_layout = (LinearLayout) findViewById(R.id.brief_items_list_view);
+//        items_brief_linear_layout.setOrientation(LinearLayout.VERTICAL);
 
         LayoutInflater inflater = (LayoutInflater) this.getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -86,20 +101,20 @@ public class BriefActivity extends AppCompatActivity implements GenerateOrderAPI
 
             brief_item_name_text_view.setText(listItem.getItem().getProduct().getName());
             brief_item_brand_text_view.setText(listItem.getItem().getProduct().getBrand());
-            brief_item_quantity_text_view.setText(Double.toString(listItem.getQuantity()));
-            brief_item_price_text_view.setText(Double.toString(listItem.getItem().getPrice()));
-            brief_item_subtotal_text_view.setText(Double.toString(listItem.getItem().getPrice() * listItem.getQuantity()));
+            brief_item_quantity_text_view.setText(ITEM_QUANTITY_SUFIX + Double.toString(listItem.getQuantity()));
+            brief_item_price_text_view.setText(ITEM_PRICE_SUFIX + Double.toString(listItem.getItem().getPrice()));
+            brief_item_subtotal_text_view.setText(ITEM_SUBTOTAL_SUFIX + Double.toString(listItem.getItem().getPrice() * listItem.getQuantity()));
 
             //TODO: definir image view: brief_item_image_view.setImageDrawable();
 
-            items_brief_linear_layout.addView(row);
+//            items_brief_linear_layout.addView(row);
         }
 
         items_quantity_brief_text_view = (TextView) findViewById(R.id.items_quantity_brief_text_view);
         total_brief_text_view = (TextView) findViewById(R.id.total_brief_text_view);
 
-        items_quantity_brief_text_view.setText(ITEMS_QUANTITY_SUFIX + Double.toString(cart.getItemsQuantity()));
-        total_brief_text_view.setText(TOTAL_SUFIX + Double.toString(cart.getTotal()));
+        items_quantity_brief_text_view.setText(ITEMS_QUANTITY_PREFIX + Double.toString(cart.getItemsQuantity()));
+        total_brief_text_view.setText(TOTAL_PREFIX + Double.toString(cart.getTotal()));
 
 //        adapter = new BriefItemsAdapter(this.getApplicationContext());
 //        items_brief_linear_layout.setAdapter(adapter);
@@ -109,8 +124,7 @@ public class BriefActivity extends AppCompatActivity implements GenerateOrderAPI
 
         majority_check_box = (CheckBox) findViewById(R.id.majority_confirmation_checkBox);
 
-
-        //Initiating popup window
+        //Initiating popup windows
         try {
             popUpContainerLayout = new LinearLayout(this);
 //            popUpMainLayout = new LinearLayout(this);

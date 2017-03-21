@@ -18,7 +18,7 @@ import beer.happy_hour.drinking.model.ShoppingCartSingleton;
 
 public class CartActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
-    private String TOTAL_SUFIX = "TOTAL: R$ ";
+    private String TOTAL_PREFIX = "TOTAL: R$ ";
     private TotalTextView total_text_view;
     private ListView cartListView;
     private ShoppingCartAdapter shoppingCartAdapter;
@@ -38,7 +38,7 @@ public class CartActivity extends AppCompatActivity implements AdapterView.OnIte
         cart = ShoppingCartSingleton.getInstance();
 
         total_text_view = (TotalTextView) findViewById(R.id.total_text_view);
-        total_text_view.setText(TOTAL_SUFIX + Double.toString(cart.getTotal()));
+        total_text_view.setText(TOTAL_PREFIX + Double.toString(cart.getTotal()));
         cart.setListener(total_text_view);
     }
 
