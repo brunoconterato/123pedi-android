@@ -1,8 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_confirmation"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="beer.happy_hour.drinking.activity.OnOrderAcceptedActivity">
+    android:background="#f5f5f5"
+    android:orientation="vertical"
+    tools:context="beer.happy_hour.drinking.activity.BriefActivity">
 
-</android.support.constraint.ConstraintLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp"
+        android:text="Obrigado! Seu pedido foi recebido e será enviado em instantes."
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/return_to_main_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:onClick="returnToMainActivity"
+        android:text="Retornar ao início" />
+
+</LinearLayout>
