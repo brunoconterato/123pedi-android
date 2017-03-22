@@ -200,7 +200,7 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
 //                    //get aproximate number
 //                    deliveryPlace.setSubThoroughfare(addresses.get(0).getSubThoroughfare());
 //
-//                    Log.d("DeliveryPlace", deliveryPlace.toString());
+//                    Log.d("DeliveryPlace", deliveryPlace.printBrief());
 //
 ////                    Toast.makeText(getApplicationContext(), "Address:- " + addresses.get(0).getFeatureName() + addresses.get(0).getAdminArea() + addresses.get(0).getLocality(), Toast.LENGTH_LONG).show();
 //

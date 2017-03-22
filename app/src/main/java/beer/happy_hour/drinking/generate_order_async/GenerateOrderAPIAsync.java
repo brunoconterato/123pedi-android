@@ -82,7 +82,7 @@ public class GenerateOrderAPIAsync extends AsyncTask<Void, Void, Boolean> {
         //    OrderRestClient.post(Constants.BASE_ORDER_URL, requestParams, new AsyncHttpResponseHandler() {
         //            @Override
         //            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-        ////                Log.d("Request Params", requestParams.toString());
+        ////                Log.d("Request Params", requestParams.printBrief());
         //                Log.d("Order", "Success!");
         //            }
         //
@@ -90,7 +90,7 @@ public class GenerateOrderAPIAsync extends AsyncTask<Void, Void, Boolean> {
         //            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
         //                Log.d("Failed: ", "" + statusCode);
         //                Log.d("Error : ", "" + error);
-        //                Log.d("Headers : ", "" + headers.toString());
+        //                Log.d("Headers : ", "" + headers.printBrief());
         //            }
         //        });
 

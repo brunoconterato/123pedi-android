@@ -219,7 +219,7 @@ public class PaymentActivity extends AppCompatActivity {
     }
 
     public void testPayment(View view) {
-        Log.d("Payment", payment.toString());
+        Log.d("Payment", payment.printBrief());
     }
 
     private class CardNumberTextListener extends MaskEditTextChangedListener implements TextWatcher {

@@ -235,7 +235,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
 //            try{
 //                URL url = new URL(Constants.BASE_ORDER_URL);
 //
-//                Log.d("URL", url.toString());
+//                Log.d("URL", url.printBrief());
 //
 //                JSONObject postDataParams = new JSONObject();
 //
@@ -243,8 +243,8 @@ public class OrderDetailsActivity extends AppCompatActivity {
 //                for (ListItem listItem : cart.getListItems()) {
 //                    i++;
 //                    Item item = listItem.getItem();
-//                    postDataParams.put("stockitems_id[" + Integer.toString(i) + "]", Integer.toString(item.getId()));
-//                    postDataParams.put("stockitems_quantity[" + i + "]", Integer.toString(listItem.getQuantity()));
+//                    postDataParams.put("stockitems_id[" + Integer.printBrief(i) + "]", Integer.printBrief(item.getId()));
+//                    postDataParams.put("stockitems_quantity[" + i + "]", Integer.printBrief(listItem.getQuantity()));
 //                }
 //
 //                postDataParams.put("name", user.getName());
@@ -256,9 +256,9 @@ public class OrderDetailsActivity extends AppCompatActivity {
 //                postDataParams.put("state", deliveryPlace.getAdminArea());
 //                postDataParams.put("zipcode", deliveryPlace.getZipCode());
 //                postDataParams.put("email", user.getEmail());
-//                postDataParams.put("lat_coordinate", Double.toString(deliveryPlace.getLatitude()));
-//                postDataParams.put("long_coordinate", Double.toString(deliveryPlace.getLongitude()));
-//                Log.e("params",postDataParams.toString());
+//                postDataParams.put("lat_coordinate", Double.printBrief(deliveryPlace.getLatitude()));
+//                postDataParams.put("long_coordinate", Double.printBrief(deliveryPlace.getLongitude()));
+//                Log.e("params",postDataParams.printBrief());
 //
 //                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 //                conn.setReadTimeout(15000 /* milliseconds */);
@@ -295,7 +295,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
 //                    }
 //
 //                    in.close();
-//                    return sb.toString();
+//                    return sb.printBrief();
 //
 //                }
 //                else {
@@ -334,13 +334,13 @@ public class OrderDetailsActivity extends AppCompatActivity {
 //
 //                result.append(URLEncoder.encode(key, "UTF-8"));
 //                result.append("=");
-//                result.append(URLEncoder.encode(value.toString(), "UTF-8"));
+//                result.append(URLEncoder.encode(value.printBrief(), "UTF-8"));
 //
 //            }
 //
 //
-//            Log.d("Post Data String", result.toString());
-//            return result.toString();
+//            Log.d("Post Data String", result.printBrief());
+//            return result.printBrief();
 //        }
 //    }
 }

@@ -86,12 +86,12 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
 
 //        if (cart.getListItems().contains(listItem)) {
 //            int listItemIndexInCart = cart.getListItems().indexOf(listItem);
-//            quantity_editText.setText(Integer.toString(cart.getListItems().get(listItemIndexInCart).getQuantity()));
+//            quantity_editText.setText(Integer.printBrief(cart.getListItems().get(listItemIndexInCart).getQuantity()));
 //        }
 //        else
 //        {
 //            int listItemIndexInLIRepository = listItemRepositorySingleton.getFilteredList().indexOf(listItem);
-//            quantity_editText.setText(Integer.toString(listItemRepositorySingleton.getFilteredList().get(listItemIndexInLIRepository).getQuantity()));
+//            quantity_editText.setText(Integer.printBrief(listItemRepositorySingleton.getFilteredList().get(listItemIndexInLIRepository).getQuantity()));
 //        }
 
         //Organizando comportamento dos botões

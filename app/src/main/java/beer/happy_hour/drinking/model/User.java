@@ -13,6 +13,10 @@ public class User {
     private String email;
     private String phone;
 
+    private String USER_NAME_PREFIX = "Nome: ";
+    private String USER_PHONE_PREFIX = "\nTelefone: ";
+    private String USER_EMAIL_PREFIX = "\nEmail: ";
+
     private User() {
         name = "";
         email = "";
@@ -108,5 +112,11 @@ public class User {
     public void setPhone(String phone) {
         if (isValidPhone(phone))
             this.phone = phone;
+    }
+
+    public String printBrief() {
+        return USER_NAME_PREFIX + name
+                + USER_PHONE_PREFIX + phone
+                + USER_EMAIL_PREFIX + email;
     }
 }

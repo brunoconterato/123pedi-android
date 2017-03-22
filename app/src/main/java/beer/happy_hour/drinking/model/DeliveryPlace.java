@@ -28,6 +28,12 @@ public class DeliveryPlace {
 
     private String complement;
 
+    private String DELIVERYPLACE_THOROUGHFATE_PREFIX = "Rua: ";
+    private String DELIVERYPLACE_COMPLEMENT_PREFIX = "\nComplemento: ";
+    private String DELIVERYPLACE_SUBLOCALITY_PREFIX = "\nBairro: ";
+    private String DELIVERYPLACE_CITYSTATE_PREFIX = "\nCidade: ";
+    private String DELIVERYPLACE_COUNTRY_PREFIX = "\nPais: ";
+
     //new data
 
 //    private String countryName;
@@ -178,5 +184,12 @@ public class DeliveryPlace {
                 "\nLongitude: " + longitude +
                 "\ncomplement: " + complement;
 
+    }
+
+    public String printBrief() {
+        return DELIVERYPLACE_THOROUGHFATE_PREFIX + thoroughfare +
+                DELIVERYPLACE_COMPLEMENT_PREFIX + complement +
+                DELIVERYPLACE_SUBLOCALITY_PREFIX + subLocality +
+                DELIVERYPLACE_CITYSTATE_PREFIX + cityState;
     }
 }

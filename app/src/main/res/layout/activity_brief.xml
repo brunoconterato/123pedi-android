@@ -112,7 +112,7 @@
             android:textSize="22sp" />
 
         <TextView
-            android:id="@+id/payment_confirmation_edit_text"
+            android:id="@+id/payment_confirmation_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
@@ -122,14 +122,18 @@
             android:paddingEnd="4dp"
             android:paddingLeft="4dp"
             android:paddingRight="4dp"
-            android:paddingStart="4dp" />
+            android:paddingStart="4dp"
+            android:text="Método de pagamento" />
 
-        <CheckBox
-            android:id="@+id/majority_confirmation_checkBox"
-            android:layout_width="match_parent"
+        <Switch
+            android:id="@+id/majority_confirmation_switch"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:text="@string/majority_confirmation"
+            android:ellipsize="end"
+            android:minHeight="56dp"
+            android:shadowColor="@color/colorPrimary"
+            android:switchMinWidth="56dp"
+            android:text="18+"
             android:textSize="20sp" />
 
         <Button
