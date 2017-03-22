@@ -27,14 +27,6 @@
 
     </RadioGroup>
 
-    <TextView
-        android:id="@+id/payment_test_text_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@android:color/black"
-        tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="8dp" />
-
     <LinearLayout
         android:id="@+id/payment_linear_layout"
         android:layout_width="match_parent"
@@ -123,11 +115,19 @@
         android:id="@+id/money_change_edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Troco par quanto?" />
+        android:hint="Precisa de troco para quanto?"
+        android:inputType="numberDecimal" />
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:onClick="goToBriefActivity"
         android:text="Prossiga para resumo" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="testPayment"
+        android:text="Teste pagamento" />
 
 </LinearLayout>

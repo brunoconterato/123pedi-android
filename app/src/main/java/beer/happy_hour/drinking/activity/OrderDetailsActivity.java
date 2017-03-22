@@ -161,9 +161,6 @@ public class OrderDetailsActivity extends AppCompatActivity {
         adress_text_view.setText(deliveryPlace.getAdress());
         citystate_text_view.setText(deliveryPlace.getCityState());
         country_text_view.setText(deliveryPlace.getCountryName());
-
-
-        test_text_view = (TextView) findViewById(R.id.payment_test_text_view);
     }
 
     @Override
