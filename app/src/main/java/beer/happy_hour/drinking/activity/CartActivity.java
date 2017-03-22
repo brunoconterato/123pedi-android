@@ -14,7 +14,7 @@ import android.widget.Toast;
 import beer.happy_hour.drinking.R;
 import beer.happy_hour.drinking.adapter.ShoppingCartAdapter;
 import beer.happy_hour.drinking.listener.TotalTextView;
-import beer.happy_hour.drinking.model.ShoppingCartSingleton;
+import beer.happy_hour.drinking.model.ShoppingCart;
 
 public class CartActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
@@ -22,7 +22,7 @@ public class CartActivity extends AppCompatActivity implements AdapterView.OnIte
     private TotalTextView total_text_view;
     private ListView cartListView;
     private ShoppingCartAdapter shoppingCartAdapter;
-    private ShoppingCartSingleton cart;
+    private ShoppingCart cart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +35,7 @@ public class CartActivity extends AppCompatActivity implements AdapterView.OnIte
         shoppingCartAdapter = new ShoppingCartAdapter(this);
         cartListView.setAdapter(shoppingCartAdapter);
 
-        cart = ShoppingCartSingleton.getInstance();
+        cart = ShoppingCart.getInstance();
 
         total_text_view = (TotalTextView) findViewById(R.id.total_text_view);
         total_text_view.setText(TOTAL_PREFIX + Double.toString(cart.getTotal()));

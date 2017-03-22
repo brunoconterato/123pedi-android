@@ -20,7 +20,7 @@ import beer.happy_hour.drinking.R;
 import beer.happy_hour.drinking.generate_order_async.GenerateOrderAPIAsync;
 import beer.happy_hour.drinking.model.DeliveryPlace;
 import beer.happy_hour.drinking.model.ListItem;
-import beer.happy_hour.drinking.model.ShoppingCartSingleton;
+import beer.happy_hour.drinking.model.ShoppingCart;
 import beer.happy_hour.drinking.model.User;
 
 public class BriefActivity extends AppCompatActivity implements GenerateOrderAPIAsync.Listener {
@@ -28,7 +28,7 @@ public class BriefActivity extends AppCompatActivity implements GenerateOrderAPI
     ProgressDialog finalProgressDialog;
     private User user;
     private DeliveryPlace deliveryPlace;
-    private ShoppingCartSingleton cart;
+    private ShoppingCart cart;
     private TextView contact_brief_text_view;
     private TextView address_brief_text_view;
     //    private ArrayAdapter<ListItem> adapter;
@@ -66,7 +66,7 @@ public class BriefActivity extends AppCompatActivity implements GenerateOrderAPI
 
         user = User.getInstance();
         deliveryPlace = DeliveryPlace.getInstance();
-        cart = ShoppingCartSingleton.getInstance();
+        cart = ShoppingCart.getInstance();
 
         contact_brief_text_view = (TextView) findViewById(R.id.contact_brief_text_view);
         address_brief_text_view = (TextView) findViewById(R.id.address_brief_text_view);

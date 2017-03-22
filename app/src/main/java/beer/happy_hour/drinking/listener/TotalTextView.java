@@ -3,13 +3,13 @@ package beer.happy_hour.drinking.listener;
 import android.content.Context;
 import android.util.AttributeSet;
 
-import beer.happy_hour.drinking.model.ShoppingCartSingleton;
+import beer.happy_hour.drinking.model.ShoppingCart;
 
 /**
  * Created by brcon on 14/03/2017.
  */
 
-public class TotalTextView extends android.support.v7.widget.AppCompatTextView implements ShoppingCartSingleton.TotalChangeListener {
+public class TotalTextView extends android.support.v7.widget.AppCompatTextView implements ShoppingCart.TotalChangeListener {
 
     private String BASE_PRICE_TEXT = "TOTAL: R$ ";
 

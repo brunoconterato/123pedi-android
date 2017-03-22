@@ -20,7 +20,7 @@ import java.util.List;
 import beer.happy_hour.drinking.Constants;
 import beer.happy_hour.drinking.R;
 import beer.happy_hour.drinking.model.ListItem;
-import beer.happy_hour.drinking.model.ShoppingCartSingleton;
+import beer.happy_hour.drinking.model.ShoppingCart;
 import beer.happy_hour.drinking.repository.ListItemRepositorySingleton;
 
 /**
@@ -38,7 +38,7 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
     private Filter listItemFilter;
 
     private ListItemRepositorySingleton listItemRepositorySingleton;
-    private ShoppingCartSingleton cart;
+    private ShoppingCart cart;
 
     private List<ListItem> filteredList;
 
@@ -51,7 +51,7 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
         this.context = context;
 
         listItemRepositorySingleton = ListItemRepositorySingleton.getInstance();
-        cart = ShoppingCartSingleton.getInstance();
+        cart = ShoppingCart.getInstance();
 
         filteredList = listItemRepositorySingleton.getList();
 

@@ -15,7 +15,7 @@ import android.widget.TextView;
 import beer.happy_hour.drinking.R;
 import beer.happy_hour.drinking.listener.SubtotalTextView;
 import beer.happy_hour.drinking.model.ListItem;
-import beer.happy_hour.drinking.model.ShoppingCartSingleton;
+import beer.happy_hour.drinking.model.ShoppingCart;
 
 /**
  * Created by brcon on 09/03/2017.
@@ -24,17 +24,17 @@ import beer.happy_hour.drinking.model.ShoppingCartSingleton;
 public class ShoppingCartAdapter extends ArrayAdapter<ListItem> {
 
     private Context context;
-    private ShoppingCartSingleton cart;
+    private ShoppingCart cart;
 
     private SubtotalTextView subtotal_text_view;
 
     public ShoppingCartAdapter(Context context) {
-        super(context, R.layout.shopping_cart_item, ShoppingCartSingleton.getInstance().getListItems());
+        super(context, R.layout.shopping_cart_item, ShoppingCart.getInstance().getListItems());
 
         this.context = context;
-        this.cart = ShoppingCartSingleton.getInstance();
+        this.cart = ShoppingCart.getInstance();
 
-        cart = ShoppingCartSingleton.getInstance();
+        cart = ShoppingCart.getInstance();
         Log.d("Carrinho", cart.toString());
     }
 

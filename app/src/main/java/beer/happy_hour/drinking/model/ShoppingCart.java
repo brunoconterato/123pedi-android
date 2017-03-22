@@ -7,22 +7,22 @@ import java.util.List;
  * Created by brcon on 11/03/2017.
  */
 
-public class ShoppingCartSingleton {
+public class ShoppingCart {
 
-    private static ShoppingCartSingleton instance;
+    private static ShoppingCart instance;
     private List<ListItem> listItems;
     private double total;
     private TotalChangeListener listener;
 
-    private ShoppingCartSingleton(){
+    private ShoppingCart() {
         listItems = new ArrayList<ListItem>();
     }
 
-    public static ShoppingCartSingleton getInstance(){
+    public static ShoppingCart getInstance() {
         if(instance == null){
-            synchronized (ShoppingCartSingleton.class) {
+            synchronized (ShoppingCart.class) {
                 if(instance == null){
-                    instance = new ShoppingCartSingleton();
+                    instance = new ShoppingCart();
                 }
             }
         }

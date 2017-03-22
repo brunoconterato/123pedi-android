@@ -17,7 +17,7 @@ import android.widget.Toast;
 import beer.happy_hour.drinking.GPSTracker;
 import beer.happy_hour.drinking.R;
 import beer.happy_hour.drinking.model.DeliveryPlace;
-import beer.happy_hour.drinking.model.ShoppingCartSingleton;
+import beer.happy_hour.drinking.model.ShoppingCart;
 import beer.happy_hour.drinking.model.User;
 import br.com.jansenfelipe.androidmask.MaskEditTextChangedListener;
 
@@ -29,7 +29,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
     // GPSTracker class
     GPSTracker gps;
 
-    ShoppingCartSingleton cart;
+    ShoppingCart cart;
     DeliveryPlace deliveryPlace;
     User user;
 
@@ -82,7 +82,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
             }
         });
 
-        cart = ShoppingCartSingleton.getInstance();
+        cart = ShoppingCart.getInstance();
         deliveryPlace = DeliveryPlace.getInstance();
         user = User.getInstance();
 

@@ -13,7 +13,7 @@ import beer.happy_hour.drinking.async_http_client.RestApiHttpClient;
 import beer.happy_hour.drinking.model.DeliveryPlace;
 import beer.happy_hour.drinking.model.Item;
 import beer.happy_hour.drinking.model.ListItem;
-import beer.happy_hour.drinking.model.ShoppingCartSingleton;
+import beer.happy_hour.drinking.model.ShoppingCart;
 import beer.happy_hour.drinking.model.User;
 import cz.msebera.android.httpclient.Header;
 
@@ -27,13 +27,13 @@ public class GenerateOrderAPIAsync extends AsyncTask<Void, Void, Boolean> {
 
     private User user;
     private DeliveryPlace deliveryPlace;
-    private ShoppingCartSingleton cart;
+    private ShoppingCart cart;
 
     @Override
     protected Boolean doInBackground(Void... params) {
         user = User.getInstance();
         deliveryPlace = DeliveryPlace.getInstance();
-        cart = ShoppingCartSingleton.getInstance();
+        cart = ShoppingCart.getInstance();
 
         RequestParams requestParams = new RequestParams();
 

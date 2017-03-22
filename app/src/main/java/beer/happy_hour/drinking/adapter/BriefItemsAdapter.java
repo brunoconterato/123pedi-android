@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import beer.happy_hour.drinking.R;
 import beer.happy_hour.drinking.model.ListItem;
-import beer.happy_hour.drinking.model.ShoppingCartSingleton;
+import beer.happy_hour.drinking.model.ShoppingCart;
 
 /**
  * Created by brcon on 19/03/2017.
@@ -19,13 +19,13 @@ import beer.happy_hour.drinking.model.ShoppingCartSingleton;
 public class BriefItemsAdapter extends ArrayAdapter<ListItem> {
 
     private Context context;
-    private ShoppingCartSingleton cart;
+    private ShoppingCart cart;
 
     public BriefItemsAdapter(@NonNull Context context) {
-        super(context, R.layout.brief_item, ShoppingCartSingleton.getInstance().getListItems());
+        super(context, R.layout.brief_item, ShoppingCart.getInstance().getListItems());
 
         this.context = context;
-        this.cart = ShoppingCartSingleton.getInstance();
+        this.cart = ShoppingCart.getInstance();
     }
 
     @Override

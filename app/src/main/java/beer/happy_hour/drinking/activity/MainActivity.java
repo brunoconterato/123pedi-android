@@ -9,21 +9,21 @@ import android.widget.Toast;
 import com.facebook.login.widget.LoginButton;
 
 import beer.happy_hour.drinking.R;
-import beer.happy_hour.drinking.model.ShoppingCartSingleton;
+import beer.happy_hour.drinking.model.ShoppingCart;
 
 public class MainActivity extends AppCompatActivity {
 
     private LoginButton b;
     private int backButtonCount;
 
-    private ShoppingCartSingleton cart;
+    private ShoppingCart cart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        cart = ShoppingCartSingleton.getInstance();
+        cart = ShoppingCart.getInstance();
 
     }
 
