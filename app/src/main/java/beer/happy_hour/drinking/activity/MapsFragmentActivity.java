@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -69,6 +70,8 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
 
     private SearchView searchView;
 
+    private TextView thoroughfare_inside_text_view;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,6 +98,8 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setSubmitButtonEnabled(true);
         searchView.setOnQueryTextListener(this);
+
+        thoroughfare_inside_text_view = (TextView) findViewById(R.id.thoroughfare_inside_text_view);
     }
 
 
@@ -144,6 +149,9 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
                 new LocationSetter().execute(myLocation);
             }
         });
+
+        map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+        map.setIndoorEnabled(false);
     }
 
 //    public void setMyLocation(LatLng latLng) {
@@ -489,6 +497,8 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
                         Log.d("getThoroughfare", addresses.get(0).getThoroughfare());
 
                         myCurrentLatLngLocation = new LatLng(locations[0].getLatitude(), locations[0].getLongitude());
+
+                        thoroughfare_inside_text_view.setText(deliveryPlace.getThoroughfare());
                     }
                 }
             } catch (Exception e) {

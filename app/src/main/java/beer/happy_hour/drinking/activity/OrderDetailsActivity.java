@@ -11,8 +11,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,10 +42,6 @@ public class OrderDetailsActivity extends AppCompatActivity {
     TextView country_text_view;
 
     EditText complement_edit_text;
-
-    RadioGroup paymentRadioGroup;
-    RadioButton creditcard_radio_button;
-    RadioButton money_radio_button;
 
     TextView test_text_view;
 
@@ -169,26 +163,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
         country_text_view.setText(deliveryPlace.getCountryName());
 
 
-        test_text_view = (TextView) findViewById(R.id.test_text_view);
-
-        paymentRadioGroup = (RadioGroup) findViewById(R.id.payment_radio_group);
-        creditcard_radio_button = (RadioButton) findViewById(R.id.credit_card_radio_button);
-        money_radio_button = (RadioButton) findViewById(R.id.money_radio_button);
-
-
-        paymentRadioGroup.clearCheck();
-
-        paymentRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int buttonId) {
-                switch (buttonId) {
-                    case 0:
-                        test_text_view.setText("Cartão escolhido");
-                    case 1:
-                        test_text_view.setText("Dinheiro escolhido");
-                }
-            }
-        });
+        test_text_view = (TextView) findViewById(R.id.payment_test_text_view);
     }
 
     @Override
@@ -234,8 +209,8 @@ public class OrderDetailsActivity extends AppCompatActivity {
         Log.d("isValidEmail", Boolean.toString(user.isValidEmail(email_edit_text.getText().toString())));
     }
 
-    public void goToBriefActivity(View view) {
-        startActivity(new Intent(this, BriefActivity.class));
+    public void goToPaymentActivity(View view) {
+        startActivity(new Intent(this, PaymentActivity.class));
     }
 
     private class UserPhoneTextListener extends MaskEditTextChangedListener implements TextWatcher {

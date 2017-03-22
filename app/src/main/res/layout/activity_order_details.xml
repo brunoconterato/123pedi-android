@@ -83,45 +83,12 @@
             android:layout_height="wrap_content"
             android:text="Obter Localização" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="10dp"
-            android:text="Método de Pagamento"
-            android:textSize="20dp" />
-
-        <RadioGroup
-            android:id="@+id/payment_radio_group"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <RadioButton
-                android:id="@+id/credit_card_radio_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Cartão de Crédito" />
-
-            <RadioButton
-                android:id="@+id/money_radio_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Dinheiro" />
-
-        </RadioGroup>
-
-        <TextView
-            android:id="@+id/test_text_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Texto" />
-
         <Button
             android:id="@+id/finalize_order_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="goToBriefActivity"
-            android:text="Ir para Resumo do Pedido" />
+            android:onClick="goToPaymentActivity"
+            android:text="Prosseguir para Pagamento" />
 
 
     </LinearLayout>

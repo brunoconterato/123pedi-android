@@ -2,6 +2,7 @@ package beer.happy_hour.drinking.activity;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
@@ -183,5 +184,10 @@ public class BriefActivity extends AppCompatActivity implements GenerateOrderAPI
     @Override
     public void onGeneratedAPIOrder() {
         //TODO: if(succesInTransaction) e (PagamentoEmCartão) -> Inicie API de pagamento
+    }
+
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(this, PaymentActivity.class));
     }
 }

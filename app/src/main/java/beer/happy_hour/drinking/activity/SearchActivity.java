@@ -144,22 +144,22 @@ public class SearchActivity extends AppCompatActivity implements LoadStockJSONTa
 
     public void searchSnackCategory(View view){
         mListView.setAdapter(listItemAdapter);
-        listItemAdapter.getFilter().filter(Constants.SEARCH_CATEGORY_HASH + "et");
+        listItemAdapter.getFilter().filter(Constants.SEARCH_CATEGORY_HASH + "outros");
     }
 
     public void searchSodaCategory(View view){
         mListView.setAdapter(listItemAdapter);
-        listItemAdapter.getFilter().filter(Constants.SEARCH_CATEGORY_HASH + "Soda");
+        listItemAdapter.getFilter().filter(Constants.SEARCH_CATEGORY_HASH + "nao_alcoolicos");
     }
 
     public void searchAlcoholCategory(View view){
         mListView.setAdapter(listItemAdapter);
-        listItemAdapter.getFilter().filter(Constants.SEARCH_CATEGORY_HASH + "Alcohol");
+        listItemAdapter.getFilter().filter(Constants.SEARCH_CATEGORY_HASH + "alcoolicos");
     }
 
     public void searchCigaretteCategory(View view){
         mListView.setAdapter(listItemAdapter);
-        listItemAdapter.getFilter().filter(Constants.SEARCH_CATEGORY_HASH + "Cigarette");
+        listItemAdapter.getFilter().filter(Constants.SEARCH_CATEGORY_HASH + "cigarros");
     }
 
     public void viewShoppingCart(View view){
