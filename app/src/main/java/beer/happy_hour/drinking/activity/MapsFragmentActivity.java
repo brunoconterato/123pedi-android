@@ -131,7 +131,11 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
-            return;
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
         }
         map.setMyLocationEnabled(true);
 
@@ -160,6 +164,13 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
             @Override
             public boolean onMyLocationButtonClick() {
 
+                if (ActivityCompat.checkSelfPermission(MapsFragmentActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MapsFragmentActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(MapsFragmentActivity.this,
+                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+
+                    ActivityCompat.requestPermissions(MapsFragmentActivity.this,
+                            new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+                }
                 Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
                 //Set myCurrentLatLngLocation
                 new LocationSetter().execute(location);
@@ -171,43 +182,6 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
             }
         };
     }
-
-//    public void setMyCurrentLatLngLocation(LatLng myCurrentLatLngLocation) {
-//        this.myCurrentLatLngLocation = myCurrentLatLngLocation;
-//    }
-
-//public class LastLocationGetter extends AsyncTask<Void, Void, Location> {
-//
-//    @Override
-//    protected Location doInBackground(Void... voids) {
-//
-//        Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-//            return location;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Location location) {
-//            if (location != null) {
-//                // Getting latitude of the current location
-//                double latitude = location.getLatitude();
-//
-//                // Getting longitude of the current location
-//                double longitude = location.getLongitude();
-//
-//                myCurrentLatLngLocation = new LatLng(latitude, longitude);
-//
-////                map.clear();
-//
-////                Marker marker;
-////                marker = map.addMarker(new MarkerOptions().position(myCurrentLatLngLocation));
-//
-//                // Animating to the location position
-//                map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 17));
-//
-//                new LocationSetter().execute();
-//            }
-//        }
-//    }
 
     @Override
     protected void onStart() {
@@ -231,6 +205,13 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         // Get last known recent location.
+        if (ActivityCompat.checkSelfPermission(MapsFragmentActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MapsFragmentActivity.this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+
+            ActivityCompat.requestPermissions(MapsFragmentActivity.this,
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+        }
         Location mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         // Note that this can be NULL if last location isn't already known.
         if (mCurrentLocation != null) {
@@ -259,6 +240,13 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
                 .setInterval(UPDATE_INTERVAL)
                 .setFastestInterval(FASTEST_INTERVAL);
         // Request location updates
+        if (ActivityCompat.checkSelfPermission(MapsFragmentActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MapsFragmentActivity.this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+
+            ActivityCompat.requestPermissions(MapsFragmentActivity.this,
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+        }
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
     }
 
@@ -528,6 +516,8 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
                         deliveryPlace.setThoroughfare(addresses.get(0).getThoroughfare());
                         //get aproximate number
                         deliveryPlace.setSubThoroughfare(addresses.get(0).getSubThoroughfare());
+
+                        deliveryPlace.setObtainedInMap(true);
 
                         Log.d("DeliveryPlace", deliveryPlace.toString());
 

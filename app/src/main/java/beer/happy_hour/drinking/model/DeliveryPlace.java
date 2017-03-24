@@ -25,14 +25,14 @@ public class DeliveryPlace {
     //location adress
     private double latitude;
     private double longitude;
-
     private String complement;
+
+    private Boolean obtainedInMap = false;
 
     private String DELIVERYPLACE_THOROUGHFATE_PREFIX = "Rua: ";
     private String DELIVERYPLACE_COMPLEMENT_PREFIX = "\nComplemento: ";
     private String DELIVERYPLACE_SUBLOCALITY_PREFIX = "\nBairro: ";
     private String DELIVERYPLACE_CITYSTATE_PREFIX = "\nCidade: ";
-    private String DELIVERYPLACE_COUNTRY_PREFIX = "\nPais: ";
 
     //new data
 
@@ -165,6 +165,14 @@ public class DeliveryPlace {
     public void setFeatureName(String featureName) {
         if (featureName != null)
             this.featureName = featureName;
+    }
+
+    public Boolean wasObteinedInMap() {
+        return obtainedInMap;
+    }
+
+    public void setObtainedInMap(Boolean obtainedInMap) {
+        this.obtainedInMap = obtainedInMap;
     }
 
     @Override

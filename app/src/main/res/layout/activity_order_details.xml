@@ -50,13 +50,15 @@
         <TextView
             android:id="@+id/adress_brief_text_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp" />
 
 
         <Button
             android:id="@+id/goToMap"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             android:onClick="goToMapActivity"
             android:text="Local está errado?" />
 
@@ -64,6 +66,7 @@
             android:id="@+id/complement_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             android:hint="Complemento (nº, qd, lt etc)"
             android:inputType="textPostalAddress" />
 
@@ -74,8 +77,5 @@
             android:onClick="goToPaymentActivity"
             android:text="Prosseguir para Pagamento" />
 
-
     </LinearLayout>
-
-
 </ScrollView>

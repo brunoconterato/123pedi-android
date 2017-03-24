@@ -1,12 +1,15 @@
 package beer.happy_hour.drinking.activity;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -14,6 +17,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -108,6 +112,7 @@ public class OrderDetailsActivity extends AppCompatActivity implements GoogleApi
 //        phone_edit_text.addTextChangedListener(maskPhone);
 
         address_brief_text_view = (TextView) findViewById(R.id.adress_brief_text_view);
+        address_brief_text_view.setText(deliveryPlace.printOrderDetails());
 
         complement_edit_text = (EditText) findViewById(R.id.complement_edit_text);
         complement_edit_text.setText(deliveryPlace.getComplement());
@@ -187,9 +192,16 @@ public class OrderDetailsActivity extends AppCompatActivity implements GoogleApi
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         // Get last known recent location.
+        if (ActivityCompat.checkSelfPermission(OrderDetailsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(OrderDetailsActivity.this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+
+            ActivityCompat.requestPermissions(OrderDetailsActivity.this,
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+        }
         Location mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         // Note that this can be NULL if last location isn't already known.
-        if (mCurrentLocation != null) {
+        if (mCurrentLocation != null && !deliveryPlace.wasObteinedInMap()) {
             // Print current location if not null
             new LocationSetter().execute(mCurrentLocation);
             Log.d("DEBUG", "current location: " + mCurrentLocation.toString());
@@ -206,7 +218,17 @@ public class OrderDetailsActivity extends AppCompatActivity implements GoogleApi
     }
 
     public void setAddress_brief_text_view() {
-        address_brief_text_view.setText(deliveryPlace.printOrderDetails());
+        Log.d("Height", Integer.toString(address_brief_text_view.getHeight()));
+        Log.d("Order Details", deliveryPlace.printOrderDetails());
+        Log.d("Line count", Integer.toString(address_brief_text_view.getLineCount()));
+
+        if (!deliveryPlace.wasObteinedInMap()) {
+            address_brief_text_view.setText(deliveryPlace.printOrderDetails());
+
+            ViewGroup.LayoutParams params = address_brief_text_view.getLayoutParams();
+            params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            address_brief_text_view.setLayoutParams(params);
+        }
     }
 
     private class UserPhoneTextListener extends MaskEditTextChangedListener implements TextWatcher {
@@ -283,8 +305,6 @@ public class OrderDetailsActivity extends AppCompatActivity implements GoogleApi
                         Log.d("getSubLocality", addresses.get(0).getSubLocality());
                         Log.d("getSubThoroughfare", addresses.get(0).getSubThoroughfare());
                         Log.d("getThoroughfare", addresses.get(0).getThoroughfare());
-
-                        setAddress_brief_text_view();
                     }
                 }
             } catch (Exception e) {
@@ -296,7 +316,7 @@ public class OrderDetailsActivity extends AppCompatActivity implements GoogleApi
 
         @Override
         protected void onPostExecute(Void adress) {
-
+            setAddress_brief_text_view();
         }
     }
 }
