@@ -14,8 +14,8 @@ import android.widget.TextView;
 
 import beer.happy_hour.drinking.R;
 import beer.happy_hour.drinking.listener.SubtotalTextView;
-import beer.happy_hour.drinking.model.ListItem;
-import beer.happy_hour.drinking.model.ShoppingCart;
+import beer.happy_hour.drinking.model.shopping_cart.ListItem;
+import beer.happy_hour.drinking.model.shopping_cart.ShoppingCart;
 
 /**
  * Created by brcon on 09/03/2017.
@@ -71,8 +71,8 @@ public class ShoppingCartAdapter extends ArrayAdapter<ListItem> {
             @Override
             public void onClick(View view) {
                 Log.d("Click", "Botão +");
-//                listItem.incrementQuantity();
-                cart.incrementItemQuantity(listItem);
+                listItem.incrementQuantity();
+//                cart.incrementItemQuantity(listItem);
                 quantity_editText.setText(Integer.toString(listItem.getQuantity()));
             }
         });
@@ -84,8 +84,8 @@ public class ShoppingCartAdapter extends ArrayAdapter<ListItem> {
 
                 try {
                     if (Integer.parseInt(quantity_editText.getText().toString()) > 1) {
-//                        listItem.decrementQuantity();
-                        cart.decrementItemQuantity(listItem);
+                        listItem.decrementQuantity();
+//                        cart.decrementItemQuantity(listItem);
                         quantity_editText.setText(Integer.toString(listItem.getQuantity()));
                     }
                 } catch (NumberFormatException e) {
@@ -98,12 +98,11 @@ public class ShoppingCartAdapter extends ArrayAdapter<ListItem> {
         deleteFromShoppingCart_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                cart.deleteFromCart(listItem);
+                listItem.setQuantityAndUpdateCart(0);
                 Log.d("Click", "Botão cart");
                 notifyDataSetChanged();
             }
         });
-
 
         quantity_editText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -118,11 +117,11 @@ public class ShoppingCartAdapter extends ArrayAdapter<ListItem> {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (quantity_editText.getText() != null) {
+                if (!quantity_editText.getText().toString().equals("")) {
 
                     Log.d("After Text Changed: ", quantity_editText.getText().toString());
+                    listItem.setQuantityAndUpdateCart(Integer.parseInt(quantity_editText.getText().toString()));
 
-                    listItem.setQuantity(Integer.parseInt(quantity_editText.getText().toString()));
                     Log.d("New Quantity: ", Integer.toString(listItem.getQuantity()));
                 }
             }

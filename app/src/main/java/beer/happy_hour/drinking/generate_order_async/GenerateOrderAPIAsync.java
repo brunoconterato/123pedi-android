@@ -12,9 +12,9 @@ import org.json.JSONObject;
 import beer.happy_hour.drinking.async_http_client.RestApiHttpClient;
 import beer.happy_hour.drinking.model.DeliveryPlace;
 import beer.happy_hour.drinking.model.Item;
-import beer.happy_hour.drinking.model.ListItem;
-import beer.happy_hour.drinking.model.ShoppingCart;
 import beer.happy_hour.drinking.model.User;
+import beer.happy_hour.drinking.model.shopping_cart.ListItem;
+import beer.happy_hour.drinking.model.shopping_cart.ShoppingCart;
 import cz.msebera.android.httpclient.Header;
 
 /**

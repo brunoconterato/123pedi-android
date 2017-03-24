@@ -19,8 +19,8 @@ import java.util.List;
 
 import beer.happy_hour.drinking.Constants;
 import beer.happy_hour.drinking.R;
-import beer.happy_hour.drinking.model.ListItem;
-import beer.happy_hour.drinking.model.ShoppingCart;
+import beer.happy_hour.drinking.model.shopping_cart.ListItem;
+import beer.happy_hour.drinking.model.shopping_cart.ShoppingCart;
 import beer.happy_hour.drinking.repository.ListItemRepositorySingleton;
 
 /**
@@ -66,7 +66,7 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
         //Inicializando Botões
         Button addOne_button = (Button) row.findViewById(R.id.cart_addOne_button);
         Button minusOne_button = (Button) row.findViewById(R.id.cart_minusOne_button);
-        Button addToShoppingCart_button = (Button) row.findViewById(R.id.addToShoppingCart_button);
+//        Button addToShoppingCart_button = (Button) row.findViewById(R.id.addToShoppingCart_button);
 
         final EditText quantity_editText;
 
@@ -82,6 +82,7 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
         final ListItem listItem = filteredList.get(position);
 
 //        int listItemIndexInLIRepository = filteredList.get(position).indexOf(listItem);
+//        if (!quantity_editText.getText().toString().equals(""))
         quantity_editText.setText(Integer.toString(listItem.getQuantity()));
 
 //        if (cart.getListItems().contains(listItem)) {
@@ -114,9 +115,6 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
                         listItem.decrementQuantity();
                         quantity_editText.setText(Integer.toString(listItem.getQuantity()));
                     }
-                    else if(Integer.parseInt(quantity_editText.getText().toString()) == 0){
-                        cart.deleteFromCart(listItem);
-                    }
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                     Log.e("Error", "Não há inteiro definido");
@@ -124,17 +122,17 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
             }
         });
 
-        addToShoppingCart_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(listItem.getQuantity() > 0) {
-                    cart.addToCart(listItem);
-                    Log.d("Click", "Botão cart");
-                    Log.d("Adicionado ao carrinho", listItem.toString());
-                    Log.d("Carrinho", cart.toString());
-                }
-            }
-        });
+//        addToShoppingCart_button.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if(listItem.getQuantity() > 0) {
+//                    cart.addToCart(listItem);
+//                    Log.d("Click", "Botão cart");
+//                    Log.d("Adicionado ao carrinho", listItem.toString());
+//                    Log.d("Carrinho", cart.toString());
+//                }
+//            }
+//        });
 
         quantity_editText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -149,18 +147,16 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (quantity_editText.getText() != null) {
+                if (!quantity_editText.getText().toString().equals("")) {
 
                     if(Integer.parseInt(quantity_editText.getText().toString()) > 0) {
                         Log.d("After Text Changed: ", quantity_editText.getText().toString());
 
-                        listItem.setQuantity(Integer.parseInt(quantity_editText.getText().toString()));
+                        listItem.setQuantityAndUpdateCart(Integer.parseInt(quantity_editText.getText().toString()));
                         Log.d("New Quantity: ", Integer.toString(listItem.getQuantity()));
                     }
-                    else{
-                        listItem.setQuantity(0);
-                        cart.deleteFromCart(listItem);
-                    }
+                } else {
+                    listItem.setQuantityAndUpdateCart(0);
                 }
             }
         });

@@ -14,7 +14,7 @@ import android.widget.Toast;
 import beer.happy_hour.drinking.R;
 import beer.happy_hour.drinking.adapter.ShoppingCartAdapter;
 import beer.happy_hour.drinking.listener.TotalTextView;
-import beer.happy_hour.drinking.model.ShoppingCart;
+import beer.happy_hour.drinking.model.shopping_cart.ShoppingCart;
 
 public class CartActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 

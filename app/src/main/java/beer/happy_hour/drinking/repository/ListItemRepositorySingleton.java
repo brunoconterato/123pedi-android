@@ -3,7 +3,7 @@ package beer.happy_hour.drinking.repository;
 import java.util.ArrayList;
 import java.util.List;
 
-import beer.happy_hour.drinking.model.ListItem;
+import beer.happy_hour.drinking.model.shopping_cart.ListItem;
 
 /**
  * Created by brcon on 11/03/2017.

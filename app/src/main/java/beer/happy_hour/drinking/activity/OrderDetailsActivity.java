@@ -17,8 +17,8 @@ import android.widget.Toast;
 import beer.happy_hour.drinking.GPSTracker;
 import beer.happy_hour.drinking.R;
 import beer.happy_hour.drinking.model.DeliveryPlace;
-import beer.happy_hour.drinking.model.ShoppingCart;
 import beer.happy_hour.drinking.model.User;
+import beer.happy_hour.drinking.model.shopping_cart.ShoppingCart;
 import br.com.jansenfelipe.androidmask.MaskEditTextChangedListener;
 
 public class OrderDetailsActivity extends AppCompatActivity {

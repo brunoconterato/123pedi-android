@@ -1,7 +1,9 @@
-package beer.happy_hour.drinking.model;
+package beer.happy_hour.drinking.model.shopping_cart;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import beer.happy_hour.drinking.model.Item;
 
 /**
  * Created by brcon on 09/03/2017.
@@ -21,63 +23,63 @@ public class ListItem implements Parcelable{
         }
     };
     private Item item;
-    //Quantidade que o comprador deseja
-    private int quantity;
+    private int quantity;  //Quantidade que o comprador deseja
     private SubtotalChangeListener listener;
+
     private double subtotal;
+    private ShoppingCart cart;
 
     public ListItem(Item item) {
         this.item = item;
         this.quantity = 0;
         this.subtotal = 0;
+
+        cart = ShoppingCart.getInstance();
     }
 
     public ListItem(Parcel in) {
         this.quantity = in.readInt();
         this.item = (Item) in.readParcelable(Item.class.getClassLoader());
+
+        cart = ShoppingCart.getInstance();
+    }
+
+    private void setSubtotal(double subtotal) {
+        this.subtotal = subtotal;
+        if (listener != null)
+            listener.onValueChanged(subtotal);
     }
 
     public int getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
-        if(quantity >= 0)
-            this.quantity = quantity;
+    /**
+     * Único método em ListItem que pode usar o carrinho, de uma única maneira:
+     * usando o método ShoppingCart.updateCart()
+     *
+     * @param newQuantity
+     */
+    public void setQuantityAndUpdateCart(int newQuantity) {
+        if (newQuantity > 0)
+            quantity = newQuantity;
         else
-            this.quantity = 0;
+            quantity = 0;
 
-        subtotal = item.getPrice() * quantity;
-        if (listener != null)
-            listener.onValueChanged(subtotal);
-
+        setSubtotal(item.getPrice() * newQuantity);
+        cart.updateCart(this);
     }
 
     public void incrementQuantity(){
-        this.quantity++;
-        subtotal = item.getPrice() * quantity;
-        if (listener != null)
-            listener.onValueChanged(subtotal);
+        setQuantityAndUpdateCart(quantity + 1);
     }
 
     public void decrementQuantity(){
-        this.quantity--;
-        subtotal = item.getPrice() * quantity;
-        if (listener != null)
-            listener.onValueChanged(subtotal);
+        setQuantityAndUpdateCart(quantity - 1);
     }
 
     public Item getItem() {
         return item;
-    }
-
-    public void setItem(Item item) {
-        this.item = item;
-        quantity = 0;
-
-        subtotal = item.getPrice() * quantity;
-        if (listener != null)
-            listener.onValueChanged(subtotal);
     }
 
     @Override

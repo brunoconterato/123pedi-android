@@ -3,7 +3,7 @@ package beer.happy_hour.drinking.listener;
 import android.content.Context;
 import android.util.AttributeSet;
 
-import beer.happy_hour.drinking.model.ShoppingCart;
+import beer.happy_hour.drinking.model.shopping_cart.ShoppingCart;
 
 /**
  * Created by brcon on 14/03/2017.

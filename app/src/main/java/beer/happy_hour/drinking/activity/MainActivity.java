@@ -9,7 +9,7 @@ import android.widget.Toast;
 import com.facebook.login.widget.LoginButton;
 
 import beer.happy_hour.drinking.R;
-import beer.happy_hour.drinking.model.ShoppingCart;
+import beer.happy_hour.drinking.model.shopping_cart.ShoppingCart;
 
 public class MainActivity extends AppCompatActivity {
 

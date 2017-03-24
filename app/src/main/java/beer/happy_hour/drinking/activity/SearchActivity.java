@@ -22,7 +22,7 @@ import beer.happy_hour.drinking.LoadStockJSONTask;
 import beer.happy_hour.drinking.R;
 import beer.happy_hour.drinking.adapter.ListItemAdapter;
 import beer.happy_hour.drinking.model.Item;
-import beer.happy_hour.drinking.model.ListItem;
+import beer.happy_hour.drinking.model.shopping_cart.ListItem;
 import beer.happy_hour.drinking.repository.ListItemRepositorySingleton;
 
 public class SearchActivity extends AppCompatActivity implements LoadStockJSONTask.Listener,

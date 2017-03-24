@@ -19,10 +19,10 @@ import android.widget.TextView;
 import beer.happy_hour.drinking.R;
 import beer.happy_hour.drinking.generate_order_async.GenerateOrderAPIAsync;
 import beer.happy_hour.drinking.model.DeliveryPlace;
-import beer.happy_hour.drinking.model.ListItem;
 import beer.happy_hour.drinking.model.Payment;
-import beer.happy_hour.drinking.model.ShoppingCart;
 import beer.happy_hour.drinking.model.User;
+import beer.happy_hour.drinking.model.shopping_cart.ListItem;
+import beer.happy_hour.drinking.model.shopping_cart.ShoppingCart;
 
 public class BriefActivity extends AppCompatActivity implements GenerateOrderAPIAsync.Listener {
 

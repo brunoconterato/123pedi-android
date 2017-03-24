@@ -44,7 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="goToMapActivity"
-            android:text="Obter Mapa" />
+            android:text="Clique para indicar local de entrega" />
 
         <TextView
             android:layout_width="match_parent"
