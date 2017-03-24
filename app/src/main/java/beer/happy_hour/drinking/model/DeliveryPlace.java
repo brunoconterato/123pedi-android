@@ -192,4 +192,10 @@ public class DeliveryPlace {
                 DELIVERYPLACE_SUBLOCALITY_PREFIX + subLocality +
                 DELIVERYPLACE_CITYSTATE_PREFIX + cityState;
     }
+
+    public String printOrderDetails() {
+        return DELIVERYPLACE_THOROUGHFATE_PREFIX + thoroughfare +
+                DELIVERYPLACE_SUBLOCALITY_PREFIX + subLocality +
+                DELIVERYPLACE_CITYSTATE_PREFIX + cityState;
+    }
 }

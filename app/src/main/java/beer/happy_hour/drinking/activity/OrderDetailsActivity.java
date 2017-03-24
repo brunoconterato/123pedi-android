@@ -1,7 +1,12 @@
 package beer.happy_hour.drinking.activity;
 
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -9,80 +14,48 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import beer.happy_hour.drinking.GPSTracker;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+
+import java.util.List;
+import java.util.Locale;
+
 import beer.happy_hour.drinking.R;
 import beer.happy_hour.drinking.model.DeliveryPlace;
 import beer.happy_hour.drinking.model.User;
-import beer.happy_hour.drinking.model.shopping_cart.ShoppingCart;
 import br.com.jansenfelipe.androidmask.MaskEditTextChangedListener;
 
-public class OrderDetailsActivity extends AppCompatActivity {
+public class OrderDetailsActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks {
 
-    //TODO: escluir ese button
-    //Location Variables (Not Google Map API)
-    Button get_location_button;
-    // GPSTracker class
-    GPSTracker gps;
+    private DeliveryPlace deliveryPlace;
+    private User user;
 
-    ShoppingCart cart;
-    DeliveryPlace deliveryPlace;
-    User user;
+    private EditText name_edit_text;
+    private EditText phone_edit_text;
+    private EditText email_edit_text;
 
-    EditText name_edit_text;
-    EditText phone_edit_text;
-    EditText email_edit_text;
+    private TextView address_brief_text_view;
 
-    TextView adress_text_view;
-    TextView citystate_text_view;
-    TextView country_text_view;
+    private EditText complement_edit_text;
 
-    EditText complement_edit_text;
+    private GoogleApiClient mGoogleApiClient;
+    private LocationRequest mLocationRequest;
 
-    TextView test_text_view;
+    private long UPDATE_INTERVAL = 10 * 1000;  /* 10 secs */
+    private long FASTEST_INTERVAL = 2 * 1000; /* 2 sec */
+
+    private Boolean isLocationSetted = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_details);
 
-        //Not from google mapFragment api
-        get_location_button = (Button) findViewById(R.id.get_location_button);
-
-        get_location_button.setVisibility(View.GONE);
-        ;
-
-        // show location button click event
-        get_location_button.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-                // create class object
-                gps = new GPSTracker(OrderDetailsActivity.this);
-
-                // check if GPS enabled
-                if (gps.canGetLocation()) {
-
-                    double latitude = gps.getLatitude();
-                    double longitude = gps.getLongitude();
-
-                    // \n is for new line
-                    Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();
-                } else {
-                    // can't get location
-                    // GPS or Network is not enabled
-                    // Ask user to enable GPS/network in settings
-                    gps.showSettingsAlert();
-                }
-
-            }
-        });
-
-        cart = ShoppingCart.getInstance();
         deliveryPlace = DeliveryPlace.getInstance();
         user = User.getInstance();
 
@@ -134,9 +107,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
 //        MaskEditTextChangedListener maskPhone = new MaskEditTextChangedListener("(##) # ####-####", phone_edit_text);
 //        phone_edit_text.addTextChangedListener(maskPhone);
 
-        adress_text_view = (TextView) findViewById(R.id.adress_text_view);
-        citystate_text_view = (TextView) findViewById(R.id.citystate_text_view);
-        country_text_view = (TextView) findViewById(R.id.country_text_view);
+        address_brief_text_view = (TextView) findViewById(R.id.adress_brief_text_view);
 
         complement_edit_text = (EditText) findViewById(R.id.complement_edit_text);
         complement_edit_text.setText(deliveryPlace.getComplement());
@@ -158,9 +129,12 @@ public class OrderDetailsActivity extends AppCompatActivity {
             }
         });
 
-        adress_text_view.setText(deliveryPlace.getAdress());
-        citystate_text_view.setText(deliveryPlace.getCityState());
-        country_text_view.setText(deliveryPlace.getCountryName());
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(LocationServices.API)
+                .addConnectionCallbacks(this)
+                .build();
+
+        mGoogleApiClient.connect();
     }
 
     @Override
@@ -210,6 +184,31 @@ public class OrderDetailsActivity extends AppCompatActivity {
         startActivity(new Intent(this, PaymentActivity.class));
     }
 
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        // Get last known recent location.
+        Location mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        // Note that this can be NULL if last location isn't already known.
+        if (mCurrentLocation != null) {
+            // Print current location if not null
+            new LocationSetter().execute(mCurrentLocation);
+            Log.d("DEBUG", "current location: " + mCurrentLocation.toString());
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        if (i == CAUSE_SERVICE_DISCONNECTED) {
+            Toast.makeText(this, "Disconnected. Please re-connect.", Toast.LENGTH_SHORT).show();
+        } else if (i == CAUSE_NETWORK_LOST) {
+            Toast.makeText(this, "Network lost. Please re-connect.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void setAddress_brief_text_view() {
+        address_brief_text_view.setText(deliveryPlace.printOrderDetails());
+    }
+
     private class UserPhoneTextListener extends MaskEditTextChangedListener implements TextWatcher {
 
         User user;
@@ -227,120 +226,77 @@ public class OrderDetailsActivity extends AppCompatActivity {
         }
     }
 
-//    public class SendPostRequest extends AsyncTask<String, Void, String> {
-//
-//        protected void onPreExecute(){}
-//
-//        protected String doInBackground(String... arg0) {
-//            try{
-//                URL url = new URL(Constants.BASE_ORDER_URL);
-//
-//                Log.d("URL", url.printBrief());
-//
-//                JSONObject postDataParams = new JSONObject();
-//
-//                int i=-1;
-//                for (ListItem listItem : cart.getListItems()) {
-//                    i++;
-//                    Item item = listItem.getItem();
-//                    postDataParams.put("stockitems_id[" + Integer.printBrief(i) + "]", Integer.printBrief(item.getId()));
-//                    postDataParams.put("stockitems_quantity[" + i + "]", Integer.printBrief(listItem.getQuantity()));
-//                }
-//
-//                postDataParams.put("name", user.getName());
-//                postDataParams.put("phone", user.getPhone());
-//                postDataParams.put("street_adress", deliveryPlace.getThoroughfare());
-//                postDataParams.put("adress_line2", deliveryPlace.getComplement());
-//                postDataParams.put("neighborhood", deliveryPlace.getSubLocality());
-//                postDataParams.put("city", deliveryPlace.getLocality());
-//                postDataParams.put("state", deliveryPlace.getAdminArea());
-//                postDataParams.put("zipcode", deliveryPlace.getZipCode());
-//                postDataParams.put("email", user.getEmail());
-//                postDataParams.put("lat_coordinate", Double.printBrief(deliveryPlace.getLatitude()));
-//                postDataParams.put("long_coordinate", Double.printBrief(deliveryPlace.getLongitude()));
-//                Log.e("params",postDataParams.printBrief());
-//
-//                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-//                conn.setReadTimeout(15000 /* milliseconds */);
-//                conn.setConnectTimeout(15000 /* milliseconds */);
-//                conn.setRequestMethod("POST");
-//                conn.setDoInput(true);
-//                conn.setDoOutput(true);
-//
-//                OutputStream os = conn.getOutputStream();
-//                BufferedWriter writer = new BufferedWriter(
-//                        new OutputStreamWriter(os, "UTF-8"));
-//
-//                Log.d("Str", getPostDataString(postDataParams));
-//                writer.write(getPostDataString(postDataParams));
-//
-//                writer.flush();
-//                writer.close();
-//                os.close();
-//
-//                int responseCode=conn.getResponseCode();
-//
-//                if (responseCode == HttpsURLConnection.HTTP_OK) {
-//
-//                    BufferedReader in=new BufferedReader(
-//                            new InputStreamReader(
-//                                    conn.getInputStream()));
-//                    StringBuffer sb = new StringBuffer("");
-//                    String line="";
-//
-//                    while((line = in.readLine()) != null) {
-//
-//                        sb.append(line);
-//                        break;
-//                    }
-//
-//                    in.close();
-//                    return sb.printBrief();
-//
-//                }
-//                else {
-//                    return new String("false : "+responseCode);
-//                }
-//            }
-//            catch(Exception e){
-//                return new String("Exception: " + e.getMessage());
-//            }
-//        }
-//
-//        @Override
-//        protected void onPostExecute(String result) {
-//            Toast.makeText(getApplicationContext(), result,
-//                    Toast.LENGTH_LONG).show();
-//        }
-//
-//        public String getPostDataString(JSONObject params) throws Exception {
-//
-//            Log.d("Entrou", "getPostDataString");
-//
-//            StringBuilder result = new StringBuilder();
-//            boolean first = true;
-//
-//            Iterator<String> itr = params.keys();
-//
-//            while(itr.hasNext()){
-//
-//                String key= itr.next();
-//                Object value = params.get(key);
-//
-//                if (first)
-//                    first = false;
-//                else
-//                    result.append("&");
-//
-//                result.append(URLEncoder.encode(key, "UTF-8"));
-//                result.append("=");
-//                result.append(URLEncoder.encode(value.printBrief(), "UTF-8"));
-//
-//            }
-//
-//
-//            Log.d("Post Data String", result.printBrief());
-//            return result.printBrief();
-//        }
-//    }
+    private class LocationSetter extends AsyncTask<Location, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Location... locations) {
+            try {
+                Geocoder geo = new Geocoder(getApplicationContext(), Locale.getDefault());
+                List<Address> addresses = geo.getFromLocation(locations[0].getLatitude(), locations[0].getLongitude(), 1);
+
+                if (addresses.isEmpty()) {
+                    Log.d("Location", "Waiting for Location");
+                } else {
+                    if (addresses.size() > 0) {
+                        Log.d("Location", addresses.get(0).getAddressLine(0) + ", " + addresses.get(0).getFeatureName() + ", " + addresses.get(0).getLocality() + ", " + addresses.get(0).getAdminArea() + ", " + addresses.get(0).getCountryName());
+
+                        //get current adress line 1
+                        deliveryPlace.setAdress(addresses.get(0).getAddressLine(0));
+                        //get current city/state
+                        deliveryPlace.setCityState(addresses.get(0).getAddressLine(1));
+                        //get country
+                        deliveryPlace.setCountryName(addresses.get(0).getCountryName());
+                        //get postal code
+                        deliveryPlace.setZipCode(addresses.get(0).getPostalCode());
+                        //get place Name
+                        deliveryPlace.setFeatureName(addresses.get(0).getFeatureName());
+                        //get latitude
+                        deliveryPlace.setLatitude(addresses.get(0).getLatitude());
+                        //get longitude
+                        deliveryPlace.setLongitude(addresses.get(0).getLongitude());
+                        //get country code
+                        deliveryPlace.setCountryCode(addresses.get(0).getCountryCode());
+                        //get state
+                        deliveryPlace.setAdminArea(addresses.get(0).getAdminArea());
+                        //get city
+                        deliveryPlace.setLocality(addresses.get(0).getLocality());
+                        //get "bairro"
+                        deliveryPlace.setSubLocality(addresses.get(0).getSubLocality());
+                        //get street
+                        deliveryPlace.setThoroughfare(addresses.get(0).getThoroughfare());
+                        //get aproximate number
+                        deliveryPlace.setSubThoroughfare(addresses.get(0).getSubThoroughfare());
+
+                        Log.d("DeliveryPlace", deliveryPlace.toString());
+
+//                    Toast.makeText(getApplicationContext(), "Address:- " + addresses.get(0).getFeatureName() + addresses.get(0).getAdminArea() + addresses.get(0).getLocality(), Toast.LENGTH_LONG).show();
+
+                        Log.d("getAddressLine(0)", addresses.get(0).getAddressLine(0));
+                        Log.d("getAddressLine(1)", addresses.get(0).getAddressLine(1));
+                        Log.d("getAddressLine(2)", addresses.get(0).getAddressLine(2));
+                        Log.d("getAdminArea", addresses.get(0).getAdminArea());
+                        Log.d("getCountryCode", addresses.get(0).getCountryCode());
+                        Log.d("getCountryName", addresses.get(0).getCountryName());
+                        Log.d("getFeatureName", addresses.get(0).getFeatureName());
+                        Log.d("getLocality", addresses.get(0).getLocality());
+                        Log.d("getPostalCode", addresses.get(0).getPostalCode());
+                        Log.d("getSubLocality", addresses.get(0).getSubLocality());
+                        Log.d("getSubThoroughfare", addresses.get(0).getSubThoroughfare());
+                        Log.d("getThoroughfare", addresses.get(0).getThoroughfare());
+
+                        setAddress_brief_text_view();
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace(); // getFromLocation() may sometimes fail
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void adress) {
+
+        }
+    }
 }

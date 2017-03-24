@@ -39,36 +39,26 @@
             android:hint="Email"
             android:inputType="textEmailAddress" />
 
-        <Button
-            android:id="@+id/goToMap"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="goToMapActivity"
-            android:text="Clique para indicar local de entrega" />
-
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:layout_marginTop="10dp"
-            android:text="Informações de Entrega"
+            android:text="Local de Entrega"
             android:textSize="20dp" />
 
         <TextView
-            android:id="@+id/adress_text_view"
+            android:id="@+id/adress_brief_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <TextView
-            android:id="@+id/citystate_text_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
 
-        <TextView
-            android:id="@+id/country_text_view"
+        <Button
+            android:id="@+id/goToMap"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
+            android:layout_height="wrap_content"
+            android:onClick="goToMapActivity"
+            android:text="Local está errado?" />
 
         <EditText
             android:id="@+id/complement_edit_text"
@@ -76,12 +66,6 @@
             android:layout_height="wrap_content"
             android:hint="Complemento (nº, qd, lt etc)"
             android:inputType="textPostalAddress" />
-
-        <Button
-            android:id="@+id/get_location_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Obter Localização" />
 
         <Button
             android:id="@+id/finalize_order_button"
