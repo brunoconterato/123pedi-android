@@ -8,15 +8,22 @@ import android.widget.Toast;
 
 import com.facebook.login.widget.LoginButton;
 
+import java.util.List;
+
+import beer.happy_hour.drinking.Constants;
+import beer.happy_hour.drinking.LoadStockJSONTask;
 import beer.happy_hour.drinking.R;
+import beer.happy_hour.drinking.model.Item;
 import beer.happy_hour.drinking.model.shopping_cart.ShoppingCart;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LoadStockJSONTask.LoadListener {
 
     private LoginButton b;
     private int backButtonCount;
 
     private ShoppingCart cart;
+
+    private LoadStockJSONTask loadStockJSONTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +32,11 @@ public class MainActivity extends AppCompatActivity {
 
         cart = ShoppingCart.getInstance();
 
+        //Show listiew
+        loadStockJSONTask = LoadStockJSONTask.getInstance();
+        loadStockJSONTask.setListener(this);
+        if(!loadStockJSONTask.isExecuted())
+            loadStockJSONTask.execute(Constants.BASE_STOCK_URL);
     }
 
     /**
@@ -62,5 +74,15 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(this, CartActivity.class));
         else
             Toast.makeText(this.getApplicationContext(), "Carrinho vazio!", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onLoaded(List<Item> item) {
+
+    }
+
+    @Override
+    public void onError() {
+        Toast.makeText(this, "Erro! Não foi possível recuperar dados", Toast.LENGTH_LONG).show();
     }
 }

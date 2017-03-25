@@ -84,7 +84,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.OnOrderAcceptedActivity" />
-        <activity android:name=".activity.PaymentActivity"></activity>
+        <activity android:name=".activity.PaymentActivity" />
+        <activity android:name=".activity.SearchTabsActivity"></activity>
     </application>
 
 </manifest>

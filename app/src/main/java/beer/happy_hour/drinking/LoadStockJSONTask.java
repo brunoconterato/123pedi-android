@@ -20,18 +20,50 @@ import java.net.URL;
 import java.util.List;
 
 import beer.happy_hour.drinking.model.Item;
+import beer.happy_hour.drinking.model.shopping_cart.ListItem;
+import beer.happy_hour.drinking.repository.ListItemRepository;
 
+
+/**
+ * Singleton Implementation
+ */
 public class LoadStockJSONTask extends AsyncTask<String, Void, List<Item>> {
 
-    private Listener mListener;
+    private LoadListener listener;
+    private ListItemRepository repository;
 
-    public LoadStockJSONTask(Listener listener) {
+    private static LoadStockJSONTask instance;
 
-        mListener = listener;
+    private boolean executed = false;
+
+    private LoadStockJSONTask(){
+        repository = ListItemRepository.getInstance();
+    }
+
+    public static LoadStockJSONTask getInstance(){
+        if(instance == null){
+            synchronized (LoadStockJSONTask.class) {
+                if(instance == null){
+                    instance = new LoadStockJSONTask();
+                }
+            }
+        }
+        return instance;
+    }
+
+    public void setListener(LoadListener listener) {
+        this.listener = listener;
+    }
+
+    public boolean isExecuted() {
+        return executed;
     }
 
     @Override
     protected List<Item> doInBackground(String... strings) {
+        repository = ListItemRepository.getInstance();
+        executed = true;
+
         try {
             Log.d("Entrou", "LoadStockJSONTask");
             String stringJSON = loadJSON(strings[0]);
@@ -39,6 +71,11 @@ public class LoadStockJSONTask extends AsyncTask<String, Void, List<Item>> {
             //deserialize generic collection (like a List, in this case)
             Type listType = new TypeToken<List<Item>>(){}.getType();
             List<Item> listItems = new Gson().fromJson(stringJSON, listType);
+
+            for(Item item : listItems){
+                Log.d("ToString : ", item.toString());
+                repository.add(new ListItem(item));
+            }
 
             return listItems;
         } catch (IOException e) {
@@ -54,12 +91,12 @@ public class LoadStockJSONTask extends AsyncTask<String, Void, List<Item>> {
     protected void onPostExecute(List<Item> listItem) {
 
         if (listItem != null) {
-
-            mListener.onLoaded(listItem);
+            repository.setLoaded(true);
+            listener.onLoaded(listItem);
 
         } else {
-
-            mListener.onError();
+            repository.setDisconnected(true);
+            listener.onError();
         }
     }
 
@@ -89,7 +126,7 @@ public class LoadStockJSONTask extends AsyncTask<String, Void, List<Item>> {
         return response.toString();
     }
 
-    public interface Listener {
+    public interface LoadListener {
 
         void onLoaded(List<Item> item);
 

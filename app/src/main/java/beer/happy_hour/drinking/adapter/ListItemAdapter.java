@@ -21,7 +21,7 @@ import beer.happy_hour.drinking.Constants;
 import beer.happy_hour.drinking.R;
 import beer.happy_hour.drinking.model.shopping_cart.ListItem;
 import beer.happy_hour.drinking.model.shopping_cart.ShoppingCart;
-import beer.happy_hour.drinking.repository.ListItemRepositorySingleton;
+import beer.happy_hour.drinking.repository.ListItemRepository;
 
 /**
  * Created by brcon on 09/03/2017.
@@ -37,20 +37,20 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
 
     private Filter listItemFilter;
 
-    private ListItemRepositorySingleton listItemRepositorySingleton;
+    private ListItemRepository listItemRepositorySingleton;
     private ShoppingCart cart;
 
     private List<ListItem> filteredList;
 
     public ListItemAdapter(Context context) {
-        super(context, R.layout.list_item, ListItemRepositorySingleton.getInstance().getList());
+        super(context, R.layout.list_item, ListItemRepository.getInstance().getList());
 
 //        this.listItems = listItemRepositorySingleton.getList();
 //        this.originalListItems = listItemRepositorySingleton.getList();
 
         this.context = context;
 
-        listItemRepositorySingleton = ListItemRepositorySingleton.getInstance();
+        listItemRepositorySingleton = ListItemRepository.getInstance();
         cart = ShoppingCart.getInstance();
 
         filteredList = listItemRepositorySingleton.getList();

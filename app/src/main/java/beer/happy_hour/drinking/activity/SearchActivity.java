@@ -23,15 +23,17 @@ import beer.happy_hour.drinking.R;
 import beer.happy_hour.drinking.adapter.ListItemAdapter;
 import beer.happy_hour.drinking.model.Item;
 import beer.happy_hour.drinking.model.shopping_cart.ListItem;
-import beer.happy_hour.drinking.repository.ListItemRepositorySingleton;
+import beer.happy_hour.drinking.repository.ListItemRepository;
 
-public class SearchActivity extends AppCompatActivity implements LoadStockJSONTask.Listener,
+public class SearchActivity extends AppCompatActivity implements LoadStockJSONTask.LoadListener,
                                                         AdapterView.OnItemClickListener,
                                                         SearchView.OnQueryTextListener{
 
     //Show listview
     private ListView mListView;
-    private ListItemRepositorySingleton listItemRepository;
+    private boolean loadedListView = false;
+
+    private ListItemRepository listItemRepository;
     private ListItemAdapter listItemAdapter;
 
     private SearchView searchView;
@@ -45,13 +47,13 @@ public class SearchActivity extends AppCompatActivity implements LoadStockJSONTa
         mListView = (ListView) findViewById(R.id.items_list_view);
         mListView.setOnItemClickListener(this);
 
-        listItemRepository = ListItemRepositorySingleton.getInstance();
+        listItemRepository = ListItemRepository.getInstance();
 
         if ((savedInstanceState == null || !savedInstanceState.containsKey("key"))
                 && listItemRepository.isEmpty()) {
 
             //Show listiew
-            new LoadStockJSONTask(this).execute(Constants.BASE_STOCK_URL);
+//            new LoadStockJSONTask(this).execute(Constants.BASE_STOCK_URL);
         }
         else {
             Log.d("Entrou: ", "else");
@@ -69,6 +71,22 @@ public class SearchActivity extends AppCompatActivity implements LoadStockJSONTa
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setSubmitButtonEnabled(true);
         searchView.setOnQueryTextListener(this);
+
+        LoadStockJSONTask loadStockJSONTask = LoadStockJSONTask.getInstance();
+        loadStockJSONTask.setListener(this);
+
+        if(listItemRepository.isLoaded() && !loadedListView)
+            loadListView();
+        if(listItemRepository.isDisconnected())
+            Toast.makeText(this, "Erro! Não foi possível recuperar dados", Toast.LENGTH_LONG).show();
+
+//        if(!listItemRepository.isDisconnected() &&  listItemRepository.isLoaded()){
+//            loadListView();
+//        }
+//        else{
+//            listItemRepository.setLoadedListener(this);
+//            listItemRepository.setDisconnectedListener(this);
+//        }
     }
 
     //Show listview
@@ -78,10 +96,10 @@ public class SearchActivity extends AppCompatActivity implements LoadStockJSONTa
 
         Log.d("listItems: ", listItems.toString());
 
-        for(Item item : listItems){
-            Log.d("ToString : ", item.toString());
-            listItemRepository.add(new ListItem(item));
-        }
+//        for(Item item : listItems){
+//            Log.d("ToString : ", item.toString());
+//            listItemRepository.add(new ListItem(item));
+//        }
 
         Log.d("Lista Normal: ", listItemRepository.getList().toString());
 
@@ -90,20 +108,21 @@ public class SearchActivity extends AppCompatActivity implements LoadStockJSONTa
 
     //show listview
     private void loadListView() {
+        if(!loadedListView) {
+            Log.d("Entrou : ", "loadListView() Method");
 
-        Log.d("Entrou : ", "loadListView() Method");
+            Log.d("listItemRepository: ", listItemRepository.toString());
 
-        Log.d("listItemRepository: ", listItemRepository.toString());
-
-        listItemAdapter = new ListItemAdapter(this);
-        mListView.setAdapter(listItemAdapter);
+            listItemAdapter = new ListItemAdapter(this);
+            mListView.setAdapter(listItemAdapter);
+            loadedListView = true;
+        }
     }
 
     //Show listview
     @Override
     public void onError() {
-
-        Toast.makeText(this, "Error !", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Erro! Não foi possível recuperar dados", Toast.LENGTH_LONG).show();
     }
 
     //Show listview
