@@ -259,9 +259,13 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
                 }
                 //Nenhum valor foi filtrado
                 else {
-                    filterResults.count = listItemRepositorySingleton.getSize();
-                    filterResults.values = listItemRepositorySingleton.getList();
-//                    listItemRepositorySingleton.resetFilteredList();
+//                    Neste caso todos os valores serão adicionados à busca:
+//                    filterResults.count = listItemRepositorySingleton.getSize();
+//                    filterResults.values = listItemRepositorySingleton.getList();
+
+//                    Neste caso enhum vaor será adicionado à busca:
+                    filterResults.count = 0;
+                    filterResults.values = tempList;
                 }
             }
 

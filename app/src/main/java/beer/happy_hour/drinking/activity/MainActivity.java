@@ -64,9 +64,9 @@ public class MainActivity extends AppCompatActivity implements LoadStockJSONTask
     }
 
     public void goToSearchActivity(View view){
-        //Pode haver problema nesse this
-        Intent intent = new Intent(this, SearchActivity.class);
-        startActivity(intent);
+//        Intent intent = new Intent(this, SearchActivity.class);
+//        startActivity(intent);
+        startActivity(new Intent(this, SearchTabsActivity.class));
     }
 
     public void goToCheckoutActivity(View view) {

@@ -10,4 +10,6 @@ public class Constants {
 
     public static final String BASE_STOCK_URL = "http://happy-hour.beer/api/search/stocksearch";
     public static final String BASE_ORDER_URL = "http://www.happy-hour.beer/api/unregistered/orders";
+
+    public static final String QUERY_KEY_STRING = "query_key";
 }

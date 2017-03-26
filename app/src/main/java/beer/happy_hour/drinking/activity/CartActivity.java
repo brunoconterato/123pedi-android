@@ -44,7 +44,7 @@ public class CartActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(this, SearchActivity.class));
+        startActivity(new Intent(this, SearchTabsActivity.class));
         finish();
     }
 
