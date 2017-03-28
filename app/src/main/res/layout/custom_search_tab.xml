@@ -4,4 +4,5 @@
     android:layout_height="wrap_content"
     android:id="@+id/tabIcons"
     android:scaleType="fitCenter"
-    android:textColor="@color/colorAccent" />
+    android:textColor="@color/colorAccent"
+    android:focusableInTouchMode="true"/>

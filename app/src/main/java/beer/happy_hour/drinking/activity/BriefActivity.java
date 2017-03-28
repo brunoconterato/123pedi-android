@@ -112,7 +112,7 @@ public class BriefActivity extends AppCompatActivity implements GenerateOrderAPI
 
 
 //        adapter = new BriefItemsAdapter(this.getApplicationContext());
-//        items_brief_linear_layout.setAdapter(adapter);
+//        items_brief_linear_layout.setupAdapter(adapter);
 
 
 //        items_brief_linear_layout.setScrollBarSize(cart.getItemsQuantity());

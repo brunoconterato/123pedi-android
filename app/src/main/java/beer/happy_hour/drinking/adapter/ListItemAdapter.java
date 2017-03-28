@@ -1,6 +1,7 @@
 package beer.happy_hour.drinking.adapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -20,7 +21,6 @@ import java.util.List;
 import beer.happy_hour.drinking.Constants;
 import beer.happy_hour.drinking.R;
 import beer.happy_hour.drinking.model.shopping_cart.ListItem;
-import beer.happy_hour.drinking.model.shopping_cart.ShoppingCart;
 import beer.happy_hour.drinking.repository.ListItemRepository;
 
 /**
@@ -31,42 +31,31 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
 
     private final Context context;
 
-//    private List<ListItem> listItems;
-//    private List<ListItem> originalListItems;  //Cópia
-    //Used for search
-
     private Filter listItemFilter;
 
-    private ListItemRepository listItemRepositorySingleton;
-    private ShoppingCart cart;
+    private ListItemRepository listItemRepository;
 
     private List<ListItem> filteredList;
 
     public ListItemAdapter(Context context) {
         super(context, R.layout.list_item, ListItemRepository.getInstance().getList());
 
-//        this.listItems = listItemRepositorySingleton.getList();
-//        this.originalListItems = listItemRepositorySingleton.getList();
-
         this.context = context;
 
-        listItemRepositorySingleton = ListItemRepository.getInstance();
-        cart = ShoppingCart.getInstance();
+        listItemRepository = ListItemRepository.getInstance();
 
-        filteredList = listItemRepositorySingleton.getList();
-
-        getFilter();
+        filteredList = listItemRepository.getList();
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View row = inflater.inflate(R.layout.list_item, parent, false);
 
         //Inicializando Botões
         Button addOne_button = (Button) row.findViewById(R.id.cart_addOne_button);
         Button minusOne_button = (Button) row.findViewById(R.id.cart_minusOne_button);
-//        Button addToShoppingCart_button = (Button) row.findViewById(R.id.addToShoppingCart_button);
 
         final EditText quantity_editText;
 
@@ -91,8 +80,8 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
 //        }
 //        else
 //        {
-//            int listItemIndexInLIRepository = listItemRepositorySingleton.getFilteredList().indexOf(listItem);
-//            quantity_editText.setText(Integer.printBrief(listItemRepositorySingleton.getFilteredList().get(listItemIndexInLIRepository).getQuantity()));
+//            int listItemIndexInLIRepository = listItemRepository.getFilteredList().indexOf(listItem);
+//            quantity_editText.setText(Integer.printBrief(listItemRepository.getFilteredList().get(listItemIndexInLIRepository).getQuantity()));
 //        }
 
         //Organizando comportamento dos botões
@@ -121,18 +110,6 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
                 }
             }
         });
-
-//        addToShoppingCart_button.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if(listItem.getQuantity() > 0) {
-//                    cart.addToCart(listItem);
-//                    Log.d("Click", "Botão cart");
-//                    Log.d("Adicionado ao carrinho", listItem.toString());
-//                    Log.d("Carrinho", cart.toString());
-//                }
-//            }
-//        });
 
         quantity_editText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -171,12 +148,16 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
         return row;
     }
 
+    public void reload(){
+        filteredList = listItemRepository.getList();
+    }
+
     /*
      * USO: salvar o estado da ListItem
      *
      */
     public List<ListItem> getListItems() {
-        return listItemRepositorySingleton.getList();
+        return listItemRepository.getList();
     }
 
     @Override
@@ -199,7 +180,7 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
      */
     @Override
     public ListItem getItem(int position){
-        return listItemRepositorySingleton.getItem(position);
+        return listItemRepository.getItem(position);
     }
 
     /**
@@ -232,7 +213,7 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
                     String categoryConstraint = constraint.toString().substring(searchCategoryHash.length());
                     Log.d("categoryConstraint", categoryConstraint);
 
-                    for (ListItem listItem : listItemRepositorySingleton.getList()) {
+                    for (ListItem listItem : listItemRepository.getList()) {
                         if (listItem.getItem().getProduct().getCategory().getName().contains(categoryConstraint.toLowerCase())) {
                             Log.d("Aviso: ", "filtro de categoria encontrado: você tem um produto dea categoria!");
                             Log.d("Nome produto: ", listItem.getItem().getProduct().getName());
@@ -241,7 +222,7 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
                     }
                 } else {
                     // search content in friend list
-                    for (ListItem listItem : listItemRepositorySingleton.getList()) {
+                    for (ListItem listItem : listItemRepository.getList()) {
                         if (listItem.getItem().getProduct().getName().toLowerCase().contains(constraint.toString().toLowerCase())
                                 || listItem.getItem().getProduct().getBrand().toLowerCase().contains(constraint.toString().toLowerCase())
                                 || listItem.getItem().getProduct().getManufacturer().toLowerCase().contains(constraint.toString().toLowerCase())
@@ -260,12 +241,13 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
                 //Nenhum valor foi filtrado
                 else {
 //                    Neste caso todos os valores serão adicionados à busca:
-//                    filterResults.count = listItemRepositorySingleton.getSize();
-//                    filterResults.values = listItemRepositorySingleton.getList();
+                    filterResults.count = listItemRepository.getSize();
+                    filterResults.values = listItemRepository.getList();
 
-//                    Neste caso enhum vaor será adicionado à busca:
-                    filterResults.count = 0;
-                    filterResults.values = tempList;
+//                    Neste caso nenhum valor será adicionado à busca:
+//                    tempList = new ArrayList<ListItem>();
+//                    filterResults.count = 0;
+//                    filterResults.values = tempList;
                 }
             }
 
@@ -283,12 +265,16 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
             Log.d("Entrou: ", "publishResults");
 
             if (filterResults.count == 0) {
-//                listItemRepositorySingleton.resetFilteredList();
-                filteredList = listItemRepositorySingleton.getList();
+//                Neste caso todos os valores serão adicionados à busca:
+                filteredList = listItemRepository.getList();
                 notifyDataSetInvalidated();
+
+//                Neste caso enhum valor será adicionado à busca:
+//                filteredList = new ArrayList<ListItem>();
+//                notifyDataSetInvalidated();
             }
             else{
-//                listItemRepositorySingleton.setFilteredList( (ArrayList<ListItem>) filterResults.values );
+//                listItemRepository.setFilteredList( (ArrayList<ListItem>) filterResults.values );
                 filteredList = (ArrayList<ListItem>) filterResults.values;
                 notifyDataSetChanged();
             }

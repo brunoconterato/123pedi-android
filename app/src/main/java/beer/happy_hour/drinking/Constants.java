@@ -12,4 +12,6 @@ public class Constants {
     public static final String BASE_ORDER_URL = "http://www.happy-hour.beer/api/unregistered/orders";
 
     public static final String QUERY_KEY_STRING = "query_key";
+
+    public static final String TAG_TASK_FRAGMENT = "load_stock_task_fragment";
 }

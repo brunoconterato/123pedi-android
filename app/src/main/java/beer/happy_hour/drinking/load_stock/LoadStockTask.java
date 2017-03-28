@@ -1,8 +1,4 @@
-package beer.happy_hour.drinking;
-
-/**
- * Created by brcon on 05/03/2017.
- */
+package beer.happy_hour.drinking.load_stock;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -23,54 +19,71 @@ import beer.happy_hour.drinking.model.Item;
 import beer.happy_hour.drinking.model.shopping_cart.ListItem;
 import beer.happy_hour.drinking.repository.ListItemRepository;
 
+/**
+ * Created by brcon on 28/03/2017.
+ */
+
 
 /**
  * Singleton Implementation
  */
-public class LoadStockJSONTask extends AsyncTask<String, Void, List<Item>> {
+public class LoadStockTask extends AsyncTask<String, Void, List<Item>> {
+    private static LoadStockTask instance;
 
-    private LoadListener listener;
+    private boolean initialized = false;
+
+    private LoadStockFragment.TaskCallbacks callback;
+
     private ListItemRepository repository;
 
-    private static LoadStockJSONTask instance;
-
-    private boolean executed = false;
-
-    private LoadStockJSONTask(){
+    private LoadStockTask(){
         repository = ListItemRepository.getInstance();
     }
 
-    public static LoadStockJSONTask getInstance(){
+    public static LoadStockTask getInstance() {
         if(instance == null){
-            synchronized (LoadStockJSONTask.class) {
+            synchronized (LoadStockTask.class) {
                 if(instance == null){
-                    instance = new LoadStockJSONTask();
+                    instance = new LoadStockTask();
                 }
             }
         }
         return instance;
     }
 
-    public void setListener(LoadListener listener) {
-        this.listener = listener;
+    public boolean isInitialized() {
+        return initialized;
     }
 
-    public boolean isExecuted() {
-        return executed;
+    public void setCallback(LoadStockFragment.TaskCallbacks callback) {
+        this.callback = callback;
     }
 
     @Override
+    protected void onPreExecute() {
+        if (callback != null) {
+            callback.onPreExecute();
+        }
+    }
+
+    /**
+     * Note that we do NOT call the callback object's methods
+     * directly from the background thread, as this could result
+     * in a race condition.
+     */
+    @Override
     protected List<Item> doInBackground(String... strings) {
-        repository = ListItemRepository.getInstance();
-        executed = true;
+        initialized = true;
 
         try {
-            Log.d("Entrou", "LoadStockJSONTask");
+            Log.d("Entrou", "LoadStockTask");
             String stringJSON = loadJSON(strings[0]);
 
             //deserialize generic collection (like a List, in this case)
             Type listType = new TypeToken<List<Item>>(){}.getType();
             List<Item> listItems = new Gson().fromJson(stringJSON, listType);
+
+            repository = ListItemRepository.getInstance();
 
             for(Item item : listItems){
                 Log.d("ToString : ", item.toString());
@@ -88,15 +101,16 @@ public class LoadStockJSONTask extends AsyncTask<String, Void, List<Item>> {
     }
 
     @Override
+    protected void onCancelled() {
+        if (callback != null) {
+            callback.onCancelled();
+        }
+    }
+
+    @Override
     protected void onPostExecute(List<Item> listItem) {
-
-        if (listItem != null) {
-            repository.setLoaded(true);
-            listener.onLoaded(listItem);
-
-        } else {
-            repository.setDisconnected(true);
-            listener.onError();
+        if (callback != null) {
+            callback.onPostExecute();
         }
     }
 
@@ -124,12 +138,5 @@ public class LoadStockJSONTask extends AsyncTask<String, Void, List<Item>> {
         Log.d("JSON : ", response.toString());
 
         return response.toString();
-    }
-
-    public interface LoadListener {
-
-        void onLoaded(List<Item> item);
-
-        void onError();
     }
 }

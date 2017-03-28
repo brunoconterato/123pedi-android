@@ -1,5 +1,6 @@
 package beer.happy_hour.drinking.activity;
 
+import android.app.FragmentManager;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -12,81 +13,103 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.SearchView;
-import android.widget.TableLayout;
 import android.widget.Toast;
 
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
-
 import beer.happy_hour.drinking.Constants;
-import beer.happy_hour.drinking.LoadStockJSONTask;
 import beer.happy_hour.drinking.R;
 import beer.happy_hour.drinking.adapter.ViewPagerAdapter;
-import beer.happy_hour.drinking.fragment.SearchFragment;
-import beer.happy_hour.drinking.model.Item;
-import beer.happy_hour.drinking.model.shopping_cart.ListItem;
+import beer.happy_hour.drinking.fragment.CategoryFragment;
+import beer.happy_hour.drinking.fragment.SearchResultsFragment;
+import beer.happy_hour.drinking.load_stock.LoadStockFragment;
 import beer.happy_hour.drinking.repository.ListItemRepository;
 
-public class SearchTabsActivity extends AppCompatActivity implements LoadStockJSONTask.LoadListener {
-//        SearchView.OnQueryTextListener {
-//                                                                        AdapterView.OnItemClickListener,
-//                                                                        SearchView.OnQueryTextListener
-    
-    //Show listview
-//    private ListView mListView;
-    private boolean loadedListView = false;
+public class SearchTabsActivity extends AppCompatActivity implements SearchView.OnQueryTextListener,
+                                                                        LoadStockFragment.TaskCallbacks {
 
-    private ListItemRepository listItemRepository;
-//    private ListItemAdapter listItemAdapter;
+    private boolean loadedFragments = false;
+
+    private ListItemRepository repository;
 
     private SearchView searchView;
-    private String searchViewText = "Buscar produto";
 
 //    private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
 
-    private SearchFragment searchFragment;
-    private SearchFragment alcoolicsFragment;
-    private SearchFragment nonAlcoolicsFragment;
-    private SearchFragment cigarettesFragment;
-    private SearchFragment snacksFragment;
+    private SearchResultsFragment searchResultsFragment;
+    private CategoryFragment alcoolicsFragment;
+    private CategoryFragment nonAlcoolicsFragment;
+    private CategoryFragment cigarettesFragment;
+    private CategoryFragment snacksFragment;
+
+    private LoadStockFragment loadStockFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_tabs);
 
-        //Show listview
-//        mListView = (ListView) findViewById(R.id.items_list_view);
-//        mListView.setOnItemClickListener(this);
+        FragmentManager fm = getFragmentManager();
+        loadStockFragment = (LoadStockFragment) fm.findFragmentByTag(Constants.TAG_TASK_FRAGMENT);
 
-        listItemRepository = ListItemRepository.getInstance();
+        if (loadStockFragment == null) {
+            loadStockFragment = new LoadStockFragment();
+            fm.beginTransaction().add(loadStockFragment, Constants.TAG_TASK_FRAGMENT).commit();
+        }
 
-//        if ((savedInstanceState == null || !savedInstanceState.containsKey("key"))
-//                && listItemRepository.isEmpty()) {
-//
-//            //Show listiew
-////            new LoadStockJSONTask(this).execute(Constants.BASE_STOCK_URL);
-//        }
-//        else {
-//            Log.d("Entrou: ", "else");
-//
-//            loadSearchFragment();
-//        }
+        repository = ListItemRepository.getInstance();
 
-//        listItemAdapter = new ListItemAdapter(this);
+        loadFragments();
+        loadedFragments = true;
 
-        //Initializing Fragments
-        alcoolicsFragment = loadNewFragmentInstance(Constants.SEARCH_CATEGORY_HASH + "alcoolicos");
-        nonAlcoolicsFragment = loadNewFragmentInstance(Constants.SEARCH_CATEGORY_HASH + "nao_alcoolicos");
-        cigarettesFragment = loadNewFragmentInstance(Constants.SEARCH_CATEGORY_HASH + "cigarros");
-        snacksFragment = loadNewFragmentInstance(Constants.SEARCH_CATEGORY_HASH + "outros");
-        searchFragment = loadNewFragmentInstance("");
+        viewPager = (ViewPager) findViewById(R.id.search_view_pager);
+        setupViewPager(viewPager);
+
+        tabLayout = (TabLayout) findViewById(R.id.search_tabs);
+        tabLayout.setupWithViewPager(viewPager);
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                if (tab.getPosition() != 4) {
+                    /**
+                     * Sumindo teclado ao executar busca!
+                     */
+                    View focus = getCurrentFocus();
+                    if (focus != null) {
+                        InputMethodManager im = (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        im.hideSoftInputFromWindow(focus.getApplicationWindowToken(), 0);
+                    }
+
+                    if (focus != null) {
+                        focus.clearFocus();
+                    }
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+//        toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        setupTabIcons();
+
+        TabLayout.Tab tab = tabLayout.getTabAt(2);
+        tab.select();
 
         SearchManager searchManager = (SearchManager)
                 getSystemService(Context.SEARCH_SERVICE);
@@ -95,28 +118,28 @@ public class SearchTabsActivity extends AppCompatActivity implements LoadStockJS
 
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setSubmitButtonEnabled(true);
-        searchView.setOnQueryTextListener(searchFragment);
+        searchView.setOnQueryTextListener(this);
 
-        LoadStockJSONTask loadStockJSONTask = LoadStockJSONTask.getInstance();
-        loadStockJSONTask.setListener(this);
+        Log.d("onCreate finished", "SearchTabsActivity");
+    }
 
-        if(listItemRepository.isLoaded() && !loadedListView)
-            loadSearchFragment();
-        if(listItemRepository.isDisconnected())
-            Toast.makeText(this, "Erro! Não foi possível recuperar dados", Toast.LENGTH_LONG).show();
+    private void loadFragments() {
+        alcoolicsFragment = loadNewCategoryFragmentInstance(Constants.SEARCH_CATEGORY_HASH + "alcoolicos");
+        nonAlcoolicsFragment = loadNewCategoryFragmentInstance(Constants.SEARCH_CATEGORY_HASH + "nao_alcoolicos");
+        cigarettesFragment = loadNewCategoryFragmentInstance(Constants.SEARCH_CATEGORY_HASH + "cigarros");
+        snacksFragment = loadNewCategoryFragmentInstance(Constants.SEARCH_CATEGORY_HASH + "outros");
 
-//        toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
+        searchResultsFragment = new SearchResultsFragment();
 
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        loadedFragments = true;
+        Log.d("Loaded Fragments", Boolean.toString(loadedFragments));
+    }
 
-        viewPager = (ViewPager) findViewById(R.id.search_view_pager);
-        setupViewPager(viewPager);
-
-        tabLayout = (TabLayout) findViewById(R.id.search_tabs);
-        tabLayout.setupWithViewPager(viewPager);
-
-        setupTabIcons();
+    private void setupCategoryAdapters() {
+        alcoolicsFragment.setupAdapter();
+        nonAlcoolicsFragment.setupAdapter();
+        cigarettesFragment.setupAdapter();
+        snacksFragment.setupAdapter();
     }
 
     private void setupTabIcons() {
@@ -147,100 +170,41 @@ public class SearchTabsActivity extends AppCompatActivity implements LoadStockJS
         viewPagerAdapter.addFragment(nonAlcoolicsFragment, "NÃO ALCOÓLICOS");
         viewPagerAdapter.addFragment(alcoolicsFragment, "ALCOÓLICOS");
         viewPagerAdapter.addFragment(cigarettesFragment, "CIGARROS");
-        viewPagerAdapter.addFragment(searchFragment, "BUSCA");
+        viewPagerAdapter.addFragment(searchResultsFragment, "BUSCA");
         viewPager.setAdapter(viewPagerAdapter);
     }
 
-    //Show listview
     @Override
-    public void onLoaded(List<Item> listItems) {
-        Log.d("Entrou : ", "onLoaded");
+    public boolean onQueryTextSubmit(String query) {
+        viewPager.setCurrentItem(4);
+        searchResultsFragment.getAdapter().getFilter().filter(query);
 
-        Log.d("listItems: ", listItems.toString());
-
-//        for(Item item : listItems){
-//            Log.d("ToString : ", item.toString());
-//            listItemRepository.add(new ListItem(item));
-//        }
-
-        Log.d("Lista Normal: ", listItemRepository.getList().toString());
-
-        loadSearchFragment();
-    }
-
-    //show listview
-    private void loadSearchFragment() {
-        if(!loadedListView) {
-            Log.d("Entrou : ", "loadSearchFragment() Method");
-
-            Log.d("listItemRepository: ", listItemRepository.toString());
-
-            alcoolicsFragment = loadNewFragmentInstance(Constants.SEARCH_CATEGORY_HASH + "alcoolicos");
-
-            loadedListView = true;
+        /**
+         * Sumindo teclado ao executar busca!
+         */
+        View focus = getCurrentFocus();
+        if (focus != null) {
+            InputMethodManager im = (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            im.hideSoftInputFromWindow(focus.getApplicationWindowToken(), 0);
         }
+
+        return true;
     }
-
-    //Show listview
-    @Override
-    public void onError() {
-        Toast.makeText(this, "Erro! Não foi possível recuperar dados", Toast.LENGTH_LONG).show();
-    }
-
-//    //Show listview
-//    //Dando Pica
-//    //TODO: Fazer Funcionar
-//    @Override
-//    public void onItemClick(AdapterView adapterView, View view, int i, long l) {
-//        Toast.makeText(this.getApplicationContext(), "Item clicado", Toast.LENGTH_SHORT).show();
-//    }
-
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
+    public boolean onQueryTextChange(String newQuery) {
+        Log.d("Entrou:", "onQueryTextChange");
 
-        List<ListItem> values = listItemRepository.getList();
-        outState.putParcelableArrayList("key", (ArrayList<ListItem>) values);
+        viewPager.setCurrentItem(4);
+
+        searchResultsFragment.getAdapter().getFilter().filter(newQuery);
+
+        return true;
     }
-
-//    @Override
-//    public boolean onQueryTextSubmit(String query) {
-//        return false;
-//    }
-//
-//    @Override
-//    public boolean onQueryTextChange(String newText) {
-//        Log.d("Entrou:", "onQueryTextChange");
-////        listItemAdapter.getFilter().filter(newText);
-////        mListView.setAdapter(listItemAdapter);
-//
-//        return true;
-//    }
 
     @Override
     public void onBackPressed() {
         startActivity(new Intent(this, MainActivity.class));
-    }
-
-    public void searchSnackCategory(View view){
-//        mListView.setAdapter(listItemAdapter);
-//        listItemAdapter.getFilter().filter(Constants.SEARCH_CATEGORY_HASH + "outros");
-    }
-
-    public void searchSodaCategory(View view){
-//        mListView.setAdapter(listItemAdapter);
-//        listItemAdapter.getFilter().filter(Constants.SEARCH_CATEGORY_HASH + "nao_alcoolicos");
-    }
-
-    public void searchAlcoholCategory(View view){
-//        mListView.setAdapter(listItemAdapter);
-//        listItemAdapter.getFilter().filter(Constants.SEARCH_CATEGORY_HASH + "alcoolicos");
-    }
-
-    public void searchCigaretteCategory(View view){
-//        mListView.setAdapter(listItemAdapter);
-//        listItemAdapter.getFilter().filter(Constants.SEARCH_CATEGORY_HASH + "cigarros");
     }
 
     public void viewShoppingCart(View view){
@@ -274,19 +238,35 @@ public class SearchTabsActivity extends AppCompatActivity implements LoadStockJS
         return (super.onOptionsItemSelected(item));
     }
 
-    public SearchFragment loadNewFragmentInstance(String querySearch) {
-        SearchFragment searchFragment = new SearchFragment();
+    public CategoryFragment loadNewCategoryFragmentInstance(String querySearch) {
+        CategoryFragment searchFragment = new CategoryFragment();
 
         Bundle args = new Bundle();
         args.putString(Constants.QUERY_KEY_STRING, querySearch);
         searchFragment.setArguments(args);
+
         return searchFragment;
     }
 
-    public void changeTab(int tabIndex){
-        if(tabIndex < tabLayout.getTabCount()) {
-            TabLayout.Tab tab = tabLayout.getTabAt(tabIndex);
-            tab.select();
-        }
+    //Show listview
+    @Override
+    public void onError() {
+        Toast.makeText(this, "Erro! Não foi possível recuperar dados", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onPreExecute() {
+
+    }
+
+    @Override
+    public void onCancelled() {
+
+    }
+
+    @Override
+    public void onPostExecute() {
+        Log.d("onPostExecute", "SearchTabsActivity");
+        setupCategoryAdapters();
     }
 }

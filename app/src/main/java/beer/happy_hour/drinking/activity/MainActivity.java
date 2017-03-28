@@ -1,29 +1,28 @@
 package beer.happy_hour.drinking.activity;
 
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import com.facebook.login.widget.LoginButton;
 
-import java.util.List;
-
 import beer.happy_hour.drinking.Constants;
-import beer.happy_hour.drinking.LoadStockJSONTask;
 import beer.happy_hour.drinking.R;
-import beer.happy_hour.drinking.model.Item;
+import beer.happy_hour.drinking.load_stock.LoadStockFragment;
 import beer.happy_hour.drinking.model.shopping_cart.ShoppingCart;
 
-public class MainActivity extends AppCompatActivity implements LoadStockJSONTask.LoadListener {
+public class MainActivity extends AppCompatActivity implements LoadStockFragment.TaskCallbacks {
 
     private LoginButton b;
     private int backButtonCount;
 
     private ShoppingCart cart;
 
-    private LoadStockJSONTask loadStockJSONTask;
+    private LoadStockFragment loadStockFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,11 +31,13 @@ public class MainActivity extends AppCompatActivity implements LoadStockJSONTask
 
         cart = ShoppingCart.getInstance();
 
-        //Show listiew
-        loadStockJSONTask = LoadStockJSONTask.getInstance();
-        loadStockJSONTask.setListener(this);
-        if(!loadStockJSONTask.isExecuted())
-            loadStockJSONTask.execute(Constants.BASE_STOCK_URL);
+        FragmentManager fm = getFragmentManager();
+        loadStockFragment = (LoadStockFragment) fm.findFragmentByTag(Constants.TAG_TASK_FRAGMENT);
+
+        if (loadStockFragment == null) {
+            loadStockFragment = new LoadStockFragment();
+            fm.beginTransaction().add(loadStockFragment, Constants.TAG_TASK_FRAGMENT).commit();
+        }
     }
 
     /**
@@ -64,8 +65,6 @@ public class MainActivity extends AppCompatActivity implements LoadStockJSONTask
     }
 
     public void goToSearchActivity(View view){
-//        Intent intent = new Intent(this, SearchActivity.class);
-//        startActivity(intent);
         startActivity(new Intent(this, SearchTabsActivity.class));
     }
 
@@ -77,12 +76,22 @@ public class MainActivity extends AppCompatActivity implements LoadStockJSONTask
     }
 
     @Override
-    public void onLoaded(List<Item> item) {
+    public void onError() {
+        Toast.makeText(this, "Erro! Verifique sua conexão", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onPreExecute() {
 
     }
 
     @Override
-    public void onError() {
-        Toast.makeText(this, "Erro! Não foi possível recuperar dados", Toast.LENGTH_LONG).show();
+    public void onCancelled() {
+
+    }
+
+    @Override
+    public void onPostExecute() {
+        Log.d("onPostExecute", "MainActivity");
     }
 }
