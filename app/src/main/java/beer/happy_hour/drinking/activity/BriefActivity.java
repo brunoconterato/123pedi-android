@@ -9,6 +9,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
@@ -40,13 +41,23 @@ public class BriefActivity extends AppCompatActivity implements GenerateOrderAPI
 
     private Switch majority_confirmation_switch;
 
-    private LayoutParams popUpParams;
-    private LinearLayout popUpContainerLayout;
-    private PopupWindow popUpWindow;
-    private Button closePopUpButton;
-    private TextView popUpTextView;
+    private LayoutParams pop_up_params;
+    private LinearLayout pop_up_container_layout;
+    private PopupWindow pop_up_window;
+    private Button close_pop_up_button;
+    private TextView pop_up_text_view;
     private TextView items_quantity_brief_text_view;
     private TextView total_brief_text_view;
+
+    private LinearLayout majority_marked_container_layout;
+    private LayoutParams majority_container_linear_layout_params;
+    private PopupWindow majority_marked_pop_up_window;
+    private TextView majority_pop_up_text_view;
+    private LayoutParams layoutParamsWeightedMATCH;
+    private LayoutParams layoutParamsWRAP;
+    private Button majority_agree_pop_up_button;
+    private Button majority_disagree_pop_up_button;
+    private LinearLayout majority_buttons_linear_layout;
 
     private String ITEMS_QUANTITY_PREFIX = "Quantidade de produtos: ";
     private String TOTAL_PREFIX = "Total: R$ ";
@@ -119,41 +130,135 @@ public class BriefActivity extends AppCompatActivity implements GenerateOrderAPI
 
 
         majority_confirmation_switch = (Switch) findViewById(R.id.majority_confirmation_switch);
-        //Initiating popup windows
+
+        majority_confirmation_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+//                    majority_marked_pop_up_window.showAtLocation(majority_marked_container_layout, Gravity.CENTER, 0, 0);
+                    close_pop_up_button.setText("Estou ciente");
+                    pop_up_text_view.setText(R.string.majority_confirmation_check);
+                    pop_up_window.showAtLocation(pop_up_container_layout, Gravity.BOTTOM, 0, 0);
+                }
+                else {
+                    close_pop_up_button.setText("Ok");
+                    pop_up_text_view.setText(R.string.majority_popup_message);
+                    pop_up_window.showAtLocation(pop_up_container_layout, Gravity.BOTTOM, 0, 0);
+                }
+            }
+        });
+
+        //Initiating missed majority popup window
         try {
-            popUpContainerLayout = new LinearLayout(this);
+            pop_up_container_layout = new LinearLayout(this);
 //            popUpMainLayout = new LinearLayout(this);
-            popUpWindow = new PopupWindow(this);
+            pop_up_window = new PopupWindow(this);
 
-            popUpTextView = new TextView(this);
-            popUpTextView.setText(R.string.majority_popup_message);
-            popUpTextView.setTextSize(35);
+            pop_up_text_view = new TextView(this);
+            pop_up_text_view.setText(R.string.majority_popup_message);
+            pop_up_text_view.setTextSize(35);
 
-            popUpParams = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
+            pop_up_params = new LayoutParams(LayoutParams.WRAP_CONTENT,
                     LayoutParams.WRAP_CONTENT);
 
 
-            closePopUpButton = new Button(this);
-            closePopUpButton.setTextSize(35);
-            closePopUpButton.setText("Ok");
-            closePopUpButton.setOnClickListener(new View.OnClickListener() {
+            close_pop_up_button = new Button(this);
+            close_pop_up_button.setTextSize(35);
+            close_pop_up_button.setText("Ok");
+            close_pop_up_button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    popUpWindow.dismiss();
+                    pop_up_window.dismiss();
                 }
             });
 
-            popUpContainerLayout.setOrientation(LinearLayout.VERTICAL);
-            popUpContainerLayout.addView(popUpTextView, popUpParams);
-            popUpContainerLayout.addView(closePopUpButton, LayoutParams.MATCH_PARENT);
-            popUpContainerLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+            pop_up_container_layout.setOrientation(LinearLayout.VERTICAL);
+            pop_up_container_layout.addView(pop_up_text_view, pop_up_params);
+            pop_up_container_layout.addView(close_pop_up_button, LayoutParams.MATCH_PARENT);
+            pop_up_container_layout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
 
-            popUpWindow.setContentView(popUpContainerLayout);
-//            popUpMainLayout.addView(closePopUpButton, popUpParams);
+            pop_up_window.setContentView(pop_up_container_layout);
+//            popUpMainLayout.addView(close_pop_up_button, pop_up_params);
 //            setContentView(popUpMainLayout);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+//        //initiate majority marked popup
+//        try{
+//
+//            layoutParamsWRAP = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+//                    ViewGroup.LayoutParams.WRAP_CONTENT);
+//
+//            layoutParamsWeightedMATCH = new LayoutParams(LayoutParams.MATCH_PARENT,
+//                    LayoutParams.MATCH_PARENT);
+//            layoutParamsWeightedMATCH.weight = 1;
+//
+//            majority_marked_container_layout = new LinearLayout(this);
+////            majority_container_linear_layout_params = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
+////                    LayoutParams.WRAP_CONTENT);
+////
+////            majority_marked_container_layout.setLayoutParams(majority_container_linear_layout_params);
+//
+//            majority_marked_pop_up_window = new PopupWindow(this);
+//
+//            majority_pop_up_text_view = new TextView(this);
+//            majority_pop_up_text_view.setText("Concorda que a entrega seja efetuada somente após apresentação de documento de identificação oficial com foto?");
+//            majority_pop_up_text_view.setTextSize(30);
+//            majority_pop_up_text_view.setLayoutParams(layoutParamsWRAP);
+//
+//            majority_buttons_linear_layout = new LinearLayout(this);
+//            majority_buttons_linear_layout.setLayoutParams(layoutParamsWRAP);
+//            majority_buttons_linear_layout.setOrientation(LinearLayout.HORIZONTAL);
+//
+//            majority_disagree_pop_up_button = new Button(this);
+//            majority_disagree_pop_up_button.setTextSize(26);
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                majority_disagree_pop_up_button.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.ic_cancel_icon));
+//            }
+//            else {
+//                majority_disagree_pop_up_button.setText("Discordo");
+//            }
+//            majority_disagree_pop_up_button.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    //TODO:
+//                    majority_marked_pop_up_window.dismiss();
+//                    pop_up_window.showAtLocation(pop_up_container_layout, Gravity.BOTTOM, 0, 0);
+//                }
+//            });
+//
+//            majority_agree_pop_up_button = new Button(this);
+//            majority_agree_pop_up_button.setTextSize(26);
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                majority_agree_pop_up_button.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.ic_black_check));
+//            }
+//            else {
+//                majority_agree_pop_up_button.setText("Concordo");
+//            }
+//            majority_agree_pop_up_button.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    //TODO:
+//                    majority_marked_pop_up_window.dismiss();
+//                }
+//            });
+//
+//
+//            majority_buttons_linear_layout.addView(majority_disagree_pop_up_button, layoutParamsWeightedMATCH);
+//            majority_buttons_linear_layout.addView(majority_agree_pop_up_button, layoutParamsWeightedMATCH);
+//
+//            majority_marked_container_layout.setOrientation(LinearLayout.VERTICAL);
+//            majority_marked_container_layout.addView(majority_pop_up_text_view, LayoutParams.WRAP_CONTENT);
+//            majority_marked_container_layout.addView(majority_buttons_linear_layout);
+//            majority_marked_container_layout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+//
+//            majority_marked_pop_up_window.setContentView(majority_marked_container_layout);
+//        }
+//
+//        catch(Exception e) {
+//            e.printStackTrace();
+//        }
 
         finalProgressDialog = new ProgressDialog(this);
         finalProgressDialog.setMessage("Finalizando. Aguarde um momento..");
@@ -168,8 +273,8 @@ public class BriefActivity extends AppCompatActivity implements GenerateOrderAPI
             GenerateOrderAPIAsync orderGenerator = new GenerateOrderAPIAsync();
             orderGenerator.execute();
         } else {
-            popUpWindow.showAtLocation(popUpContainerLayout, Gravity.BOTTOM, 0, 0);
-//            popUpWindow.update(300,300);
+            pop_up_window.showAtLocation(pop_up_container_layout, Gravity.BOTTOM, 0, 0);
+//            pop_up_window.update(300,300);
         }
     }
 
