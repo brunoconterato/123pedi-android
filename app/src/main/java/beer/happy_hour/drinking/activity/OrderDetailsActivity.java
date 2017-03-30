@@ -154,7 +154,8 @@ public class OrderDetailsActivity extends AppCompatActivity implements GoogleApi
         switch (item.getItemId()) {
             case R.id.add:
                 return (true);
-            case R.id.reset:
+            case R.id.cart_menu_item:
+                startActivity(new Intent(this, CartActivity.class));
                 return (true);
             case R.id.about:
                 Toast.makeText(this, "About Toast!", Toast.LENGTH_LONG).show();

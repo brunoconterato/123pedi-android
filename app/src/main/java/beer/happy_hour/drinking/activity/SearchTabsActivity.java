@@ -24,6 +24,7 @@ import beer.happy_hour.drinking.adapter.ViewPagerAdapter;
 import beer.happy_hour.drinking.fragment.CategoryFragment;
 import beer.happy_hour.drinking.fragment.SearchResultsFragment;
 import beer.happy_hour.drinking.load_stock.LoadStockFragment;
+import beer.happy_hour.drinking.model.shopping_cart.ShoppingCart;
 import beer.happy_hour.drinking.repository.ListItemRepository;
 
 public class SearchTabsActivity extends AppCompatActivity implements SearchView.OnQueryTextListener,
@@ -31,9 +32,9 @@ public class SearchTabsActivity extends AppCompatActivity implements SearchView.
 
     private boolean loadedFragments = false;
 
-    private ListItemRepository repository;
-
     private SearchView searchView;
+
+    private ShoppingCart cart;
 
 //    private Toolbar toolbar;
     private TabLayout tabLayout;
@@ -60,10 +61,10 @@ public class SearchTabsActivity extends AppCompatActivity implements SearchView.
             fm.beginTransaction().add(loadStockFragment, Constants.TAG_TASK_FRAGMENT).commit();
         }
 
-        repository = ListItemRepository.getInstance();
-
         loadFragments();
         loadedFragments = true;
+
+        cart = ShoppingCart.getInstance();
 
         viewPager = (ViewPager) findViewById(R.id.search_view_pager);
         setupViewPager(viewPager);
@@ -207,10 +208,11 @@ public class SearchTabsActivity extends AppCompatActivity implements SearchView.
         startActivity(new Intent(this, MainActivity.class));
     }
 
-    public void viewShoppingCart(View view){
-        Intent intent = new Intent(this, CartActivity.class);
-        startActivity(intent);
-        finish();
+    public void goToShoppingCart(View view){
+        if(cart.getItemsQuantity() > 0)
+            startActivity(new Intent(this, CartActivity.class));
+        else
+            Toast.makeText(this, "Aumente quantidades para acrescentar itens ao carrinho!", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -225,7 +227,12 @@ public class SearchTabsActivity extends AppCompatActivity implements SearchView.
         switch (item.getItemId()) {
             case R.id.add:
                 return (true);
-            case R.id.reset:
+            case R.id.cart_menu_item:
+                if(cart.getItemsQuantity() > 0)
+                    startActivity(new Intent(this, CartActivity.class));
+                else
+                    Toast.makeText(this, "Aumente quantidades para acrescentar itens ao carrinho!", Toast.LENGTH_LONG).show();
+
                 return (true);
             case R.id.about:
                 Toast.makeText(this, "About Toast!", Toast.LENGTH_LONG).show();

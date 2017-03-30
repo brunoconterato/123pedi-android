@@ -57,6 +57,8 @@ public class CartActivity extends AppCompatActivity implements AdapterView.OnIte
         Log.d("Menu", "onCreateMenu");
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        MenuItem cart = (MenuItem) menu.findItem(R.id.cart_menu_item);
+        cart.setVisible(false);
         return true;
     }
 
@@ -64,8 +66,6 @@ public class CartActivity extends AppCompatActivity implements AdapterView.OnIte
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.add:
-                return (true);
-            case R.id.reset:
                 return (true);
             case R.id.about:
                 Toast.makeText(this, "About Toast!", Toast.LENGTH_LONG).show();

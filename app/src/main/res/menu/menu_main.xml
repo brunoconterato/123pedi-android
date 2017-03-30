@@ -6,16 +6,10 @@
     tools:context=".activity.MainActivity">
 
     <item
-        android:id="@+id/add"
-        android:icon="@android:drawable/ic_menu_add"
-        android:title="Add"
-        app:showAsAction="ifRoom" />
-
-    <item
-        android:id="@+id/reset"
-        android:icon="@android:drawable/ic_menu_revert"
-        android:title="Reset"
-        app:showAsAction="always|withText" />
+        android:id="@+id/cart_menu_item"
+        android:icon="@drawable/ic_shopping_cart"
+        android:title="Cart"
+        app:showAsAction="always"/>
 
     <item
         android:id="@+id/about"

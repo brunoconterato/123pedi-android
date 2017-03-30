@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -16,6 +18,7 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.PopupWindow;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import beer.happy_hour.drinking.R;
 import beer.happy_hour.drinking.generate_order_async.GenerateOrderAPIAsync;
@@ -175,7 +178,7 @@ public class BriefActivity extends AppCompatActivity implements GenerateOrderAPI
             pop_up_container_layout.setOrientation(LinearLayout.VERTICAL);
             pop_up_container_layout.addView(pop_up_text_view, pop_up_params);
             pop_up_container_layout.addView(close_pop_up_button, LayoutParams.MATCH_PARENT);
-            pop_up_container_layout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+            pop_up_container_layout.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
 
             pop_up_window.setContentView(pop_up_container_layout);
 //            popUpMainLayout.addView(close_pop_up_button, pop_up_params);
@@ -288,5 +291,31 @@ public class BriefActivity extends AppCompatActivity implements GenerateOrderAPI
     @Override
     public void onBackPressed() {
         startActivity(new Intent(this, PaymentActivity.class));
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.add:
+                return (true);
+            case R.id.cart_menu_item:
+                startActivity(new Intent(this, CartActivity.class));
+                return (true);
+            case R.id.about:
+                Toast.makeText(this, "About Toast!", Toast.LENGTH_LONG).show();
+                return (true);
+            case R.id.exit:
+                finish();
+                return (true);
+
+        }
+        return (super.onOptionsItemSelected(item));
     }
 }

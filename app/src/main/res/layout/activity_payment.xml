@@ -80,7 +80,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="right"
-                    android:background="@drawable/number_picker_background" />
+                    android:background="@drawable/number_picker_background_orange" />
             </LinearLayout>
 
             <LinearLayout
@@ -100,7 +100,7 @@
                     android:id="@+id/yearNumberPicker"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/number_picker_background" />
+                    android:background="@drawable/number_picker_background_orange" />
             </LinearLayout>
 
         </LinearLayout>

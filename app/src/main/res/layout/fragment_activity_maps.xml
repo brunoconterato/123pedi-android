@@ -28,10 +28,10 @@
             tools:context="beer.happy_hour.drinking.activity.MapsFragmentActivity" />
 
         <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="60dp"
+            android:layout_height="120dp"
             android:layout_centerInParent="true"
-            android:background="@drawable/ic_antu_drink_beer_svg" />
+            android:background="@drawable/ic_beerpin_novo4_centralizado" />
 
     </RelativeLayout>
 
