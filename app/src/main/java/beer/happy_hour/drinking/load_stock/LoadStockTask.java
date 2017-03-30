@@ -16,7 +16,7 @@ import java.net.URL;
 import java.util.List;
 
 import beer.happy_hour.drinking.model.Item;
-import beer.happy_hour.drinking.model.shopping_cart.ListItem;
+import beer.happy_hour.drinking.model.List_Item.ListItem;
 import beer.happy_hour.drinking.repository.ListItemRepository;
 
 /**

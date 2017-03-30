@@ -219,10 +219,6 @@ public class PaymentActivity extends AppCompatActivity {
         return (super.onOptionsItemSelected(item));
     }
 
-    public void testPayment(View view) {
-        Log.d("Payment", payment.printBrief());
-    }
-
     private class CardNumberTextListener extends MaskEditTextChangedListener implements TextWatcher {
 
 

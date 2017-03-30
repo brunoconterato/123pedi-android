@@ -13,21 +13,23 @@ import beer.happy_hour.drinking.async_http_client.RestApiHttpClient;
 import beer.happy_hour.drinking.model.DeliveryPlace;
 import beer.happy_hour.drinking.model.Item;
 import beer.happy_hour.drinking.model.User;
-import beer.happy_hour.drinking.model.shopping_cart.ListItem;
-import beer.happy_hour.drinking.model.shopping_cart.ShoppingCart;
+import beer.happy_hour.drinking.model.List_Item.ListItem;
+import beer.happy_hour.drinking.model.List_Item.ShoppingCart;
 import cz.msebera.android.httpclient.Header;
 
 /**
  * Created by brcon on 21/03/2017.
  */
 
-public class GenerateOrderAPIAsync extends AsyncTask<Void, Void, Boolean> {
+public class orderGeneratorAPIAsync extends AsyncTask<Void, Void, Boolean> {
 
     boolean succesInTransaction = false;
 
     private User user;
     private DeliveryPlace deliveryPlace;
     private ShoppingCart cart;
+
+    private OrderGeneratedListener listener;
 
     @Override
     protected Boolean doInBackground(Void... params) {
@@ -77,6 +79,12 @@ public class GenerateOrderAPIAsync extends AsyncTask<Void, Void, Boolean> {
 
                 succesInTransaction = true;
             }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String str, Throwable throwable){
+                Log.d("Failure code:", Integer.toString(statusCode));
+                Log.e("MyApp", "Caught error", throwable);
+            }
         });
 
         //    OrderRestClient.post(Constants.BASE_ORDER_URL, requestParams, new AsyncHttpResponseHandler() {
@@ -98,9 +106,23 @@ public class GenerateOrderAPIAsync extends AsyncTask<Void, Void, Boolean> {
         return succesInTransaction;
     }
 
-    public interface Listener {
+    @Override
+    protected void onPostExecute(Boolean succesInTransaction){
+        if(listener != null)
+            if(succesInTransaction)
+                listener.onOrderSucceeded();
+            else
+                listener.onOrderFailed();
+    }
 
-        void onGeneratedAPIOrder();
+    public void setListener(OrderGeneratedListener listener){
+        this.listener = listener;
+    }
+
+    public interface OrderGeneratedListener {
+
+        void onOrderSucceeded();
+        void onOrderFailed();
 
     }
 }

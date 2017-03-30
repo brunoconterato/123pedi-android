@@ -21,20 +21,24 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import beer.happy_hour.drinking.R;
-import beer.happy_hour.drinking.generate_order_async.GenerateOrderAPIAsync;
+import beer.happy_hour.drinking.generate_order_async.orderGeneratorAPIAsync;
 import beer.happy_hour.drinking.model.DeliveryPlace;
 import beer.happy_hour.drinking.model.Payment;
 import beer.happy_hour.drinking.model.User;
-import beer.happy_hour.drinking.model.shopping_cart.ListItem;
-import beer.happy_hour.drinking.model.shopping_cart.ShoppingCart;
+import beer.happy_hour.drinking.model.List_Item.ListItem;
+import beer.happy_hour.drinking.model.List_Item.ShoppingCart;
+import beer.happy_hour.drinking.repository.ListItemRepository;
 
-public class BriefActivity extends AppCompatActivity implements GenerateOrderAPIAsync.Listener {
+public class BriefActivity extends AppCompatActivity implements orderGeneratorAPIAsync.OrderGeneratedListener {
 
     ProgressDialog finalProgressDialog;
+    orderGeneratorAPIAsync orderGenerator;
+
     private User user;
     private DeliveryPlace deliveryPlace;
     private ShoppingCart cart;
     private Payment payment;
+    private ListItemRepository repository;
 
     private TextView contact_brief_text_view;
     private TextView address_brief_text_view;
@@ -78,6 +82,7 @@ public class BriefActivity extends AppCompatActivity implements GenerateOrderAPI
         deliveryPlace = DeliveryPlace.getInstance();
         cart = ShoppingCart.getInstance();
         payment = Payment.getInstance();
+        repository = ListItemRepository.getInstance();
 
         contact_brief_text_view = (TextView) findViewById(R.id.contact_brief_text_view);
         address_brief_text_view = (TextView) findViewById(R.id.address_brief_text_view);
@@ -266,26 +271,41 @@ public class BriefActivity extends AppCompatActivity implements GenerateOrderAPI
         finalProgressDialog = new ProgressDialog(this);
         finalProgressDialog.setMessage("Finalizando. Aguarde um momento..");
         finalProgressDialog.setIndeterminate(true);
-        finalProgressDialog.setCancelable(true);
-        finalProgressDialog.show();
-
+        finalProgressDialog.setCancelable(false);
     }
 
     public void generateOrder(View view) {
         if (majority_confirmation_switch.isChecked()) {
-            GenerateOrderAPIAsync orderGenerator = new GenerateOrderAPIAsync();
+            orderGenerator = new orderGeneratorAPIAsync();
+            orderGenerator.setListener(this);
             orderGenerator.execute();
+            finalProgressDialog.show();
         } else {
             pop_up_window.showAtLocation(pop_up_container_layout, Gravity.BOTTOM, 0, 0);
 //            pop_up_window.update(300,300);
         }
     }
 
+    private void resetItems(){
+        for(ListItem item : repository.getList())
+            item.setQuantityAndUpdateCart(0);
+    }
 
     //Código para realizar após ordem estar gerada na nossa API
     @Override
-    public void onGeneratedAPIOrder() {
-        //TODO: if(succesInTransaction) e (PagamentoEmCartão) -> Inicie API de pagamento
+    public void onOrderSucceeded() {
+        resetItems();
+
+        finalProgressDialog.dismiss();
+        startActivity(new Intent(this, OnOrderAcceptedActivity.class));
+
+        //TODO: zerar todos os items e limpar carrinho
+    }
+
+    //TODO: implementar
+    @Override
+    public void onOrderFailed() {
+        finalProgressDialog.dismiss();
     }
 
     @Override

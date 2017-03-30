@@ -13,7 +13,7 @@ import com.facebook.login.widget.LoginButton;
 import beer.happy_hour.drinking.Constants;
 import beer.happy_hour.drinking.R;
 import beer.happy_hour.drinking.load_stock.LoadStockFragment;
-import beer.happy_hour.drinking.model.shopping_cart.ShoppingCart;
+import beer.happy_hour.drinking.model.List_Item.ShoppingCart;
 
 public class MainActivity extends AppCompatActivity implements LoadStockFragment.TaskCallbacks {
 

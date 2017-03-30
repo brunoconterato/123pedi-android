@@ -1,4 +1,4 @@
-package beer.happy_hour.drinking.model.shopping_cart;
+package beer.happy_hour.drinking.model.List_Item;
 
 import android.os.Parcel;
 import android.os.Parcelable;

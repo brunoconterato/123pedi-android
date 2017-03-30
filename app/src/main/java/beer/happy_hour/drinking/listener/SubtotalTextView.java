@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 
-import beer.happy_hour.drinking.model.shopping_cart.ListItem;
+import beer.happy_hour.drinking.model.List_Item.ListItem;
 
 /**
  * Created by brcon on 15/03/2017.

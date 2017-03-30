@@ -60,7 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:onClick="goToMapActivity"
-            android:text="Local está errado?" />
+            android:text="Indicar outro local no mapa" />
 
         <EditText
             android:id="@+id/complement_edit_text"

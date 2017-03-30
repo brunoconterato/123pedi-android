@@ -1,4 +1,4 @@
-package beer.happy_hour.drinking.model.shopping_cart;
+package beer.happy_hour.drinking.model.List_Item;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,7 @@ public class ShoppingCart {
 
     /**
      * Visibilidade de pacote: só pode ser acessado por objetos ListItem
-     * Único método de ListItem que o pode acessar: setQUantity;
+     * Único método de ListItem que o pode acessar: setQuantity;
      *
      * @param listItem
      */

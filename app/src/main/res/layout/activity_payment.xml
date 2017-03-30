@@ -128,10 +128,4 @@
         android:onClick="goToBriefActivity"
         android:text="Prossiga para resumo" />
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="testPayment"
-        android:text="Teste pagamento" />
-
 </LinearLayout>

@@ -20,7 +20,7 @@ import java.util.List;
 
 import beer.happy_hour.drinking.Constants;
 import beer.happy_hour.drinking.R;
-import beer.happy_hour.drinking.model.shopping_cart.ListItem;
+import beer.happy_hour.drinking.model.List_Item.ListItem;
 import beer.happy_hour.drinking.repository.ListItemRepository;
 
 /**

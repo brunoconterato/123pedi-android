@@ -14,8 +14,8 @@ import android.widget.TextView;
 
 import beer.happy_hour.drinking.R;
 import beer.happy_hour.drinking.listener.SubtotalTextView;
-import beer.happy_hour.drinking.model.shopping_cart.ListItem;
-import beer.happy_hour.drinking.model.shopping_cart.ShoppingCart;
+import beer.happy_hour.drinking.model.List_Item.ListItem;
+import beer.happy_hour.drinking.model.List_Item.ShoppingCart;
 
 /**
  * Created by brcon on 09/03/2017.

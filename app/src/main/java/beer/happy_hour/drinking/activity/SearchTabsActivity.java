@@ -24,8 +24,7 @@ import beer.happy_hour.drinking.adapter.ViewPagerAdapter;
 import beer.happy_hour.drinking.fragment.CategoryFragment;
 import beer.happy_hour.drinking.fragment.SearchResultsFragment;
 import beer.happy_hour.drinking.load_stock.LoadStockFragment;
-import beer.happy_hour.drinking.model.shopping_cart.ShoppingCart;
-import beer.happy_hour.drinking.repository.ListItemRepository;
+import beer.happy_hour.drinking.model.List_Item.ShoppingCart;
 
 public class SearchTabsActivity extends AppCompatActivity implements SearchView.OnQueryTextListener,
                                                                         LoadStockFragment.TaskCallbacks {
