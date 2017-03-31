@@ -11,14 +11,4 @@
         android:title="Cart"
         app:showAsAction="always"/>
 
-    <item
-        android:id="@+id/about"
-        android:icon="@android:drawable/ic_dialog_info"
-        android:title="About"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/exit"
-        android:title="Exit"
-        app:showAsAction="never" />
 </menu>

@@ -145,9 +145,11 @@
             android:textSize="20sp" />
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/finalize_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/rounded_corner_ghost_button"
+            android:textSize="20sp"
             android:onClick="generateOrder"
             android:text="Concluir Pedido" />
 

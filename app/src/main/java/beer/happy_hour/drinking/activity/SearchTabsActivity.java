@@ -216,6 +216,7 @@ public class SearchTabsActivity extends AppCompatActivity implements SearchView.
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
@@ -224,8 +225,6 @@ public class SearchTabsActivity extends AppCompatActivity implements SearchView.
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.add:
-                return (true);
             case R.id.cart_menu_item:
                 if(cart.getItemsQuantity() > 0)
                     startActivity(new Intent(this, CartActivity.class));
@@ -233,13 +232,10 @@ public class SearchTabsActivity extends AppCompatActivity implements SearchView.
                     Toast.makeText(this, "Aumente quantidades para acrescentar itens ao carrinho!", Toast.LENGTH_LONG).show();
 
                 return (true);
-            case R.id.about:
-                Toast.makeText(this, "About Toast!", Toast.LENGTH_LONG).show();
-                return (true);
-            case R.id.exit:
-                finish();
-                return (true);
 
+            case android.R.id.home:
+                startActivity(new Intent(this, MainActivity.class));
+                return true;
         }
         return (super.onOptionsItemSelected(item));
     }
@@ -274,5 +270,12 @@ public class SearchTabsActivity extends AppCompatActivity implements SearchView.
     public void onPostExecute() {
         Log.d("onPostExecute", "SearchTabsActivity");
         setupCategoryAdapters();
+    }
+
+    public void goToCartActivity(View view) {
+        if(cart.getItemsQuantity() > 0)
+            startActivity(new Intent(this, CartActivity.class));
+        else
+            Toast.makeText(this, "Aumente quantidades para acrescentar itens ao carrinho!", Toast.LENGTH_LONG).show();
     }
 }

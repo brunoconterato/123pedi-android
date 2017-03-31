@@ -6,6 +6,15 @@
     android:orientation="vertical"
     tools:context="beer.happy_hour.drinking.activity.CartActivity">
 
+    <beer.happy_hour.drinking.listener.TotalTextView
+        android:id="@+id/total_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/colorPrimary"
+        android:gravity="center"
+        android:text="Total: R$"
+        android:textSize="20sp" />
+
     <ListView
         android:id="@+id/cart_list_view"
         android:layout_width="match_parent"
@@ -14,33 +23,16 @@
 
     </ListView>
 
-    <LinearLayout
+
+    <Button
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="4"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="@drawable/rounded_corner_ghost_button"
+        android:textSize="20sp"
+        android:onClick="goToFinalizeActivity"
+        android:text="Finalizar compra" />
 
-        <beer.happy_hour.drinking.listener.TotalTextView
-            android:id="@+id/total_text_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorPrimary"
-            android:gravity="center"
-            android:text="Total: R$"
-            android:textSize="25dp" />
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorPrimaryDark"
-            android:onClick="goToFinalizeActivity"
-            android:text="Finalizar compra"
-            android:textSize="25dp" />
-
-
-    </LinearLayout>
 
 
 </LinearLayout>

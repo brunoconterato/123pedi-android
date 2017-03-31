@@ -58,9 +58,12 @@
             android:id="@+id/goToMap"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:background="@drawable/rounded_corner_ghost_button"
+            android:textSize="20sp"
             android:layout_marginBottom="10dp"
             android:onClick="goToMapActivity"
-            android:text="Indicar outro local no mapa" />
+            android:text="Escolher outro local" />
 
         <EditText
             android:id="@+id/complement_edit_text"
@@ -74,6 +77,9 @@
             android:id="@+id/finalize_order_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:background="@drawable/rounded_corner_ghost_button"
+            android:textSize="20sp"
             android:onClick="goToPaymentActivity"
             android:text="Prosseguir para Pagamento" />
 

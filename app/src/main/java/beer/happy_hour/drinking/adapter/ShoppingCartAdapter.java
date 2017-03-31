@@ -2,6 +2,7 @@ package beer.happy_hour.drinking.adapter;
 
 import android.content.Context;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import beer.happy_hour.drinking.InputFilterMinMax;
 import beer.happy_hour.drinking.R;
 import beer.happy_hour.drinking.listener.SubtotalTextView;
 import beer.happy_hour.drinking.model.List_Item.ListItem;
@@ -104,6 +106,10 @@ public class ShoppingCartAdapter extends ArrayAdapter<ListItem> {
             }
         });
 
+        quantity_editText.setSelection(quantity_editText.getText().length());
+
+        quantity_editText.setFilters(new InputFilter[]{ new InputFilterMinMax("0", "99")});
+
         quantity_editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -119,10 +125,14 @@ public class ShoppingCartAdapter extends ArrayAdapter<ListItem> {
             public void afterTextChanged(Editable editable) {
                 if (!quantity_editText.getText().toString().equals("")) {
 
-                    Log.d("After Text Changed: ", quantity_editText.getText().toString());
-                    listItem.setQuantityAndUpdateCart(Integer.parseInt(quantity_editText.getText().toString()));
+                    if(Integer.parseInt(quantity_editText.getText().toString()) > 0) {
+                        Log.d("After Text Changed: ", quantity_editText.getText().toString());
 
-                    Log.d("New Quantity: ", Integer.toString(listItem.getQuantity()));
+                        listItem.setQuantityAndUpdateCart(Integer.parseInt(quantity_editText.getText().toString()));
+                        Log.d("New Quantity: ", Integer.toString(listItem.getQuantity()));
+                    }
+                } else {
+                    listItem.setQuantityAndUpdateCart(0);
                 }
             }
         });

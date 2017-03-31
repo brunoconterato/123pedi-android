@@ -144,6 +144,7 @@ public class OrderDetailsActivity extends AppCompatActivity implements GoogleApi
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
@@ -157,11 +158,8 @@ public class OrderDetailsActivity extends AppCompatActivity implements GoogleApi
             case R.id.cart_menu_item:
                 startActivity(new Intent(this, CartActivity.class));
                 return (true);
-            case R.id.about:
-                Toast.makeText(this, "About Toast!", Toast.LENGTH_LONG).show();
-                return (true);
-            case R.id.exit:
-                finish();
+            case android.R.id.home:
+                startActivity(new Intent(this, CartActivity.class));
                 return (true);
 
         }

@@ -71,11 +71,13 @@ public class ListItem implements Parcelable{
     }
 
     public void incrementQuantity(){
-        setQuantityAndUpdateCart(quantity + 1);
+        if(quantity <= 99)
+            setQuantityAndUpdateCart(quantity + 1);
     }
 
     public void decrementQuantity(){
-        setQuantityAndUpdateCart(quantity - 1);
+        if(quantity >= 1)
+            setQuantityAndUpdateCart(quantity - 1);
     }
 
     public Item getItem() {

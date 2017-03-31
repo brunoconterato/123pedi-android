@@ -54,6 +54,7 @@ public class CartActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Log.d("Menu", "onCreateMenu");
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -65,13 +66,8 @@ public class CartActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.add:
-                return (true);
-            case R.id.about:
-                Toast.makeText(this, "About Toast!", Toast.LENGTH_LONG).show();
-                return (true);
-            case R.id.exit:
-                finish();
+            case android.R.id.home:
+                startActivity(new Intent(this, SearchTabsActivity.class));
                 return (true);
 
         }

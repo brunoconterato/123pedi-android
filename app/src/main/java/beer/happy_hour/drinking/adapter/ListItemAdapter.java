@@ -3,11 +3,15 @@ package beer.happy_hour.drinking.adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import beer.happy_hour.drinking.Constants;
+import beer.happy_hour.drinking.InputFilterMinMax;
 import beer.happy_hour.drinking.R;
 import beer.happy_hour.drinking.model.List_Item.ListItem;
 import beer.happy_hour.drinking.repository.ListItemRepository;
@@ -70,19 +75,10 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
 
         final ListItem listItem = filteredList.get(position);
 
-//        int listItemIndexInLIRepository = filteredList.get(position).indexOf(listItem);
-//        if (!quantity_editText.getText().toString().equals(""))
-        quantity_editText.setText(Integer.toString(listItem.getQuantity()));
-
-//        if (cart.getListItems().contains(listItem)) {
-//            int listItemIndexInCart = cart.getListItems().indexOf(listItem);
-//            quantity_editText.setText(Integer.printBrief(cart.getListItems().get(listItemIndexInCart).getQuantity()));
-//        }
-//        else
-//        {
-//            int listItemIndexInLIRepository = listItemRepository.getFilteredList().indexOf(listItem);
-//            quantity_editText.setText(Integer.printBrief(listItemRepository.getFilteredList().get(listItemIndexInLIRepository).getQuantity()));
-//        }
+        if(listItem.getQuantity() > 0)
+            quantity_editText.setText(Integer.toString(listItem.getQuantity()));
+        else
+            quantity_editText.setText("");
 
         //Organizando comportamento dos botões
         addOne_button.setOnClickListener(new View.OnClickListener() {
@@ -110,6 +106,10 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
                 }
             }
         });
+
+        quantity_editText.setSelection(quantity_editText.getText().length());
+
+        quantity_editText.setFilters(new InputFilter[]{ new InputFilterMinMax("0", "99")});
 
         quantity_editText.addTextChangedListener(new TextWatcher() {
             @Override
