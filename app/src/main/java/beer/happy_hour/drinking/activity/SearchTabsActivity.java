@@ -125,7 +125,7 @@ public class SearchTabsActivity extends AppCompatActivity implements SearchView.
 
     private void loadFragments() {
         alcoolicsFragment = loadNewCategoryFragmentInstance(Constants.SEARCH_CATEGORY_HASH + "alcoolicos");
-        nonAlcoolicsFragment = loadNewCategoryFragmentInstance(Constants.SEARCH_CATEGORY_HASH + "nao_alcoolicos");
+        nonAlcoolicsFragment = loadNewCategoryFragmentInstance(Constants.SEARCH_CATEGORY_HASH + "livres");
         cigarettesFragment = loadNewCategoryFragmentInstance(Constants.SEARCH_CATEGORY_HASH + "cigarros");
         snacksFragment = loadNewCategoryFragmentInstance(Constants.SEARCH_CATEGORY_HASH + "outros");
 

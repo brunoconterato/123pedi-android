@@ -12,6 +12,7 @@ public class Product implements Parcelable{
     private String name;
     private String brand;
     private String manufacturer;
+    private String image_url;
 
     private Category category;
 
@@ -40,6 +41,10 @@ public class Product implements Parcelable{
 
     public Category getCategory() {
         return category;
+    }
+
+    public String getImage_url() {
+        return image_url;
     }
 
     @Override

@@ -1,7 +1,10 @@
 package beer.happy_hour.drinking.adapter;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
@@ -17,12 +20,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import beer.happy_hour.drinking.Constants;
+import beer.happy_hour.drinking.DownloadImageTask;
 import beer.happy_hour.drinking.InputFilterMinMax;
 import beer.happy_hour.drinking.R;
 import beer.happy_hour.drinking.model.List_Item.ListItem;
@@ -69,6 +74,8 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
         TextView brand_text_view = (TextView) row.findViewById(R.id.brand);
         TextView manufacturer_text_view = (TextView) row.findViewById(R.id.manufacturer);
         TextView price_text_view = (TextView) row.findViewById(R.id.price);
+
+        ImageView brief_item_image_view = (ImageView) row.findViewById(R.id.brief_item_image_view);
 
         //Inicializando EditText
         quantity_editText = (EditText) row.findViewById(R.id.quantity_editText);
@@ -143,6 +150,14 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
         brand_text_view.setText(listItem.getItem().getProduct().getBrand());
         manufacturer_text_view.setText(listItem.getItem().getProduct().getManufacturer());
         price_text_view.setText(Double.toString(listItem.getItem().getPrice()));
+
+        DownloadImageTask imageTask = new DownloadImageTask(brief_item_image_view);
+        if(!listItem.getItem().getProduct().getImage_url().equals(""))
+            imageTask.execute(listItem.getItem().getProduct().getImage_url());
+//        else {
+//            brief_item_image_view.setBackground(getContext().getResources().getDrawable(android.R.drawable.btn_star));
+//        }
+
 
 
         return row;
