@@ -10,8 +10,10 @@
 
     <string name="majority_confirmation">Você confirma ter MAIS DE 18 anos e está ciente de que será exigido documento de identificação oficial com foto no ato da entrega</string>
     <string name="majority_popup_message">Você precisa confirmar que possui mais de 18 anos completos para confirmar o pedido</string>
-    <string name="verify_order_information">Por favor, verifique se suas informaçoes estão corretas antes de concluir o pedido</string>
+    <string name="verify_order_information">Por favor, verifique se suas informaçoes estão corretas antes de prosseguir para pagamento</string>
     <string name="majority_confirmation_check">Será necessário apresentar documento de identificação oficial com foto na retirada do produto</string>
+    <string name="notAvailableService">Infelizmente, nosso serviço ainda não esta disonivel! :(</string>
+    <string name="contact_request_string">Deixe-nos salvar seu contato! Assim poderemos avisá-lo quando o serviço estiver disonivel!</string>
 
     <string-array name="payment_types_string_array">
         <item>Cartão de Crédito</item>

@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -18,26 +19,20 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.PopupWindow;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import beer.happy_hour.drinking.R;
-import beer.happy_hour.drinking.generate_order_async.orderGeneratorAPIAsync;
 import beer.happy_hour.drinking.model.DeliveryPlace;
-import beer.happy_hour.drinking.model.Payment;
 import beer.happy_hour.drinking.model.User;
 import beer.happy_hour.drinking.model.List_Item.ListItem;
 import beer.happy_hour.drinking.model.List_Item.ShoppingCart;
 import beer.happy_hour.drinking.repository.ListItemRepository;
 
-public class BriefActivity extends AppCompatActivity implements orderGeneratorAPIAsync.OrderGeneratedListener {
+public class BriefActivity extends AppCompatActivity{
 
     ProgressDialog finalProgressDialog;
-    orderGeneratorAPIAsync orderGenerator;
 
     private User user;
     private DeliveryPlace deliveryPlace;
     private ShoppingCart cart;
-    private Payment payment;
     private ListItemRepository repository;
 
     private TextView contact_brief_text_view;
@@ -81,7 +76,6 @@ public class BriefActivity extends AppCompatActivity implements orderGeneratorAP
         user = User.getInstance();
         deliveryPlace = DeliveryPlace.getInstance();
         cart = ShoppingCart.getInstance();
-        payment = Payment.getInstance();
         repository = ListItemRepository.getInstance();
 
         contact_brief_text_view = (TextView) findViewById(R.id.contact_brief_text_view);
@@ -124,10 +118,6 @@ public class BriefActivity extends AppCompatActivity implements orderGeneratorAP
 
         items_quantity_brief_text_view.setText(ITEMS_QUANTITY_PREFIX + Double.toString(cart.getItemsQuantity()));
         total_brief_text_view.setText(TOTAL_PREFIX + Double.toString(cart.getTotal()));
-
-
-        payment_confirmation_text_view = (TextView) findViewById(R.id.payment_confirmation_text_view);
-        payment_confirmation_text_view.setText(payment.printBrief());
 
 
 //        adapter = new BriefItemsAdapter(this.getApplicationContext());
@@ -274,12 +264,27 @@ public class BriefActivity extends AppCompatActivity implements orderGeneratorAP
         finalProgressDialog.setCancelable(false);
     }
 
-    public void generateOrder(View view) {
+    //TODO direcionar para unluckly
+    public void goToUnluckilyActivity(View view) {
         if (majority_confirmation_switch.isChecked()) {
-            orderGenerator = new orderGeneratorAPIAsync();
-            orderGenerator.setListener(this);
-            orderGenerator.execute();
             finalProgressDialog.show();
+
+            final Handler handler = new Handler();
+            final Runnable task = new Runnable() {
+                private boolean isTerminationConditionMet = false;
+
+                @Override
+                public void run() {
+                    //code you want to run every second
+                    if (!isTerminationConditionMet) {
+                        handler.postDelayed(this, 3000);
+                    }
+                }
+            };
+            handler.postDelayed(task, 3000);
+
+            finalProgressDialog.dismiss();
+            startActivity(new Intent(this, UnluckilyActivity.class));
         } else {
             pop_up_window.showAtLocation(pop_up_container_layout, Gravity.BOTTOM, 0, 0);
 //            pop_up_window.update(300,300);
@@ -291,26 +296,9 @@ public class BriefActivity extends AppCompatActivity implements orderGeneratorAP
             item.setQuantityAndUpdateCart(0);
     }
 
-    //Código para realizar após ordem estar gerada na nossa API
-    @Override
-    public void onOrderSucceeded() {
-        resetItems();
-
-        finalProgressDialog.dismiss();
-        startActivity(new Intent(this, OnOrderAcceptedActivity.class));
-
-        //TODO: zerar todos os items e limpar carrinho
-    }
-
-    //TODO: implementar
-    @Override
-    public void onOrderFailed() {
-        finalProgressDialog.dismiss();
-    }
-
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(this, PaymentActivity.class));
+        startActivity(new Intent(this, OrderDetailsActivity.class));
     }
 
     @Override
@@ -328,7 +316,7 @@ public class BriefActivity extends AppCompatActivity implements orderGeneratorAP
                 startActivity(new Intent(this, CartActivity.class));
                 return (true);
             case android.R.id.home:
-                startActivity(new Intent(this, PaymentActivity.class));
+                startActivity(new Intent(this, OrderDetailsActivity.class));
                 return (true);
         }
         return (super.onOptionsItemSelected(item));

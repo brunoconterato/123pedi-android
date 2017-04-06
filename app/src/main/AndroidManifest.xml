@@ -29,7 +29,8 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 
-        <activity android:name=".activity.MainActivity"
+        <activity
+            android:name=".activity.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -41,41 +42,39 @@
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".activity.LoginActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".activity.CartActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity
+            android:name=".activity.LoginActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.CartActivity"
             android:label="Carrinho"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.OrderDetailsActivity"
-            android:windowSoftInputMode="stateHidden"
             android:label="Detalhes do pedido"
-            android:screenOrientation="portrait"/>
-
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-
         <activity
             android:name=".activity.MapsFragmentActivity"
             android:label="@string/title_activity_maps"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".activity.BriefActivity"
             android:label="Resumo"
             android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".activity.OnOrderAcceptedActivity" />
-        <activity android:name=".activity.PaymentActivity"
-            android:label="Pagamento"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".activity.SearchTabsActivity"
+        <activity
+            android:name=".activity.SearchTabsActivity"
             android:label="Encontrar produtos"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity android:name=".database_manager.AndroidDatabaseManager" />
+        <activity android:name=".activity.UnluckilyActivity"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>
