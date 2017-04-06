@@ -67,7 +67,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Fique tranquilo! Jamais comartilharemos suas informações pessoais!"
+            android:text="Fique tranquilo! Jamais compartilharemos suas informações pessoais!"
             android:textSize="22sp" />
 
         <android.support.v7.widget.AppCompatCheckBox
@@ -92,7 +92,7 @@
             android:minHeight="56dp"
             android:shadowColor="@color/colorPrimary"
             android:switchMinWidth="56dp"
-            android:text="Permito que me enviem emails informativos, inclusive me avisando quando o serviço estiver disonivel"
+            android:text="Permito que entrem em contato quando houver novidades, inclusive quando o serviço estiver disonivel"
             android:textSize="20sp" />
 
         <Button

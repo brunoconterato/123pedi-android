@@ -82,8 +82,8 @@ public class MainActivity extends AppCompatActivity implements LoadStockFragment
 
     public void login(View view){
         //Pode haver problema nesse this
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
+//        Intent intent = new Intent(this, LoginActivity.class);
+//        startActivity(intent);
     }
 
     public void goToSearchActivity(View view){

@@ -45,9 +45,6 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
-            android:name=".activity.LoginActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".activity.CartActivity"
             android:label="Carrinho"
             android:screenOrientation="portrait" />
@@ -72,9 +69,9 @@
             android:name=".activity.SearchTabsActivity"
             android:label="Encontrar produtos"
             android:screenOrientation="portrait" />
-        <activity android:name=".database_manager.AndroidDatabaseManager" />
         <activity android:name=".activity.UnluckilyActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait"
+            android:label="Obrigado pela intenção!"></activity>
     </application>
 
 </manifest>

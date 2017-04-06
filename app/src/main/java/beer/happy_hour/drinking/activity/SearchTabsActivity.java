@@ -21,7 +21,6 @@ import android.widget.Toast;
 import beer.happy_hour.drinking.Constants;
 import beer.happy_hour.drinking.R;
 import beer.happy_hour.drinking.adapter.ViewPagerAdapter;
-import beer.happy_hour.drinking.database_manager.AndroidDatabaseManager;
 import beer.happy_hour.drinking.fragment.CategoryFragment;
 import beer.happy_hour.drinking.fragment.SearchResultsFragment;
 import beer.happy_hour.drinking.load_stock_data.DownloadImageFragment;
@@ -249,10 +248,6 @@ public class SearchTabsActivity extends AppCompatActivity implements SearchView.
             case android.R.id.home:
                 startActivity(new Intent(this, MainActivity.class));
                 return true;
-
-            case R.id.database_manager_item:
-                Intent dbmanager = new Intent(this,AndroidDatabaseManager.class);
-                startActivity(dbmanager);
         }
         return (super.onOptionsItemSelected(item));
     }
