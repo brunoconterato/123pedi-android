@@ -185,7 +185,21 @@ public class OrderDetailsActivity extends AppCompatActivity implements GoogleApi
     }
 
     public void goToPaymentActivity(View view) {
-        startActivity(new Intent(this, PaymentActivity.class));
+        boolean isValidUser = user.isValidUser();
+        boolean isValidPlace = deliveryPlace.isValidPlace();
+
+        if(isValidUser && isValidPlace)
+            startActivity(new Intent(this, PaymentActivity.class));
+        else if(!User.isValidName(name_edit_text.getText()))
+            Toast.makeText(this, "Por favor, digite seu nome!", Toast.LENGTH_LONG).show();
+        else if(!User.isValidPhone(phone_edit_text.getText().toString()))
+            Toast.makeText(this, "Por favor, digite telefone valido com DDD!", Toast.LENGTH_LONG).show();
+        else if(!User.isValidEmail(email_edit_text.getText()))
+            Toast.makeText(this, "Por favor, digite email válido!", Toast.LENGTH_LONG).show();
+        else if(deliveryPlace.getAdress() == null || deliveryPlace.getAdress().length() == 0)
+            Toast.makeText(this, "Por favor, indique local de entrega!", Toast.LENGTH_LONG).show();
+        else if(deliveryPlace.getComplement() == null || deliveryPlace.getComplement().length() == 0)
+            Toast.makeText(this, "Por favor, digite o complemento do endereço!", Toast.LENGTH_LONG).show();
     }
 
     @Override

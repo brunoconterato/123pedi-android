@@ -24,14 +24,17 @@
             android:layout_height="wrap_content"
             android:hint="Nome"
             android:inputType="textPersonName"
-            android:digits="aáãâbcçdeéêfghiíjklmnoõóôpqrstuúvwxyzAÁÃÂBCDEÉÊFGHIÍJKLMNOÕÓÔPQRSTUÚVWXYZ"/>
+            android:digits="aáãâbcçdeéêfghiíjklmnoõóôpqrstuúvwxyzAÁÃÂBCDEÉÊFGHIÍJKLMNOÕÓÔPQRSTUÚVWXYZ "
+            android:singleLine="true"
+            android:imeOptions="actionNext"/>
+
 
         <EditText
             android:id="@+id/phone_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Telefone"
-            android:inputType="number" />
+            android:inputType="phone" />
 
         <EditText
             android:id="@+id/email_edit_text"

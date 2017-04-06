@@ -54,6 +54,19 @@ public class DeliveryPlace {
         return instance;
     }
 
+    public boolean isValidPlace(){
+        if( adress == null || adress.length() == 0 )
+            return false;
+        if(cityState == null || cityState.length() == 0)
+            return false;
+        if(countryName == null || countryName.length() == 0)
+            return false;
+        if(complement == null || complement.length() == 0)
+            return false;
+
+        return true;
+    }
+
     public String getAdminArea() {
         return adminArea;
     }

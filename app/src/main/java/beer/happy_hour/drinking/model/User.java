@@ -39,26 +39,35 @@ public class User {
         this.instance = instance;
     }
 
-    public static boolean isValidEmail(CharSequence target) {
-        if (target == null) {
+    public static boolean isValidName(CharSequence inputName) {
+        if(inputName == null)
+            return false;
+        if (inputName.length() ==  0)
+            return false;
+
+        return true;
+    }
+
+    public static boolean isValidEmail(CharSequence inputEmail) {
+        if (inputEmail == null) {
             return false;
         } else {
-            return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
+            return android.util.Patterns.EMAIL_ADDRESS.matcher(inputEmail).matches();
         }
     }
 
-    public boolean isValidPhone(String phone) {
+    public static boolean isValidPhone(String inputPhone) {
         //retira todos os caracteres menos os numeros
-        phone = phone.replace("(", "");
-        phone = phone.replace(")", "");
-        phone = phone.replace("-", "");
-        phone = phone.replace(" ", "");
+        inputPhone = inputPhone.replace("(", "");
+        inputPhone = inputPhone.replace(")", "");
+        inputPhone = inputPhone.replace("-", "");
+        inputPhone = inputPhone.replace(" ", "");
 
         //verifica se tem a qtde de numero correto
-        if (phone.length() != 11) return false;
+        if (inputPhone.length() != 11) return false;
 
         //Se tiver 11 caracteres, verificar se começa com 9 o celular
-        if (Integer.parseInt(phone.substring(2, 3)) != 9) return false;
+        if (Integer.parseInt(inputPhone.substring(2, 3)) != 9) return false;
 
         //DDDs validos
         int[] codigosDDD = {11, 12, 13, 14, 15, 16, 17, 18, 19,
@@ -75,10 +84,16 @@ public class User {
             DDDs_validos.add(i);
 
         //verifica se o DDD é valido (sim, da pra verificar rsrsrs)
-        if (!DDDs_validos.contains(Integer.parseInt(phone.substring(0, 2)))) return false;
+        if (!DDDs_validos.contains(Integer.parseInt(inputPhone.substring(0, 2)))) return false;
 
         //se passar por todas as validações acima, então está tudo certo
         return true;
+    }
+
+    public boolean isValidUser(){
+        return isValidName(name)
+                && isValidPhone(phone)
+                && isValidEmail(email);
     }
 
     @Override
