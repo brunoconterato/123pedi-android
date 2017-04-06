@@ -21,13 +21,16 @@ import android.widget.Toast;
 import beer.happy_hour.drinking.Constants;
 import beer.happy_hour.drinking.R;
 import beer.happy_hour.drinking.adapter.ViewPagerAdapter;
+import beer.happy_hour.drinking.database_manager.AndroidDatabaseManager;
 import beer.happy_hour.drinking.fragment.CategoryFragment;
 import beer.happy_hour.drinking.fragment.SearchResultsFragment;
-import beer.happy_hour.drinking.load_stock.LoadStockFragment;
+import beer.happy_hour.drinking.load_stock_data.DownloadImageFragment;
+import beer.happy_hour.drinking.load_stock_data.LoadStockFragment;
 import beer.happy_hour.drinking.model.List_Item.ShoppingCart;
 
 public class SearchTabsActivity extends AppCompatActivity implements SearchView.OnQueryTextListener,
-                                                                        LoadStockFragment.TaskCallbacks {
+                                                                        LoadStockFragment.TaskCallbacks,
+                                                                        DownloadImageFragment.TaskCallbacks {
 
     private boolean loadedFragments = false;
 
@@ -46,6 +49,7 @@ public class SearchTabsActivity extends AppCompatActivity implements SearchView.
     private CategoryFragment snacksFragment;
 
     private LoadStockFragment loadStockFragment;
+    private DownloadImageFragment downloadImageFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,13 +58,19 @@ public class SearchTabsActivity extends AppCompatActivity implements SearchView.
 
         FragmentManager fm = getFragmentManager();
         loadStockFragment = (LoadStockFragment) fm.findFragmentByTag(Constants.TAG_TASK_FRAGMENT);
+        downloadImageFragment = (DownloadImageFragment) fm.findFragmentByTag(Constants.TAG_DOWNLOAD_IMAGE_TASK_FRAGMENT);
 
         if (loadStockFragment == null) {
             loadStockFragment = new LoadStockFragment();
             fm.beginTransaction().add(loadStockFragment, Constants.TAG_TASK_FRAGMENT).commit();
         }
 
-        loadFragments();
+        if(downloadImageFragment == null) {
+            downloadImageFragment = new DownloadImageFragment();
+            fm.beginTransaction().add(downloadImageFragment, Constants.TAG_DOWNLOAD_IMAGE_TASK_FRAGMENT).commit();
+        }
+
+        loadTabFragments();
         loadedFragments = true;
 
         cart = ShoppingCart.getInstance();
@@ -123,7 +133,7 @@ public class SearchTabsActivity extends AppCompatActivity implements SearchView.
         Log.d("onCreate finished", "SearchTabsActivity");
     }
 
-    private void loadFragments() {
+    private void loadTabFragments() {
         alcoolicsFragment = loadNewCategoryFragmentInstance(Constants.SEARCH_CATEGORY_HASH + "alcoolicos");
         nonAlcoolicsFragment = loadNewCategoryFragmentInstance(Constants.SEARCH_CATEGORY_HASH + "livres");
         cigarettesFragment = loadNewCategoryFragmentInstance(Constants.SEARCH_CATEGORY_HASH + "cigarros");
@@ -140,6 +150,9 @@ public class SearchTabsActivity extends AppCompatActivity implements SearchView.
         nonAlcoolicsFragment.setupAdapter();
         cigarettesFragment.setupAdapter();
         snacksFragment.setupAdapter();
+
+//        TODO: verificar se precisa desse setupAdapter implementado ou não
+//        searchResultsFragment.setupAdapter();
     }
 
     private void setupTabIcons() {
@@ -152,7 +165,7 @@ public class SearchTabsActivity extends AppCompatActivity implements SearchView.
         tabLayout.getTabAt(1).setCustomView(tab2);
 
         ImageView tab3 = (ImageView) LayoutInflater.from(this).inflate(R.layout.custom_search_tab, null);
-        tab3.findViewById(R.id.tabIcons).setBackgroundResource(R.drawable.ic_antu_drink_beer_svg);
+        tab3.findViewById(R.id.tabIcons).setBackgroundResource(R.drawable.ic_beer_bottle_256);
         tabLayout.getTabAt(2).setCustomView(tab3);
 
         ImageView tab4 = (ImageView) LayoutInflater.from(this).inflate(R.layout.custom_search_tab, null);
@@ -236,6 +249,10 @@ public class SearchTabsActivity extends AppCompatActivity implements SearchView.
             case android.R.id.home:
                 startActivity(new Intent(this, MainActivity.class));
                 return true;
+
+            case R.id.database_manager_item:
+                Intent dbmanager = new Intent(this,AndroidDatabaseManager.class);
+                startActivity(dbmanager);
         }
         return (super.onOptionsItemSelected(item));
     }
@@ -248,6 +265,13 @@ public class SearchTabsActivity extends AppCompatActivity implements SearchView.
         searchFragment.setArguments(args);
 
         return searchFragment;
+    }
+
+    public void goToCartActivity(View view) {
+        if(cart.getItemsQuantity() > 0)
+            startActivity(new Intent(this, CartActivity.class));
+        else
+            Toast.makeText(this, "Aumente quantidades para acrescentar itens ao carrinho!", Toast.LENGTH_LONG).show();
     }
 
     //Show listview
@@ -272,10 +296,24 @@ public class SearchTabsActivity extends AppCompatActivity implements SearchView.
         setupCategoryAdapters();
     }
 
-    public void goToCartActivity(View view) {
-        if(cart.getItemsQuantity() > 0)
-            startActivity(new Intent(this, CartActivity.class));
-        else
-            Toast.makeText(this, "Aumente quantidades para acrescentar itens ao carrinho!", Toast.LENGTH_LONG).show();
+    @Override
+    public void onPreExecuteImage() {
+
+    }
+
+    @Override
+    public void onCancelledImage() {
+
+    }
+
+    @Override
+    public void onPostExecuteImage() {
+        Log.d("onPostExecuteImage", "SearchTabsActivity");
+        setupCategoryAdapters();
+    }
+
+    @Override
+    public void onErrorImage() {
+        Toast.makeText(this, "Erro! Não foi possível recuperar imagens", Toast.LENGTH_LONG).show();
     }
 }

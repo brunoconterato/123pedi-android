@@ -3,6 +3,8 @@ package beer.happy_hour.drinking.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.sql.Blob;
+
 /**
  * Created by brcon on 06/03/2017.
  */
@@ -22,6 +24,7 @@ public class Product implements Parcelable{
         name = in.readString();
         brand = in.readString();
         manufacturer = in.readString();
+        image_url = in.readString();
 
         category = (Category) in.readParcelable(Category.class.getClassLoader());
     }
@@ -47,6 +50,10 @@ public class Product implements Parcelable{
         return image_url;
     }
 
+    public void setImage_url(String image_url) {
+        this.image_url = image_url;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -57,6 +64,7 @@ public class Product implements Parcelable{
         out.writeString(name);
         out.writeString(brand);
         out.writeString(manufacturer);
+        out.writeString(image_url);
     }
 
     // Creator

@@ -14,8 +14,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -50,7 +52,7 @@ import beer.happy_hour.drinking.GeocodeJSONParser;
 import beer.happy_hour.drinking.R;
 import beer.happy_hour.drinking.model.DeliveryPlace;
 
-public class MapsFragmentActivity extends FragmentActivity implements OnMapReadyCallback,
+public class MapsFragmentActivity extends AppCompatActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener,
@@ -348,13 +350,6 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
         return data;
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
     public void setThoroughfare_inside_text_view() {
         thoroughfare_inside_text_view.setText(deliveryPlace.getThoroughfare());
     }
@@ -548,5 +543,26 @@ public class MapsFragmentActivity extends FragmentActivity implements OnMapReady
         protected void onPostExecute(Void params) {
             setThoroughfare_inside_text_view();
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.cart_menu_item:
+                startActivity(new Intent(this, CartActivity.class));
+                return (true);
+            case android.R.id.home:
+                startActivity(new Intent(this, OrderDetailsActivity.class));
+                return (true);
+        }
+        return (super.onOptionsItemSelected(item));
     }
 }

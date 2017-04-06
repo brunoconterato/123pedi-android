@@ -9,13 +9,20 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.facebook.login.widget.LoginButton;
+import com.facebook.stetho.Stetho;
+import com.facebook.stetho.okhttp3.StethoInterceptor;
 
 import beer.happy_hour.drinking.Constants;
 import beer.happy_hour.drinking.R;
-import beer.happy_hour.drinking.load_stock.LoadStockFragment;
+import beer.happy_hour.drinking.database_handler.ItemsDatabaseHandler;
+import beer.happy_hour.drinking.load_stock_data.DownloadImageFragment;
+import beer.happy_hour.drinking.load_stock_data.DownloadImageTask;
+import beer.happy_hour.drinking.load_stock_data.LoadStockFragment;
 import beer.happy_hour.drinking.model.List_Item.ShoppingCart;
+import okhttp3.OkHttpClient;
 
-public class MainActivity extends AppCompatActivity implements LoadStockFragment.TaskCallbacks {
+public class MainActivity extends AppCompatActivity implements LoadStockFragment.TaskCallbacks,
+                                                                DownloadImageFragment.TaskCallbacks {
 
     private LoginButton b;
     private int backButtonCount;
@@ -23,20 +30,35 @@ public class MainActivity extends AppCompatActivity implements LoadStockFragment
     private ShoppingCart cart;
 
     private LoadStockFragment loadStockFragment;
+    private DownloadImageFragment downloadImageFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Stetho.initializeWithDefaults(this);
+
+        new OkHttpClient.Builder()
+                .addNetworkInterceptor(new StethoInterceptor())
+                .build();
+
+//        ItemsDatabaseHandler db = new ItemsDatabaseHandler(this);
+
         cart = ShoppingCart.getInstance();
 
         FragmentManager fm = getFragmentManager();
         loadStockFragment = (LoadStockFragment) fm.findFragmentByTag(Constants.TAG_TASK_FRAGMENT);
+        downloadImageFragment = (DownloadImageFragment) fm.findFragmentByTag(Constants.TAG_DOWNLOAD_IMAGE_TASK_FRAGMENT);
 
         if (loadStockFragment == null) {
             loadStockFragment = new LoadStockFragment();
             fm.beginTransaction().add(loadStockFragment, Constants.TAG_TASK_FRAGMENT).commit();
+        }
+
+        if(downloadImageFragment == null) {
+            downloadImageFragment = new DownloadImageFragment();
+            fm.beginTransaction().add(downloadImageFragment, Constants.TAG_DOWNLOAD_IMAGE_TASK_FRAGMENT).commit();
         }
     }
 
@@ -93,5 +115,25 @@ public class MainActivity extends AppCompatActivity implements LoadStockFragment
     @Override
     public void onPostExecute() {
         Log.d("onPostExecute", "MainActivity");
+    }
+
+    @Override
+    public void onPreExecuteImage() {
+
+    }
+
+    @Override
+    public void onCancelledImage() {
+
+    }
+
+    @Override
+    public void onPostExecuteImage() {
+
+    }
+
+    @Override
+    public void onErrorImage() {
+
     }
 }

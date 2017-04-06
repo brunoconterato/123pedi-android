@@ -11,10 +11,13 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import beer.happy_hour.drinking.Constants;
 import beer.happy_hour.drinking.InputFilterMinMax;
 import beer.happy_hour.drinking.R;
+import beer.happy_hour.drinking.database_handler.ItemsDatabaseHandler;
 import beer.happy_hour.drinking.listener.SubtotalTextView;
 import beer.happy_hour.drinking.model.List_Item.ListItem;
 import beer.happy_hour.drinking.model.List_Item.ShoppingCart;
@@ -29,6 +32,8 @@ public class ShoppingCartAdapter extends ArrayAdapter<ListItem> {
     private ShoppingCart cart;
 
     private SubtotalTextView subtotal_text_view;
+
+    private ItemsDatabaseHandler databaseHandler;
 
     public ShoppingCartAdapter(Context context) {
         super(context, R.layout.shopping_cart_item, ShoppingCart.getInstance().getListItems());
@@ -58,6 +63,8 @@ public class ShoppingCartAdapter extends ArrayAdapter<ListItem> {
         TextView brand_text_view = (TextView) row.findViewById(R.id.brand);
         TextView price_text_view = (TextView) row.findViewById(R.id.price);
 
+        ImageView cart_item_image_view = (ImageView) row.findViewById(R.id.cart_item_image_view);
+
         subtotal_text_view = (SubtotalTextView) row.findViewById(R.id.subtotal);
 
         //Inicializando EditText
@@ -65,17 +72,28 @@ public class ShoppingCartAdapter extends ArrayAdapter<ListItem> {
 
         final ListItem listItem = cart.getListItems().get(position);
 
-        if (listItem.getQuantity() > 0)
+        if (listItem.getQuantity() > 0 && listItem.getQuantity() <= Constants.MAX_ITEMS_QUANTITY)
             quantity_editText.setText(Integer.toString(listItem.getQuantity()));
+        else
+            quantity_editText.setText(Integer.toString(Constants.MAX_ITEMS_QUANTITY));
+
+
+        quantity_editText.setFilters(new InputFilter[]{ new InputFilterMinMax("0", Integer.toString(Constants.MAX_ITEMS_QUANTITY))});
 
         //Organizando comportamento dos botões
         addOne_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.d("Click", "Botão +");
-                listItem.incrementQuantity();
-//                cart.incrementItemQuantity(listItem);
-                quantity_editText.setText(Integer.toString(listItem.getQuantity()));
+
+                if(listItem.getQuantity() > 0 && listItem.getQuantity() < Constants.MAX_ITEMS_QUANTITY) {
+                    listItem.incrementQuantity();
+                    quantity_editText.setText(Integer.toString(listItem.getQuantity()));
+                }
+                else if(listItem.getQuantity() >= Constants.MAX_ITEMS_QUANTITY)
+                    quantity_editText.setText(Integer.toString(Constants.MAX_ITEMS_QUANTITY));
+
+                quantity_editText.setSelection(quantity_editText.getText().length());
             }
         });
 
@@ -94,6 +112,8 @@ public class ShoppingCartAdapter extends ArrayAdapter<ListItem> {
                     e.printStackTrace();
                     Log.e("Error", "Não há inteiro definido");
                 }
+
+                quantity_editText.setSelection(quantity_editText.getText().length());
             }
         });
 
@@ -134,6 +154,8 @@ public class ShoppingCartAdapter extends ArrayAdapter<ListItem> {
                 } else {
                     listItem.setQuantityAndUpdateCart(0);
                 }
+
+                quantity_editText.setSelection(quantity_editText.getText().length());
             }
         });
 
@@ -144,6 +166,12 @@ public class ShoppingCartAdapter extends ArrayAdapter<ListItem> {
 
         subtotal_text_view.setText("Subtotal: " + Double.toString(listItem.getItem().getPrice() * listItem.getQuantity()));
         listItem.setListener(subtotal_text_view);
+
+        databaseHandler = new ItemsDatabaseHandler(context);
+        if(databaseHandler.getImage(listItem.getItem()) != null) {
+            Log.d("EntrouHere", "EntrouHere");
+            cart_item_image_view.setImageBitmap(databaseHandler.getImage(listItem.getItem()));
+        }
 
         return row;
     }

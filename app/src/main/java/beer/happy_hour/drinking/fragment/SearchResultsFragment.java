@@ -58,4 +58,12 @@ public class SearchResultsFragment extends Fragment {
     public ListItemAdapter getAdapter(){
         return listItemAdapter;
     }
+
+//    public void setupAdapter(){
+//        if(getActivity() != null) {
+//            listItemAdapter = new ListItemAdapter(context);
+//            items_list_view.setAdapter(listItemAdapter);
+//            listItemAdapter.getFilter().filter(searchQuery);
+//        }
+//    }
 }

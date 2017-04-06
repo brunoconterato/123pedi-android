@@ -9,6 +9,7 @@ import com.loopj.android.http.RequestParams;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import beer.happy_hour.drinking.Constants;
 import beer.happy_hour.drinking.async_http_client.RestApiHttpClient;
 import beer.happy_hour.drinking.model.DeliveryPlace;
 import beer.happy_hour.drinking.model.Item;
@@ -62,7 +63,7 @@ public class orderGeneratorAPIAsync extends AsyncTask<Void, Void, Boolean> {
 
         Log.d("Request Params", requestParams.toString());
 
-        RestApiHttpClient.post("http://happy-hour.beer/api/unregistered/orders", requestParams, new JsonHttpResponseHandler() {
+        RestApiHttpClient.post(Constants.BASE_ORDER_URL, requestParams, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 Log.d("Success!!", "Object");

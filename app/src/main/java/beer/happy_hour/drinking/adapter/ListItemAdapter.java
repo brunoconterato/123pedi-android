@@ -1,20 +1,14 @@
 package beer.happy_hour.drinking.adapter;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,7 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import beer.happy_hour.drinking.Constants;
-import beer.happy_hour.drinking.DownloadImageTask;
+import beer.happy_hour.drinking.database_handler.ItemsDatabaseHandler;
+import beer.happy_hour.drinking.load_stock_data.DownloadImageTask;
 import beer.happy_hour.drinking.InputFilterMinMax;
 import beer.happy_hour.drinking.R;
 import beer.happy_hour.drinking.model.List_Item.ListItem;
@@ -40,12 +35,10 @@ import beer.happy_hour.drinking.repository.ListItemRepository;
 public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterable {
 
     private final Context context;
-
     private Filter listItemFilter;
-
     private ListItemRepository listItemRepository;
-
     private List<ListItem> filteredList;
+    private ItemsDatabaseHandler databaseHandler;
 
     public ListItemAdapter(Context context) {
         super(context, R.layout.list_item, ListItemRepository.getInstance().getList());
@@ -82,8 +75,10 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
 
         final ListItem listItem = filteredList.get(position);
 
-        if(listItem.getQuantity() > 0)
+        if(listItem.getQuantity() > 0 && listItem.getQuantity() <= Constants.MAX_ITEMS_QUANTITY)
             quantity_editText.setText(Integer.toString(listItem.getQuantity()));
+        else if(listItem.getQuantity() > Constants.MAX_ITEMS_QUANTITY)
+            quantity_editText.setText(Integer.toString(Constants.MAX_ITEMS_QUANTITY));
         else
             quantity_editText.setText("");
 
@@ -92,8 +87,17 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
             @Override
             public void onClick(View view) {
                 Log.d("Click", "Botão +");
-                listItem.incrementQuantity();
-                quantity_editText.setText(Integer.toString(listItem.getQuantity()));
+
+                if(listItem.getQuantity() >= 0 && listItem.getQuantity() < Constants.MAX_ITEMS_QUANTITY) {
+                    listItem.incrementQuantity();
+                    quantity_editText.setText(Integer.toString(listItem.getQuantity()));
+                }
+                else if(listItem.getQuantity() >= Constants.MAX_ITEMS_QUANTITY)
+                    quantity_editText.setText(Integer.toString(Constants.MAX_ITEMS_QUANTITY));
+                else
+                    quantity_editText.setText("");
+
+                quantity_editText.setSelection(quantity_editText.getText().length());
             }
         });
 
@@ -107,16 +111,20 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
                         listItem.decrementQuantity();
                         quantity_editText.setText(Integer.toString(listItem.getQuantity()));
                     }
+                    else
+                        quantity_editText.setText("");
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                     Log.e("Error", "Não há inteiro definido");
                 }
+
+                quantity_editText.setSelection(quantity_editText.getText().length());
             }
         });
 
         quantity_editText.setSelection(quantity_editText.getText().length());
 
-        quantity_editText.setFilters(new InputFilter[]{ new InputFilterMinMax("0", "99")});
+        quantity_editText.setFilters(new InputFilter[]{ new InputFilterMinMax("0", Integer.toString(Constants.MAX_ITEMS_QUANTITY))});
 
         quantity_editText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -142,6 +150,8 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
                 } else {
                     listItem.setQuantityAndUpdateCart(0);
                 }
+
+                quantity_editText.setSelection(quantity_editText.getText().length());
             }
         });
 
@@ -151,14 +161,12 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
         manufacturer_text_view.setText(listItem.getItem().getProduct().getManufacturer());
         price_text_view.setText(Double.toString(listItem.getItem().getPrice()));
 
-        DownloadImageTask imageTask = new DownloadImageTask(brief_item_image_view);
-        if(!listItem.getItem().getProduct().getImage_url().equals(""))
-            imageTask.execute(listItem.getItem().getProduct().getImage_url());
-//        else {
-//            brief_item_image_view.setBackground(getContext().getResources().getDrawable(android.R.drawable.btn_star));
-//        }
 
-
+        databaseHandler = new ItemsDatabaseHandler(context);
+        if(databaseHandler.getImage(listItem.getItem()) != null) {
+            Log.d("EntrouHere", "EntrouHere");
+            brief_item_image_view.setImageBitmap(databaseHandler.getImage(listItem.getItem()));
+        }
 
         return row;
     }

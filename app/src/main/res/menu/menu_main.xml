@@ -6,6 +6,12 @@
     tools:context=".activity.MainActivity">
 
     <item
+        android:id="@+id/database_manager_item"
+        android:icon="@drawable/ic_settings_cell_black_24dp"
+        android:title="Cart"
+        app:showAsAction="always"/>
+
+    <item
         android:id="@+id/cart_menu_item"
         android:icon="@drawable/ic_shopping_cart"
         android:title="Cart"

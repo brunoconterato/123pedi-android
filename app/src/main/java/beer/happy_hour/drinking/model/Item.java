@@ -9,6 +9,12 @@ import android.os.Parcelable;
 
 public class Item implements Parcelable {
 
+    private int id;
+    private double price;
+    private int retailer_id;
+    private Product product;
+    private int table_id;
+
     // Creator
     public static final Parcelable.Creator
             CREATOR = new Parcelable.Creator() {
@@ -20,10 +26,6 @@ public class Item implements Parcelable {
             return new Item[size];
         }
     };
-    private int id;
-    private double price;
-    private int retailer_id;
-    private Product product;
 
     public Item(Parcel in) {
         id = in.readInt();
@@ -76,5 +78,13 @@ public class Item implements Parcelable {
         out.writeInt(retailer_id);
 
         out.writeParcelable(product, flags);
+    }
+
+    public int getTable_id() {
+        return table_id;
+    }
+
+    public void setTable_id(int table_id) {
+        this.table_id = table_id;
     }
 }

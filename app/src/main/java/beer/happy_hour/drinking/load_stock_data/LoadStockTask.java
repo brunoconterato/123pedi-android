@@ -1,5 +1,6 @@
-package beer.happy_hour.drinking.load_stock;
+package beer.happy_hour.drinking.load_stock_data;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -15,6 +16,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
+import beer.happy_hour.drinking.database_handler.ItemsDatabaseHandler;
 import beer.happy_hour.drinking.model.Item;
 import beer.happy_hour.drinking.model.List_Item.ListItem;
 import beer.happy_hour.drinking.repository.ListItemRepository;
@@ -28,23 +30,23 @@ import beer.happy_hour.drinking.repository.ListItemRepository;
  * Singleton Implementation
  */
 public class LoadStockTask extends AsyncTask<String, Void, List<Item>> {
+
+    private ItemsDatabaseHandler databaseHandler;
     private static LoadStockTask instance;
-
     private boolean initialized = false;
-
     private LoadStockFragment.TaskCallbacks callback;
-
     private ListItemRepository repository;
 
-    private LoadStockTask(){
+    private LoadStockTask(Context context){
         repository = ListItemRepository.getInstance();
+        databaseHandler = new ItemsDatabaseHandler(context);
     }
 
-    public static LoadStockTask getInstance() {
+    public static LoadStockTask getInstance(Context context) {
         if(instance == null){
             synchronized (LoadStockTask.class) {
                 if(instance == null){
-                    instance = new LoadStockTask();
+                    instance = new LoadStockTask(context);
                 }
             }
         }
@@ -88,6 +90,9 @@ public class LoadStockTask extends AsyncTask<String, Void, List<Item>> {
             for(Item item : listItems){
                 Log.d("ToString : ", item.toString());
                 repository.add(new ListItem(item));
+
+                if(!databaseHandler.hasItem(item))
+                    databaseHandler.addItem(item);
             }
 
             return listItems;

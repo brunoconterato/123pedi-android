@@ -9,7 +9,7 @@
         android:id="@+id/map_search_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="3.5"
+        android:layout_weight="3.4"
         android:background="@android:color/white"
         android:queryHint="Digite rua, número, cidade" />
 
@@ -28,10 +28,10 @@
             tools:context="beer.happy_hour.drinking.activity.MapsFragmentActivity" />
 
         <ImageButton
-            android:layout_width="60dp"
-            android:layout_height="120dp"
+            android:layout_width="45dp"
+            android:layout_height="180dp"
             android:layout_centerInParent="true"
-            android:background="@drawable/ic_beerpin_novo4_centralizado" />
+            android:background="@drawable/ic_beerpin_novo4_4x___metade" />
 
     </RelativeLayout>
 
@@ -39,18 +39,21 @@
         android:id="@+id/thoroughfare_inside_text_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="3.5"
+        android:layout_weight="3.4"
         android:gravity="center_horizontal|center_vertical"
         android:textSize="24sp" />
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginLeft="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginRight="8dp"
         android:background="@drawable/rounded_corner_ghost_button"
         android:textSize="20sp"
         android:layout_below="@id/map_with_pin"
         android:layout_gravity="bottom"
-        android:layout_weight="3.5"
+        android:layout_weight="3.3"
         android:onClick="returnToDeliveryPlace"
         android:text="Usar local selecionado" />
 

@@ -1,4 +1,4 @@
-package beer.happy_hour.drinking.load_stock;
+package beer.happy_hour.drinking.load_stock_data;
 
 import android.app.Fragment;
 import android.content.Context;
@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.util.Log;
 
 import beer.happy_hour.drinking.Constants;
-import beer.happy_hour.drinking.repository.ListItemRepository;
 
 /**
  * Created by brcon on 28/03/2017.
@@ -43,7 +42,7 @@ public class LoadStockFragment extends Fragment {
         super.onAttach(context);
         Log.d("On Attach","on attach");
 
-        task = LoadStockTask.getInstance();
+        task = LoadStockTask.getInstance(context);
         callbacks = (TaskCallbacks) context;
         task.setCallback( (TaskCallbacks) context );
     }
