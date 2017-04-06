@@ -23,7 +23,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Nome"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:digits="aáãâbcçdeéêfghiíjklmnoõóôpqrstuúvwxyzAÁÃÂBCDEÉÊFGHIÍJKLMNOÕÓÔPQRSTUÚVWXYZ"/>
 
         <EditText
             android:id="@+id/phone_edit_text"

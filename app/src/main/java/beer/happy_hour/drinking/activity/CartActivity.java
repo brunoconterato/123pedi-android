@@ -76,7 +76,10 @@ public class CartActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void goToFinalizeActivity(View view) {
-        startActivity(new Intent(this, OrderDetailsActivity.class));
+        if(cart.getListItems().size() > 0)
+            startActivity(new Intent(this, OrderDetailsActivity.class));
+        else
+            Toast.makeText(getApplicationContext(), "Você precisa retornar e adicionar items ao carrinho para prosseguir", Toast.LENGTH_LONG).show();
     }
 
     @Override
