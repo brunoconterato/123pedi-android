@@ -98,9 +98,11 @@ public class LoadStockTask extends AsyncTask<String, Void, List<Item>> {
             return listItems;
         } catch (IOException e) {
             e.printStackTrace();
+            callback.onError();
             return null;
         } catch (JsonSyntaxException e) {
             e.printStackTrace();
+            callback.onError();
             return null;
         }
     }

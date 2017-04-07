@@ -68,6 +68,8 @@ public class BriefActivity extends AppCompatActivity{
     private String ITEM_PRICE_SUFIX = "Preço: ";
     private String ITEM_SUBTOTAL_SUFIX = "Subtotal: ";
 
+    private final int PROGRESS_DIALOG_TIME_OUT = 3000; //progress dialog mantain for 3s
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -193,22 +195,27 @@ public class BriefActivity extends AppCompatActivity{
         if (majority_confirmation_switch.isChecked()) {
             finalProgressDialog.show();
 
-            final Handler handler = new Handler();
-            final Runnable task = new Runnable() {
-                private boolean isTerminationConditionMet = false;
+            new Handler().postDelayed(new Runnable() {
+
+            /*
+             * Showing splash screen with a timer. This will be useful when you
+             * want to show case your app logo / company
+             */
 
                 @Override
                 public void run() {
-                    //code you want to run every second
-                    if (!isTerminationConditionMet) {
-                        handler.postDelayed(this, 3000);
-                    }
-                }
-            };
-            handler.postDelayed(task, 3000);
+                    // This method will be executed once the timer is over
+                    // Start your app main activity
+                    Intent i = new Intent(BriefActivity.this, UnluckilyActivity.class);
+                    startActivity(i);
 
-            finalProgressDialog.dismiss();
-            startActivity(new Intent(this, UnluckilyActivity.class));
+                    // close this activity
+                    finish();
+                }
+            }, PROGRESS_DIALOG_TIME_OUT);
+//
+//            finalProgressDialog.dismiss();
+//            startActivity(new Intent(this, UnluckilyActivity.class));
         } else {
             pop_up_window.showAtLocation(pop_up_container_layout, Gravity.BOTTOM, 0, 0);
 //            pop_up_window.update(300,300);

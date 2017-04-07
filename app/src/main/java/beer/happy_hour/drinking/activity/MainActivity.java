@@ -99,7 +99,19 @@ public class MainActivity extends AppCompatActivity implements LoadStockFragment
 
     @Override
     public void onError() {
-        Toast.makeText(this, "Erro! Verifique sua conexão", Toast.LENGTH_LONG).show();
+        new Thread()
+        {
+            public void run()
+            {
+                MainActivity.this.runOnUiThread(new Runnable()
+                {
+                    public void run()
+                    {
+                        Toast.makeText(MainActivity.this, "Erro! Verifique sua conexão", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        }.start();
     }
 
     @Override
