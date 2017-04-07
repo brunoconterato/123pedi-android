@@ -16,7 +16,7 @@ public class ListItemRepository {
 
     private static ListItemRepository instance;
 
-    private List<ListItem> list;
+    private static List<ListItem> list;
 
     private boolean loaded = false;
 
@@ -78,4 +78,8 @@ public class ListItemRepository {
         this.disconnected = disconnected;
     }
 
+    public static void resetRepositoryAndCart(){
+        for(ListItem item : list)
+            item.setQuantityAndUpdateCart(0);
+    }
 }

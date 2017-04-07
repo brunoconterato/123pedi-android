@@ -66,6 +66,7 @@ public class DownloadImageTask extends AsyncTask<Void, Void, Void> {
             } catch (Exception e) {
                 Log.e("Error", e.getMessage());
                 e.printStackTrace();
+                callback.onErrorImage();
             }
 
             //Stage 2 - Insert into database

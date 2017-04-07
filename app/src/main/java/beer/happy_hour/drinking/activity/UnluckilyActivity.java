@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import beer.happy_hour.drinking.FeedBackActivity;
 import beer.happy_hour.drinking.R;
 import beer.happy_hour.drinking.model.User;
 
@@ -42,7 +43,7 @@ public class UnluckilyActivity extends AppCompatActivity {
         });
     }
 
-    public void sendDataAndGoToMainActivity(View view) {
+    public void sendDataAndReturnToMainActivity(View view) {
         startActivity(new Intent(this, MainActivity.class));
     }
 
@@ -70,5 +71,9 @@ public class UnluckilyActivity extends AppCompatActivity {
                 return (true);
         }
         return (super.onOptionsItemSelected(item));
+    }
+
+    public void goToFeedBackActivity(View view) {
+        startActivity(new Intent(this, FeedBackActivity.class));
     }
 }

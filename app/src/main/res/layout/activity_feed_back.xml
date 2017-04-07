@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_confirmation"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f5f5f5"
+    tools:context="beer.happy_hour.drinking.activity.UnluckilyActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:text="Use esse espaço para deixar sugestões, críticas, reclamações ou comentarios"
+            android:textSize="22sp" />
+
+        <RadioGroup
+            android:id="@+id/feed_back_radio_group"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RadioButton
+                android:id="@+id/autorize_contact_radio_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:textSize="16sp"
+                android:text="Autorizo utilizar minhas informações de contato na opinião que enviarei."
+                android:shadowColor="@color/colorPrimaryDark"/>
+
+            <RadioButton
+                android:id="@+id/deny_contact_radio_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:textSize="16sp"
+                android:text="Prefiro me manter anônimo. (Sua opinião será analisada pela nossa equipe, mas não será respondida)"/>
+
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/contact_feed_back_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Informações de Contato"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/contact_info_feed_back_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
+            android:layout_marginEnd="6dp"
+            android:layout_marginStart="6dp"
+            android:background="@drawable/my_border"
+            android:paddingEnd="4dp"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            android:paddingStart="4dp"
+            android:text="Contato"
+            android:textSize="16sp"/>
+
+        <EditText
+            android:id="@+id/feed_back_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="Deixe aqui sua mensagem"
+            android:inputType="textMultiLine" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/rounded_corner_ghost_button"
+            android:text="Enviar e retornar"
+            android:onClick="sendDataAndReturnToMainActivity"/>
+
+
+    </LinearLayout>
+</ScrollView>

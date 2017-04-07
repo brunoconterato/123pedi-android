@@ -64,9 +64,9 @@ public class BriefActivity extends AppCompatActivity{
     private String ITEMS_QUANTITY_PREFIX = "Quantidade de produtos: ";
     private String TOTAL_PREFIX = "Total: R$ ";
 
-    private String ITEM_QUANTITY_SUFIX = "Quantidade: ";
-    private String ITEM_PRICE_SUFIX = "Preço: ";
-    private String ITEM_SUBTOTAL_SUFIX = "Subtotal: ";
+    private String ITEM_QUANTITY_PREFIX = "Quantidade: ";
+    private String ITEM_PRICE_PREFIX = "Preço: ";
+    private String ITEM_SUBTOTAL_PREFIX = "Subtotal: ";
 
     private final int PROGRESS_DIALOG_TIME_OUT = 3000; //progress dialog mantain for 3s
 
@@ -106,9 +106,9 @@ public class BriefActivity extends AppCompatActivity{
 
             brief_item_name_text_view.setText(listItem.getItem().getProduct().getName());
             brief_item_brand_text_view.setText(listItem.getItem().getProduct().getBrand());
-            brief_item_quantity_text_view.setText(ITEM_QUANTITY_SUFIX + Double.toString(listItem.getQuantity()));
-            brief_item_price_text_view.setText(ITEM_PRICE_SUFIX + Double.toString(listItem.getItem().getPrice()));
-            brief_item_subtotal_text_view.setText(ITEM_SUBTOTAL_SUFIX + Double.toString(listItem.getItem().getPrice() * listItem.getQuantity()));
+            brief_item_quantity_text_view.setText(ITEM_QUANTITY_PREFIX + Double.toString(listItem.getQuantity()));
+            brief_item_price_text_view.setText(ITEM_PRICE_PREFIX + Double.toString(listItem.getItem().getPrice()));
+            brief_item_subtotal_text_view.setText(ITEM_SUBTOTAL_PREFIX + Double.toString(listItem.getItem().getPrice() * listItem.getQuantity()));
 
             //TODO: definir image view: brief_item_image_view.setImageDrawable();
 

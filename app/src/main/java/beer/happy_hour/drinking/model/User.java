@@ -6,6 +6,9 @@ import java.util.ArrayList;
  * Created by brcon on 15/03/2017.
  */
 
+/**
+ * Singleton implementation
+ */
 public class User {
     private static User instance;
 
@@ -133,5 +136,9 @@ public class User {
         return USER_NAME_PREFIX + name
                 + USER_PHONE_PREFIX + phone
                 + USER_EMAIL_PREFIX + email;
+    }
+
+    public static void reset() {
+        instance = new User();
     }
 }

@@ -321,6 +321,18 @@ public class SearchTabsActivity extends AppCompatActivity implements SearchView.
 
     @Override
     public void onErrorImage() {
-        Toast.makeText(this, "Erro! Não foi possível recuperar imagens", Toast.LENGTH_LONG).show();
+        new Thread()
+        {
+            public void run()
+            {
+                SearchTabsActivity.this.runOnUiThread(new Runnable()
+                {
+                    public void run()
+                    {
+                        Toast.makeText(SearchTabsActivity.this, "Erro! Não foi possível recuperar imagens. Verifique sua Conexão", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        }.start();
     }
 }

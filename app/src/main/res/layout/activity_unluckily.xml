@@ -96,13 +96,21 @@
             android:textSize="20sp" />
 
         <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20sp"
+            android:text="(Opcional) Deixe suas reclamaões, sugestões, elogios"
+            android:background="@drawable/rounded_corner_ghost_button"
+            android:onClick="goToFeedBackActivity"/>
+
+        <Button
             android:id="@+id/finalize_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:background="@drawable/rounded_corner_ghost_button"
             android:textSize="20sp"
-            android:onClick="sendDataAndGoToMainActivity"
+            android:onClick="sendDataAndReturnToMainActivity"
             android:text="Finalizar" />
 
     </LinearLayout>
