@@ -60,7 +60,6 @@ public class ShoppingCartAdapter extends ArrayAdapter<ListItem> {
 
         //Inicializando TextViews
         TextView nome_text_view = (TextView) row.findViewById(R.id.name);
-        TextView brand_text_view = (TextView) row.findViewById(R.id.brand);
         TextView price_text_view = (TextView) row.findViewById(R.id.price);
 
         ImageView cart_item_image_view = (ImageView) row.findViewById(R.id.cart_item_image_view);
@@ -161,7 +160,6 @@ public class ShoppingCartAdapter extends ArrayAdapter<ListItem> {
 
         //Mostrando informações
         nome_text_view.setText(listItem.getItem().getProduct().getName());
-        brand_text_view.setText(listItem.getItem().getProduct().getBrand());
         price_text_view.setText(Double.toString(listItem.getItem().getPrice()));
 
         subtotal_text_view.setText("Subtotal: " + Double.toString(listItem.getItem().getPrice() * listItem.getQuantity()));

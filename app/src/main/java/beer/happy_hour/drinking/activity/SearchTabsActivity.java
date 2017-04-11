@@ -18,13 +18,18 @@ import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.Toast;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import beer.happy_hour.drinking.Constants;
 import beer.happy_hour.drinking.R;
 import beer.happy_hour.drinking.adapter.ViewPagerAdapter;
+import beer.happy_hour.drinking.async_http_client.SearchGetterAPISync;
 import beer.happy_hour.drinking.fragment.CategoryFragment;
 import beer.happy_hour.drinking.fragment.SearchResultsFragment;
 import beer.happy_hour.drinking.load_stock_data.DownloadImageFragment;
 import beer.happy_hour.drinking.load_stock_data.LoadStockFragment;
+import beer.happy_hour.drinking.model.DeliveryPlace;
 import beer.happy_hour.drinking.model.List_Item.ShoppingCart;
 
 public class SearchTabsActivity extends AppCompatActivity implements SearchView.OnQueryTextListener,
@@ -49,6 +54,12 @@ public class SearchTabsActivity extends AppCompatActivity implements SearchView.
 
     private LoadStockFragment loadStockFragment;
     private DownloadImageFragment downloadImageFragment;
+
+
+    //Variables used in Search API
+    private String lastSearchQuery = "";
+    private Timer timer;
+    private final long TIMER_DELAY = 2000; // milliseconds
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +123,6 @@ public class SearchTabsActivity extends AppCompatActivity implements SearchView.
 
 //        toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
-
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         setupTabIcons();
@@ -130,6 +140,8 @@ public class SearchTabsActivity extends AppCompatActivity implements SearchView.
         searchView.setOnQueryTextListener(this);
 
         Log.d("onCreate finished", "SearchTabsActivity");
+
+        timer = new Timer();
     }
 
     private void loadTabFragments() {
@@ -160,11 +172,11 @@ public class SearchTabsActivity extends AppCompatActivity implements SearchView.
         tabLayout.getTabAt(0).setCustomView(tab1);
 
         ImageView tab2 = (ImageView) LayoutInflater.from(this).inflate(R.layout.custom_search_tab, null);
-        tab2.findViewById(R.id.tabIcons).setBackgroundResource(R.drawable.ic_movie_soda_clipart_free_clipart_images);
+        tab2.findViewById(R.id.tabIcons).setBackgroundResource(R.drawable.ic_soda);
         tabLayout.getTabAt(1).setCustomView(tab2);
 
         ImageView tab3 = (ImageView) LayoutInflater.from(this).inflate(R.layout.custom_search_tab, null);
-        tab3.findViewById(R.id.tabIcons).setBackgroundResource(R.drawable.ic_beer_bottle_256);
+        tab3.findViewById(R.id.tabIcons).setBackgroundResource(R.drawable.ic_beer_bottles);
         tabLayout.getTabAt(2).setCustomView(tab3);
 
         ImageView tab4 = (ImageView) LayoutInflater.from(this).inflate(R.layout.custom_search_tab, null);
@@ -191,6 +203,9 @@ public class SearchTabsActivity extends AppCompatActivity implements SearchView.
         viewPager.setCurrentItem(4);
         searchResultsFragment.getAdapter().getFilter().filter(query);
 
+        Log.d("AQUIPORRA","AQUIPORRA");
+        new SearchGetterAPISync(searchView.getQuery().toString(),"none","none").execute();
+
         /**
          * Sumindo teclado ao executar busca!
          */
@@ -205,11 +220,35 @@ public class SearchTabsActivity extends AppCompatActivity implements SearchView.
 
     @Override
     public boolean onQueryTextChange(String newQuery) {
+        timer.cancel();
+
+        if(newQuery.equals("") && lastSearchQuery.length() > 1){
+            Log.d("AQUIPORRA","AQUIPORRA");
+            new SearchGetterAPISync(lastSearchQuery,"none","none").execute();
+        }
+
+        if( (newQuery.length() > Constants.MIN_SEARCH_LENGHT_TO_API) ) {
+            timer = new Timer();
+            timer.schedule(
+                    new TimerTask() {
+                        @Override
+                        public void run() {
+                            // TODO: do what you need here (refresh list)
+                            // you will probably need to use runOnUiThread(Runnable action) for some specific actions
+                            Log.d("AQUIPORRA","AQUIPORRA");
+                            new SearchGetterAPISync(searchView.getQuery().toString(),"none","none").execute();
+                        }
+                    },
+                    TIMER_DELAY
+            );
+        }
         Log.d("Entrou:", "onQueryTextChange");
 
         viewPager.setCurrentItem(4);
 
         searchResultsFragment.getAdapter().getFilter().filter(newQuery);
+
+        lastSearchQuery = newQuery;
 
         return true;
     }

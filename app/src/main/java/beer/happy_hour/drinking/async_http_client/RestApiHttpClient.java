@@ -15,15 +15,6 @@ public class RestApiHttpClient {
 //    private static AsyncHttpClient client = new AsyncHttpClient();
     private static SyncHttpClient client = new SyncHttpClient();
 
-//    public static void get(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-//        client.get(getAbsoluteUrl(url), params, responseHandler);
-//    }
-//
-//    //Versao que funciona quando client é AsyncTask
-//    public static void post(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-//        client.post(getAbsoluteUrl(url), params, responseHandler);
-//    }
-
     public static void get(String url, RequestParams params, JsonHttpResponseHandler responseHandler) {
         client.get(getAbsoluteUrl(url), params, responseHandler);
     }

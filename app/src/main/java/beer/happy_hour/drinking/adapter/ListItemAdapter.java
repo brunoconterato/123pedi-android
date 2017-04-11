@@ -40,6 +40,8 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
     private List<ListItem> filteredList;
     private ItemsDatabaseHandler databaseHandler;
 
+    private final String PRICE_PREFIX = "R$ ";
+
     public ListItemAdapter(Context context) {
         super(context, R.layout.list_item, ListItemRepository.getInstance().getList());
 
@@ -64,8 +66,6 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
 
         //Inicializando TextViews
         TextView nome_text_view = (TextView) row.findViewById(R.id.name);
-        TextView brand_text_view = (TextView) row.findViewById(R.id.brand);
-        TextView manufacturer_text_view = (TextView) row.findViewById(R.id.manufacturer);
         TextView price_text_view = (TextView) row.findViewById(R.id.price);
 
         ImageView brief_item_image_view = (ImageView) row.findViewById(R.id.brief_item_image_view);
@@ -157,9 +157,7 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
 
         //Mostrando informações
         nome_text_view.setText(listItem.getItem().getProduct().getName());
-        brand_text_view.setText(listItem.getItem().getProduct().getBrand());
-        manufacturer_text_view.setText(listItem.getItem().getProduct().getManufacturer());
-        price_text_view.setText(Double.toString(listItem.getItem().getPrice()));
+        price_text_view.setText(PRICE_PREFIX + Double.toString(listItem.getItem().getPrice()));
 
 
         databaseHandler = new ItemsDatabaseHandler(context);
