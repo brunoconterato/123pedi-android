@@ -46,7 +46,7 @@ public class CartGetterAPISync extends AsyncTask<Void, Void, Void> {
         requestParams.put("stock_item_id", stock_item_id);
         requestParams.put("quantity", quantity);
         //TODO: Arrumar essa nhaca na API
-        requestParams.put("latutude", latitude);
+        requestParams.put("latitude", latitude);
         requestParams.put("longitude", longitude);
 
         Log.d("Request Params", requestParams.toString());

@@ -39,7 +39,7 @@ public class SearchGetterAPISync extends AsyncTask<Void, Void, Void> {
 
         requestParams.put("search_term", search_term);
         //TODO: Arrumar essa nhaca na API
-        requestParams.put("latutude", latitude);
+        requestParams.put("latitude", latitude);
         requestParams.put("longitude", longitude);
 
         Log.d("Request Params", requestParams.toString());
