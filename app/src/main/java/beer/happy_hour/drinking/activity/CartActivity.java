@@ -15,9 +15,11 @@ import android.widget.Toast;
 import beer.happy_hour.drinking.Constants;
 import beer.happy_hour.drinking.R;
 import beer.happy_hour.drinking.adapter.ShoppingCartAdapter;
+import beer.happy_hour.drinking.async_http_client.CartGetterAPISync;
 import beer.happy_hour.drinking.listener.TotalTextView;
 import beer.happy_hour.drinking.load_stock_data.DownloadImageFragment;
 import beer.happy_hour.drinking.load_stock_data.LoadStockFragment;
+import beer.happy_hour.drinking.model.List_Item.ListItem;
 import beer.happy_hour.drinking.model.List_Item.ShoppingCart;
 
 public class CartActivity extends AppCompatActivity implements AdapterView.OnItemClickListener,
@@ -76,8 +78,11 @@ public class CartActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void goToFinalizeActivity(View view) {
-        if(cart.getListItems().size() > 0)
+        if(cart.getListItems().size() > 0) {
+            for(ListItem listItem : cart.getListItems())
+                new CartGetterAPISync(listItem.getItem().getId(),listItem.getQuantity(),"none","none").execute();
             startActivity(new Intent(this, OrderDetailsActivity.class));
+        }
         else
             Toast.makeText(getApplicationContext(), "Você precisa retornar e adicionar items ao carrinho para prosseguir", Toast.LENGTH_LONG).show();
     }

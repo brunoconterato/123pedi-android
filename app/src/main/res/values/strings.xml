@@ -12,7 +12,7 @@
     <string name="majority_popup_message">Você precisa confirmar que possui mais de 18 anos completos para confirmar o pedido</string>
     <string name="verify_order_information">Por favor, verifique se suas informaçoes estão corretas antes de prosseguir para pagamento</string>
     <string name="majority_confirmation_check">Será necessário apresentar documento de identificação oficial com foto na retirada do produto</string>
-    <string name="notAvailableService">Infelizmente, nosso serviço ainda não está disponivel! :( </string>
+    <string name="notAvailableService">Infelizmente, nosso serviço ainda não está disponivel na sua região :( </string>
     <string name="contact_request_string">Deixe-nos salvar seu contato! Assim poderemos avisá-lo assim que estivermos funcionando!</string>
 
     <string-array name="payment_types_string_array">

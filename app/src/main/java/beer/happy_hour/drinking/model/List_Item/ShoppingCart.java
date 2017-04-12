@@ -3,6 +3,8 @@ package beer.happy_hour.drinking.model.List_Item;
 import java.util.ArrayList;
 import java.util.List;
 
+import beer.happy_hour.drinking.async_http_client.CartGetterAPISync;
+
 /**
  * Created by brcon on 11/03/2017.
  */

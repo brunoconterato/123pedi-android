@@ -14,6 +14,8 @@ public class Constants {
     public static final String BASE_INFORMATION_SEARCH_URL = "http://api.happy-hour.beer/api/information/search_term";
     public static final int MIN_SEARCH_LENGHT_TO_API = 3;
 
+    public static final String BASE_INFORMATION_CART_ITEM_URL = "http://api.happy-hour.beer/api/information/cart_item";
+
     public static final String QUERY_KEY_STRING = "query_key";
 
     public static final String TAG_TASK_FRAGMENT = "load_stock_task_fragment";

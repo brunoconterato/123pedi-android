@@ -22,6 +22,7 @@ public class ListItem implements Parcelable{
             return new ListItem[size];
         }
     };
+
     private Item item;
     private int quantity;  //Quantidade que o comprador deseja
     private SubtotalChangeListener listener;
