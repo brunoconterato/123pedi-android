@@ -35,6 +35,9 @@ public class ShoppingCartAdapter extends ArrayAdapter<ListItem> {
 
     private ItemsDatabaseHandler databaseHandler;
 
+    private String SUBTOTAL_PREFIX = "Subtotal: ";
+    private String PRICE_PREFIX = "Preço: ";
+
     public ShoppingCartAdapter(Context context) {
         super(context, R.layout.shopping_cart_item, ShoppingCart.getInstance().getListItems());
 
@@ -160,9 +163,9 @@ public class ShoppingCartAdapter extends ArrayAdapter<ListItem> {
 
         //Mostrando informações
         nome_text_view.setText(listItem.getItem().getProduct().getName());
-        price_text_view.setText(Double.toString(listItem.getItem().getPrice()));
+        price_text_view.setText(String.format("%s%.2f", PRICE_PREFIX, listItem.getItem().getPrice()));
 
-        subtotal_text_view.setText("Subtotal: " + Double.toString(listItem.getItem().getPrice() * listItem.getQuantity()));
+        subtotal_text_view.setText(String.format("%s%.2f", SUBTOTAL_PREFIX, listItem.getItem().getPrice() * listItem.getQuantity()));
         listItem.setListener(subtotal_text_view);
 
         databaseHandler = new ItemsDatabaseHandler(context);

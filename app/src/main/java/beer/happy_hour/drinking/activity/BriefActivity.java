@@ -106,9 +106,9 @@ public class BriefActivity extends AppCompatActivity{
 
             brief_item_name_text_view.setText(listItem.getItem().getProduct().getName());
             brief_item_brand_text_view.setText(listItem.getItem().getProduct().getBrand());
-            brief_item_quantity_text_view.setText(ITEM_QUANTITY_PREFIX + Double.toString(listItem.getQuantity()));
-            brief_item_price_text_view.setText(ITEM_PRICE_PREFIX + Double.toString(listItem.getItem().getPrice()));
-            brief_item_subtotal_text_view.setText(ITEM_SUBTOTAL_PREFIX + Double.toString(listItem.getItem().getPrice() * listItem.getQuantity()));
+            brief_item_quantity_text_view.setText(String.format("%s%d", ITEM_QUANTITY_PREFIX, listItem.getQuantity()));
+            brief_item_price_text_view.setText(String.format("%s%.2f", ITEM_PRICE_PREFIX, listItem.getItem().getPrice()));
+            brief_item_subtotal_text_view.setText(String.format("%s%.2f", ITEM_SUBTOTAL_PREFIX, listItem.getItem().getPrice() * listItem.getQuantity()));
 
             //TODO: definir image view: brief_item_image_view.setImageDrawable();
 
@@ -118,8 +118,8 @@ public class BriefActivity extends AppCompatActivity{
         items_quantity_brief_text_view = (TextView) findViewById(R.id.items_quantity_brief_text_view);
         total_brief_text_view = (TextView) findViewById(R.id.total_brief_text_view);
 
-        items_quantity_brief_text_view.setText(ITEMS_QUANTITY_PREFIX + Double.toString(cart.getItemsQuantity()));
-        total_brief_text_view.setText(TOTAL_PREFIX + Double.toString(cart.getTotal()));
+        items_quantity_brief_text_view.setText(String.format("%s%d", ITEMS_QUANTITY_PREFIX, cart.getItemsQuantity()));
+        total_brief_text_view.setText(String.format("%s%.2f", TOTAL_PREFIX, cart.getTotal()));
 
 
 //        adapter = new BriefItemsAdapter(this.getApplicationContext());

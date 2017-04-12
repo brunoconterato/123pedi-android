@@ -62,7 +62,7 @@ public class CartActivity extends AppCompatActivity implements AdapterView.OnIte
         cart = ShoppingCart.getInstance();
 
         total_text_view = (TotalTextView) findViewById(R.id.total_text_view);
-        total_text_view.setText(TOTAL_PREFIX + Double.toString(cart.getTotal()));
+        total_text_view.setText(String.format("%s%.2f", TOTAL_PREFIX, cart.getTotal()));
         cart.setListener(total_text_view);
     }
 

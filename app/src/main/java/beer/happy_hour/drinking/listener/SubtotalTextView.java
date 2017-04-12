@@ -12,7 +12,7 @@ import beer.happy_hour.drinking.model.List_Item.ListItem;
 
 public class SubtotalTextView extends android.support.v7.widget.AppCompatTextView implements ListItem.SubtotalChangeListener {
 
-    private String BASE_SUBTOTAL_TEXT = "Subtotal: ";
+    private final String SUBTOTAL_PREFIX = "Subtotal: ";
 
     public SubtotalTextView(Context context) {
         super(context);
@@ -28,6 +28,6 @@ public class SubtotalTextView extends android.support.v7.widget.AppCompatTextVie
 
     @Override
     public void onValueChanged(double newValue) {
-        this.setText(BASE_SUBTOTAL_TEXT + Double.toString(newValue));
+        this.setText(String.format("%s%.2f", SUBTOTAL_PREFIX, newValue));
     }
 }

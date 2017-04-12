@@ -11,7 +11,7 @@ import beer.happy_hour.drinking.model.List_Item.ShoppingCart;
 
 public class TotalTextView extends android.support.v7.widget.AppCompatTextView implements ShoppingCart.TotalChangeListener {
 
-    private String BASE_PRICE_TEXT = "TOTAL: R$ ";
+    private final String TOTAL_PREFIX = "TOTAL: R$ ";
 
     public TotalTextView(Context context) {
         super(context);
@@ -32,6 +32,6 @@ public class TotalTextView extends android.support.v7.widget.AppCompatTextView i
      */
     @Override
     public void onValueChanged(double newTotal) {
-        this.setText(BASE_PRICE_TEXT + Double.toString(newTotal));
+        this.setText(String.format("%s%.2f", TOTAL_PREFIX, newTotal));
     }
 }

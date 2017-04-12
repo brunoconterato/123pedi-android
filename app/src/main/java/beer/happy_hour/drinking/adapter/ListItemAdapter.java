@@ -157,7 +157,7 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
 
         //Mostrando informações
         nome_text_view.setText(listItem.getItem().getProduct().getName());
-        price_text_view.setText(PRICE_PREFIX + Double.toString(listItem.getItem().getPrice()));
+        price_text_view.setText(String.format("%s%.2f", PRICE_PREFIX, listItem.getItem().getPrice()));
 
 
         databaseHandler = new ItemsDatabaseHandler(context);
