@@ -60,6 +60,7 @@ public class SearchTabsActivity extends AppCompatActivity implements SearchView.
     private String lastSearchQuery = "";
     private Timer timer;
     private final long TIMER_DELAY = 2000; // milliseconds
+    private boolean isCapturedQuery = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -200,11 +201,13 @@ public class SearchTabsActivity extends AppCompatActivity implements SearchView.
 
     @Override
     public boolean onQueryTextSubmit(String query) {
+        timer.cancel();
+
         viewPager.setCurrentItem(4);
         searchResultsFragment.getAdapter().getFilter().filter(query);
 
-        Log.d("AQUIPORRA","AQUIPORRA");
-        new SearchGetterAPISync(searchView.getQuery().toString(),"none","none").execute();
+        if(!isCapturedQuery)
+            new SearchGetterAPISync(searchView.getQuery().toString()).execute();
 
         /**
          * Sumindo teclado ao executar busca!
@@ -221,10 +224,10 @@ public class SearchTabsActivity extends AppCompatActivity implements SearchView.
     @Override
     public boolean onQueryTextChange(String newQuery) {
         timer.cancel();
+        isCapturedQuery = false;
 
         if(newQuery.equals("") && lastSearchQuery.length() > 1){
-            Log.d("AQUIPORRA","AQUIPORRA");
-            new SearchGetterAPISync(lastSearchQuery,"none","none").execute();
+            new SearchGetterAPISync(lastSearchQuery).execute();
         }
 
         if( (newQuery.length() > Constants.MIN_SEARCH_LENGHT_TO_API) ) {
@@ -235,8 +238,8 @@ public class SearchTabsActivity extends AppCompatActivity implements SearchView.
                         public void run() {
                             // TODO: do what you need here (refresh list)
                             // you will probably need to use runOnUiThread(Runnable action) for some specific actions
-                            Log.d("AQUIPORRA","AQUIPORRA");
-                            new SearchGetterAPISync(searchView.getQuery().toString(),"none","none").execute();
+                            new SearchGetterAPISync(searchView.getQuery().toString()).execute();
+                            isCapturedQuery = true;
                         }
                     },
                     TIMER_DELAY
