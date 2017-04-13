@@ -14,6 +14,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import beer.happy_hour.drinking.Constants;
+import beer.happy_hour.drinking.model.DeliveryPlace;
 import cz.msebera.android.httpclient.Header;
 
 /**
@@ -22,14 +23,16 @@ import cz.msebera.android.httpclient.Header;
 
 public class SearchGetterAPISync extends AsyncTask<Void, Void, Void> {
 
+    private DeliveryPlace deliveryPlace;
+
     private String search_term = "";
     private String latitude = "none";
     private String longitude = "none";
 
-    public SearchGetterAPISync(String search_term, String latitude, String longitude){
+    public SearchGetterAPISync(String search_term){
         this.search_term = search_term;
-        this.latitude = latitude;
-        this.longitude = longitude;
+
+        this.deliveryPlace = DeliveryPlace.getInstance();
     }
 
     @Override
