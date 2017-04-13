@@ -1,5 +1,9 @@
 package beer.happy_hour.drinking.async_http_client;
 
+/**
+ * Created by brcon on 11/04/2017.
+ */
+
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -11,24 +15,28 @@ import org.json.JSONObject;
 
 import beer.happy_hour.drinking.Constants;
 import beer.happy_hour.drinking.model.DeliveryPlace;
+import beer.happy_hour.drinking.model.User;
 import cz.msebera.android.httpclient.Header;
 
 /**
  * Created by brcon on 21/03/2017.
  */
 
-public class CartGetterAPISync extends AsyncTask<Void, Void, Void> {
+public class MessageGetterAPISync extends AsyncTask<Void, Void, Void> {
 
     private DeliveryPlace deliveryPlace;
+    private User user;
 
-    private int stock_item_id;
-    private int quantity;
+    private boolean getName;
 
-    public CartGetterAPISync(int stock_item_id, int quantity){
-        this.stock_item_id = stock_item_id;
-        this.quantity = quantity;
+    private String message = "";
 
-        deliveryPlace = DeliveryPlace.getInstance();
+    public MessageGetterAPISync(String message, boolean getName){
+        this.message = message;
+        this.getName = getName;
+
+        this.user = User.getInstance();
+        this.deliveryPlace = DeliveryPlace.getInstance();
     }
 
     @Override
@@ -36,15 +44,25 @@ public class CartGetterAPISync extends AsyncTask<Void, Void, Void> {
 
         RequestParams requestParams = new RequestParams();
 
-        requestParams.put("stock_item_id", stock_item_id);
-        requestParams.put("quantity", quantity);
+        requestParams.put("message", message);
 
         requestParams.put("latitude", deliveryPlace.getLatitude());
         requestParams.put("longitude", deliveryPlace.getLongitude());
 
+        if(getName) {
+            requestParams.put("name", user.getName());
+            requestParams.put("phone", user.getPhone());
+            requestParams.put("email", user.getEmail());
+        }
+        else{
+            requestParams.put("name", "NoName");
+            requestParams.put("phone", "NoPhone");
+            requestParams.put("email", "NoEmail");
+        }
+
         Log.d("Request Params", requestParams.toString());
 
-        RestApiHttpClient.post(Constants.BASE_INFORMATION_CART_ITEM_URL, requestParams, new JsonHttpResponseHandler() {
+        RestApiHttpClient.post(Constants.BASE_INFORMATION_MESSAGE_URL, requestParams, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 Log.d("SuccessAPI!!", "SuccessAPI");

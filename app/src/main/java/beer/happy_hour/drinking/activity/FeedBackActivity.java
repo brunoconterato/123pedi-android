@@ -1,4 +1,4 @@
-package beer.happy_hour.drinking;
+package beer.happy_hour.drinking.activity;
 
 import android.content.Intent;
 import android.support.annotation.IdRes;
@@ -15,9 +15,11 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import beer.happy_hour.drinking.R;
 import beer.happy_hour.drinking.activity.CartActivity;
 import beer.happy_hour.drinking.activity.MainActivity;
 import beer.happy_hour.drinking.activity.UnluckilyActivity;
+import beer.happy_hour.drinking.async_http_client.MessageGetterAPISync;
 import beer.happy_hour.drinking.model.User;
 import beer.happy_hour.drinking.model.UserFeedBack;
 import beer.happy_hour.drinking.repository.ListItemRepository;
@@ -126,7 +128,13 @@ public class FeedBackActivity extends AppCompatActivity {
     }
 
     public void sendDataAndReturnToMainActivity(View view) {
+        if(autorize_contact_radio_button.isChecked())
+            new MessageGetterAPISync(feed_back_edit_text.getText().toString(), true).execute();
+        else
+            new MessageGetterAPISync(feed_back_edit_text.getText().toString(), false).execute();
+
         resetAppData();
+
         startActivity(new Intent(this, MainActivity.class));
     }
 

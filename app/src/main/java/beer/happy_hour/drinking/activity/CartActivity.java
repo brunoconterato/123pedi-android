@@ -80,7 +80,7 @@ public class CartActivity extends AppCompatActivity implements AdapterView.OnIte
     public void goToFinalizeActivity(View view) {
         if(cart.getListItems().size() > 0) {
             for(ListItem listItem : cart.getListItems())
-                new CartGetterAPISync(listItem.getItem().getId(),listItem.getQuantity(),"none","none").execute();
+                new CartGetterAPISync(listItem.getItem().getId(),listItem.getQuantity()).execute();
             startActivity(new Intent(this, OrderDetailsActivity.class));
         }
         else

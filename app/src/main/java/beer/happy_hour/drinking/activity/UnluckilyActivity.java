@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
-import beer.happy_hour.drinking.FeedBackActivity;
 import beer.happy_hour.drinking.R;
 import beer.happy_hour.drinking.model.User;
 

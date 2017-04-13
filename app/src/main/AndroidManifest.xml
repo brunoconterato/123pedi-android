@@ -73,7 +73,7 @@
             android:name=".activity.UnluckilyActivity"
             android:label="Obrigado pela intenção!"
             android:screenOrientation="portrait" />
-        <activity android:name=".FeedBackActivity"
+        <activity android:name=".activity.FeedBackActivity"
             android:label="Sua Opinião"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden"></activity>
