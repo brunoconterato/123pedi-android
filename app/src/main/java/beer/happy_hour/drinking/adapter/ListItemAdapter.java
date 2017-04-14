@@ -1,30 +1,38 @@
 package beer.happy_hour.drinking.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.NumberPicker;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import beer.happy_hour.drinking.Constants;
+import beer.happy_hour.drinking.activity.SearchTabsActivity;
 import beer.happy_hour.drinking.database_handler.ItemsDatabaseHandler;
-import beer.happy_hour.drinking.load_stock_data.DownloadImageTask;
 import beer.happy_hour.drinking.InputFilterMinMax;
 import beer.happy_hour.drinking.R;
+import beer.happy_hour.drinking.listener.SubtotalTextView;
+import beer.happy_hour.drinking.listener.SubtotalTextViewOnlyValue;
 import beer.happy_hour.drinking.model.List_Item.ListItem;
 import beer.happy_hour.drinking.repository.ListItemRepository;
 
@@ -34,13 +42,20 @@ import beer.happy_hour.drinking.repository.ListItemRepository;
 
 public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterable {
 
+    public interface OnPopupShowListener {
+        void OnPopupShow();
+    }
+
     private final Context context;
     private Filter listItemFilter;
     private ListItemRepository listItemRepository;
     private List<ListItem> filteredList;
     private ItemsDatabaseHandler databaseHandler;
 
+    private OnPopupShowListener listener;
+
     private final String PRICE_PREFIX = "R$ ";
+    private String SUBTOTAL_PREFIX = "Subtotal: R$";
 
     public ListItemAdapter(Context context) {
         super(context, R.layout.list_item, ListItemRepository.getInstance().getList());
@@ -52,11 +67,15 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
         filteredList = listItemRepository.getList();
     }
 
+    public void setPopupShowListener(OnPopupShowListener listener){
+        this.listener = listener;
+    }
+
     @NonNull
     @Override
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View row = inflater.inflate(R.layout.list_item, parent, false);
+        final LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View row = inflater.inflate(R.layout.list_item, parent, false);
 
         //Inicializando Botões
         Button addOne_button = (Button) row.findViewById(R.id.cart_addOne_button);
@@ -166,8 +185,84 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
             brief_item_image_view.setImageBitmap(databaseHandler.getImage(listItem.getItem()));
         }
 
+
+        row.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("Clicked","Product: " + listItem.getItem().getProduct().getName());
+
+                try {
+                    Activity activity = (Activity) context;
+
+                    LinearLayout viewGroup = (LinearLayout) activity.findViewById(R.id.popup);
+                    LayoutInflater layoutInflater = (LayoutInflater) context
+                            .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    View layout = layoutInflater.inflate(R.layout.popup_layout, viewGroup);
+
+                    ImageView photo_popup_image_view = (ImageView) layout.findViewById(R.id.photo_popup_image_view);
+                    databaseHandler = new ItemsDatabaseHandler(context);
+                    if(databaseHandler.getImage(listItem.getItem()) != null) {
+                        photo_popup_image_view.setImageBitmap(databaseHandler.getImage(listItem.getItem()));
+                    }
+
+                    TextView product_name_popup = (TextView) layout.findViewById(R.id.product_name_popup);
+                    product_name_popup.setText(listItem.getItem().getProduct().getName());
+
+                    TextView description_popup = (TextView) layout.findViewById(R.id.description_popup);
+                    description_popup.setText(listItem.getItem().getProduct().getDescription());
+
+                    TextView price_popup = (TextView) layout.findViewById(R.id.price_popup);
+                    price_popup.setText(String.format("R$ %.2f",listItem.getItem().getPrice()));
+
+                    NumberPicker quantity_popup_number_picker = (NumberPicker) layout.findViewById(R.id.quantity_popup_number_picker);
+                    quantity_popup_number_picker.setMinValue(0);
+                    quantity_popup_number_picker.setMaxValue(99);
+                    quantity_popup_number_picker.setValue(listItem.getQuantity());
+                    quantity_popup_number_picker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+                    quantity_popup_number_picker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+                        @Override
+                        public void onValueChange(NumberPicker numberPicker, int oldValue, int newValue) {
+                            listItem.setQuantityAndUpdateCart(newValue);
+                        }
+                    });
+
+                    SubtotalTextViewOnlyValue subtotal_popup = (SubtotalTextViewOnlyValue) layout.findViewById(R.id.subtotal_popup);
+                    subtotal_popup.setText(String.format("R$ %.2f", listItem.getItem().getPrice() * listItem.getQuantity()));
+                    listItem.setSubtotalListener(subtotal_popup);
+
+                    final PopupWindow popup = new PopupWindow(context);
+                    popup.setOnDismissListener((SearchTabsActivity)activity);
+                    popup.setWidth( (int) getDeviceWidth()* 8 / 10);
+                    popup.setHeight( (int) getDeviceHeight()* 85 / 100 );
+                    popup.setContentView(layout);
+                    popup.setFocusable(true);
+
+                    popup.showAtLocation(layout, Gravity.CENTER, 0, 0);
+
+                    listener.OnPopupShow();
+
+                    Button popup_dismiss_button = (Button) layout.findViewById(R.id.popup_dismiss_button);
+
+                    popup_dismiss_button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            popup.dismiss();
+                        }
+                    });
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
         return row;
     }
+
+//    private PopupWindow setupListItemPopUp(ListItem listItem, View row) {
+//
+//
+//    }
 
     public void reload(){
         filteredList = listItemRepository.getList();
@@ -300,5 +395,17 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
                 notifyDataSetChanged();
             }
         }
+    }
+
+    private int getDeviceWidth() {
+        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        int screenWidth = windowManager.getDefaultDisplay().getWidth();
+        return screenWidth;
+    }
+
+    private int getDeviceHeight() {
+        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        int screenHeight = windowManager.getDefaultDisplay().getHeight();
+        return screenHeight;
     }
 }

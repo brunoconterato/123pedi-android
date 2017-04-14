@@ -106,7 +106,7 @@ public class ListItem implements Parcelable{
         return str;
     }
 
-    public void setListener(SubtotalChangeListener listener) {
+    public void setSubtotalListener(SubtotalChangeListener listener) {
         this.listener = listener;
     }
 

@@ -55,7 +55,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:hint="0"
-            android:inputType="number" />
+            android:inputType="number"
+            android:textAlignment="center"/>
 
         <Button
             android:id="@+id/deleteFromShoppingCart_button"

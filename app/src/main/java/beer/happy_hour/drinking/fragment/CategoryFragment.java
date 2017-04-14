@@ -16,6 +16,8 @@ import android.widget.ListView;
 
 import beer.happy_hour.drinking.Constants;
 import beer.happy_hour.drinking.R;
+import beer.happy_hour.drinking.activity.BriefActivity;
+import beer.happy_hour.drinking.activity.SearchTabsActivity;
 import beer.happy_hour.drinking.adapter.ListItemAdapter;
 
 
@@ -63,7 +65,8 @@ public class CategoryFragment extends Fragment {
         if(listItemAdapter == null)
             listItemAdapter = new ListItemAdapter(getActivity());
 
-        items_list_view.setAdapter(listItemAdapter);
+        setupAdapter();
+
         listItemAdapter.getFilter().filter(searchQuery);
         return view;
     }
@@ -71,6 +74,9 @@ public class CategoryFragment extends Fragment {
     public void setupAdapter(){
         if(getActivity() != null) {
             listItemAdapter = new ListItemAdapter(context);
+
+            listItemAdapter.setPopupShowListener((SearchTabsActivity)activity);
+
             items_list_view.setAdapter(listItemAdapter);
             listItemAdapter.getFilter().filter(searchQuery);
         }

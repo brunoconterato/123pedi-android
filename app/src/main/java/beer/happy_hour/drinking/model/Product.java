@@ -16,6 +16,8 @@ public class Product implements Parcelable{
     private String manufacturer;
     private String image_url;
 
+    private String description;
+
     private Category category;
 
     public Product() {}
@@ -78,4 +80,8 @@ public class Product implements Parcelable{
             return new Product[size];
         }
     };
+
+    public String getDescription() {
+        return description;
+    }
 }

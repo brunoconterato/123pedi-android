@@ -12,7 +12,7 @@ import beer.happy_hour.drinking.model.List_Item.ListItem;
 
 public class SubtotalTextView extends android.support.v7.widget.AppCompatTextView implements ListItem.SubtotalChangeListener {
 
-    private final String SUBTOTAL_PREFIX = "Subtotal: ";
+    private final String SUBTOTAL_PREFIX = "Subtotal: R$";
 
     public SubtotalTextView(Context context) {
         super(context);

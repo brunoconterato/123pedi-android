@@ -68,7 +68,8 @@
         <activity
             android:name=".activity.SearchTabsActivity"
             android:label="Encontrar produtos"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".activity.UnluckilyActivity"
             android:label="Obrigado pela intenção!"

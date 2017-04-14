@@ -8,7 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+
+import beer.happy_hour.drinking.Constants;
 import beer.happy_hour.drinking.R;
+import beer.happy_hour.drinking.activity.SearchTabsActivity;
 import beer.happy_hour.drinking.adapter.ListItemAdapter;
 
 /**
@@ -22,6 +25,7 @@ public class SearchResultsFragment extends Fragment {
     private ListView items_list_view;
 
     private boolean loadedFragment = false;
+    private Context context;
 
     public SearchResultsFragment() {
         // Required empty public constructor
@@ -37,6 +41,7 @@ public class SearchResultsFragment extends Fragment {
     public void onAttach(Context context){
         super.onAttach(context);
 
+        this.context = context;
         if (context instanceof Activity){
             activity = (Activity) context;
         }
@@ -48,9 +53,10 @@ public class SearchResultsFragment extends Fragment {
         View view =  inflater.inflate(R.layout.fragment_search, container, false);
         items_list_view = (ListView) view.findViewById(R.id.items_fragment_list_view);
 
-        if(listItemAdapter == null)
-            listItemAdapter = new ListItemAdapter(getActivity());
-        items_list_view.setAdapter(listItemAdapter);
+//        if(listItemAdapter == null)
+//            listItemAdapter = new ListItemAdapter(getActivity());
+//        items_list_view.setAdapter(listItemAdapter);
+        setupAdapter();
 
         return view;
     }
@@ -59,11 +65,15 @@ public class SearchResultsFragment extends Fragment {
         return listItemAdapter;
     }
 
-//    public void setupAdapter(){
-//        if(getActivity() != null) {
-//            listItemAdapter = new ListItemAdapter(context);
-//            items_list_view.setAdapter(listItemAdapter);
-//            listItemAdapter.getFilter().filter(searchQuery);
-//        }
-//    }
+    public void setupAdapter(){
+        if(getActivity() != null) {
+            listItemAdapter = new ListItemAdapter(context);
+
+            listItemAdapter.setPopupShowListener((SearchTabsActivity)activity);
+
+            items_list_view.setAdapter(listItemAdapter);
+
+            listItemAdapter.getFilter().filter("");
+        }
+    }
 }

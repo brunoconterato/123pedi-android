@@ -14,7 +14,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -23,18 +25,19 @@ import java.util.TimerTask;
 
 import beer.happy_hour.drinking.Constants;
 import beer.happy_hour.drinking.R;
+import beer.happy_hour.drinking.adapter.ListItemAdapter;
 import beer.happy_hour.drinking.adapter.ViewPagerAdapter;
 import beer.happy_hour.drinking.async_http_client.SearchGetterAPISync;
 import beer.happy_hour.drinking.fragment.CategoryFragment;
 import beer.happy_hour.drinking.fragment.SearchResultsFragment;
 import beer.happy_hour.drinking.load_stock_data.DownloadImageFragment;
 import beer.happy_hour.drinking.load_stock_data.LoadStockFragment;
-import beer.happy_hour.drinking.model.DeliveryPlace;
 import beer.happy_hour.drinking.model.List_Item.ShoppingCart;
 
 public class SearchTabsActivity extends AppCompatActivity implements SearchView.OnQueryTextListener,
                                                                         LoadStockFragment.TaskCallbacks,
-                                                                        DownloadImageFragment.TaskCallbacks {
+                                                                        DownloadImageFragment.TaskCallbacks,
+        ListItemAdapter.OnPopupShowListener, PopupWindow.OnDismissListener {
 
     private boolean loadedFragments = false;
 
@@ -63,6 +66,8 @@ public class SearchTabsActivity extends AppCompatActivity implements SearchView.
     private boolean isCapturedQuery = false;  //variavel para evitar duplicatas no envio quando o usuario
                                                 //espera o TIMER_DELAY e depois clica em buscar
 
+    private FrameLayout searchTabsLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,6 +86,11 @@ public class SearchTabsActivity extends AppCompatActivity implements SearchView.
             downloadImageFragment = new DownloadImageFragment();
             fm.beginTransaction().add(downloadImageFragment, Constants.TAG_DOWNLOAD_IMAGE_TASK_FRAGMENT).commit();
         }
+
+
+        //Setting transparency
+        searchTabsLayout = (FrameLayout) findViewById(R.id.search_tabs_frame_layout);
+        searchTabsLayout.getForeground().setAlpha(0);
 
         loadTabFragments();
         loadedFragments = true;
@@ -123,10 +133,6 @@ public class SearchTabsActivity extends AppCompatActivity implements SearchView.
             }
         });
 
-//        toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         setupTabIcons();
 
         TabLayout.Tab tab = tabLayout.getTabAt(2);
@@ -158,7 +164,7 @@ public class SearchTabsActivity extends AppCompatActivity implements SearchView.
         Log.d("Loaded Fragments", Boolean.toString(loadedFragments));
     }
 
-    private void setupCategoryAdapters() {
+    private void resetCategoryAdapters() {
         alcoolicsFragment.setupAdapter();
         nonAlcoolicsFragment.setupAdapter();
         cigarettesFragment.setupAdapter();
@@ -343,7 +349,7 @@ public class SearchTabsActivity extends AppCompatActivity implements SearchView.
     @Override
     public void onPostExecute() {
         Log.d("onPostExecute", "SearchTabsActivity");
-        setupCategoryAdapters();
+        resetCategoryAdapters();
     }
 
     @Override
@@ -359,7 +365,7 @@ public class SearchTabsActivity extends AppCompatActivity implements SearchView.
     @Override
     public void onPostExecuteImage() {
         Log.d("onPostExecuteImage", "SearchTabsActivity");
-        setupCategoryAdapters();
+        resetCategoryAdapters();
     }
 
     @Override
@@ -377,5 +383,15 @@ public class SearchTabsActivity extends AppCompatActivity implements SearchView.
                 });
             }
         }.start();
+    }
+
+    @Override
+    public void OnPopupShow() {
+        searchTabsLayout.getForeground().setAlpha(200); // dim view
+    }
+
+    @Override
+    public void onDismiss() {
+        searchTabsLayout.getForeground().setAlpha(0); // restore dim
     }
 }
