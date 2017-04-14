@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,7 +32,6 @@ import beer.happy_hour.drinking.activity.SearchTabsActivity;
 import beer.happy_hour.drinking.database_handler.ItemsDatabaseHandler;
 import beer.happy_hour.drinking.InputFilterMinMax;
 import beer.happy_hour.drinking.R;
-import beer.happy_hour.drinking.listener.SubtotalTextView;
 import beer.happy_hour.drinking.listener.SubtotalTextViewOnlyValue;
 import beer.happy_hour.drinking.model.List_Item.ListItem;
 import beer.happy_hour.drinking.repository.ListItemRepository;
@@ -191,6 +191,8 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
             public void onClick(View view) {
                 Log.d("Clicked","Product: " + listItem.getItem().getProduct().getName());
 
+                dismissKeyboard((Activity)context);
+
                 try {
                     Activity activity = (Activity) context;
 
@@ -214,15 +216,17 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
                     TextView price_popup = (TextView) layout.findViewById(R.id.price_popup);
                     price_popup.setText(String.format("R$ %.2f",listItem.getItem().getPrice()));
 
-                    NumberPicker quantity_popup_number_picker = (NumberPicker) layout.findViewById(R.id.quantity_popup_number_picker);
+                    final NumberPicker quantity_popup_number_picker = (NumberPicker) layout.findViewById(R.id.quantity_popup_number_picker);
                     quantity_popup_number_picker.setMinValue(0);
                     quantity_popup_number_picker.setMaxValue(99);
                     quantity_popup_number_picker.setValue(listItem.getQuantity());
                     quantity_popup_number_picker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+
                     quantity_popup_number_picker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
                         @Override
                         public void onValueChange(NumberPicker numberPicker, int oldValue, int newValue) {
                             listItem.setQuantityAndUpdateCart(newValue);
+                            quantity_editText.setText(Integer.toString(listItem.getQuantity()));
                         }
                     });
 
@@ -407,5 +411,12 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> implements Filterabl
         WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         int screenHeight = windowManager.getDefaultDisplay().getHeight();
         return screenHeight;
+    }
+
+    public void dismissKeyboard(Activity activity) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (null != activity.getCurrentFocus())
+            imm.hideSoftInputFromWindow(activity.getCurrentFocus()
+                    .getApplicationWindowToken(), 0);
     }
 }

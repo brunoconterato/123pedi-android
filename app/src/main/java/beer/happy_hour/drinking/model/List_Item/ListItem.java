@@ -25,7 +25,8 @@ public class ListItem implements Parcelable{
 
     private Item item;
     private int quantity;  //Quantidade que o comprador deseja
-    private SubtotalChangeListener listener;
+    private SubtotalChangeListener subtotalListener;
+    private QuantityChangeListener quantityListener;
 
     private double subtotal;
     private ShoppingCart cart;
@@ -45,12 +46,6 @@ public class ListItem implements Parcelable{
         cart = ShoppingCart.getInstance();
     }
 
-    private void setSubtotal(double subtotal) {
-        this.subtotal = subtotal;
-        if (listener != null)
-            listener.onValueChanged(subtotal);
-    }
-
     public int getQuantity() {
         return quantity;
     }
@@ -67,7 +62,13 @@ public class ListItem implements Parcelable{
         else
             quantity = 0;
 
-        setSubtotal(item.getPrice() * newQuantity);
+        subtotal = item.getPrice() * newQuantity;
+        if (subtotalListener != null)
+            subtotalListener.onValueChanged(subtotal);
+
+        if(quantityListener != null)
+            quantityListener.onValueChanged(newQuantity);
+
         cart.updateCart(this);
     }
 
@@ -107,10 +108,18 @@ public class ListItem implements Parcelable{
     }
 
     public void setSubtotalListener(SubtotalChangeListener listener) {
-        this.listener = listener;
+        this.subtotalListener = listener;
+    }
+
+    public void setQuantityListener(QuantityChangeListener listener) {
+        this.quantityListener = listener;
     }
 
     public interface SubtotalChangeListener {
         void onValueChanged(double newValue);
+    }
+
+    public interface QuantityChangeListener {
+        void onValueChanged(int newValue);
     }
 }
