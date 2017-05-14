@@ -2,6 +2,7 @@ package beer.happy_hour.drinking.load_stock_data;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -59,7 +60,7 @@ public class LoadStockFragment extends Fragment {
         setRetainInstance(true);
 
         // Create and execute the background task.
-        if(!task.isInitialized()) {
+        if(task.getStatus().equals(AsyncTask.Status.PENDING)){
             task.execute(Constants.BASE_STOCK_URL);
         }
     }

@@ -184,12 +184,12 @@ public class OrderDetailsActivity extends AppCompatActivity implements GoogleApi
         Log.d("isValidEmail", Boolean.toString(user.isValidEmail(email_edit_text.getText().toString())));
     }
 
-    public void goToBriefActivity(View view) {
+    public void goToPaymentActivity(View view) {
         boolean isValidUser = user.isValidUser();
         boolean isValidPlace = deliveryPlace.isValidPlace();
 
         if(isValidUser && isValidPlace)
-            startActivity(new Intent(this, BriefActivity.class));
+            startActivity(new Intent(this, PaymentActivity.class));
         else if(!User.isValidName(name_edit_text.getText()))
             Toast.makeText(this, "Por favor, digite seu nome!", Toast.LENGTH_LONG).show();
         else if(!User.isValidPhone(phone_edit_text.getText().toString()))

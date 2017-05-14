@@ -27,7 +27,6 @@ public class DownloadImageTask extends AsyncTask<Void, Void, Void> {
     private ListItemRepository repository;
     private static DownloadImageTask instance;
     private DownloadImageFragment.TaskCallbacks callback;
-    private boolean initialized = false;
     private Context context;
 
     private DownloadImageTask(Context context) {
@@ -50,8 +49,6 @@ public class DownloadImageTask extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... voids) {
-        initialized = true;
-
         //Stage 1 - Download from web
         for (ListItem listItem : repository.getList()) {
             Item item = listItem.getItem();
@@ -86,10 +83,6 @@ public class DownloadImageTask extends AsyncTask<Void, Void, Void> {
 
     public void setCallback(DownloadImageFragment.TaskCallbacks callback) {
         this.callback = callback;
-    }
-
-    public boolean isInitialized() {
-        return initialized;
     }
 
     public void setContext(Context context) {

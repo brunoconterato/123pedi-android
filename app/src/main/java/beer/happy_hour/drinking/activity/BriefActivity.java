@@ -20,19 +20,23 @@ import android.widget.PopupWindow;
 import android.widget.Switch;
 import android.widget.TextView;
 import beer.happy_hour.drinking.R;
+import beer.happy_hour.drinking.generate_order_async.OrderGeneratorAPIAsync;
 import beer.happy_hour.drinking.model.DeliveryPlace;
+import beer.happy_hour.drinking.model.Payment;
 import beer.happy_hour.drinking.model.User;
 import beer.happy_hour.drinking.model.List_Item.ListItem;
 import beer.happy_hour.drinking.model.List_Item.ShoppingCart;
 import beer.happy_hour.drinking.repository.ListItemRepository;
 
-public class BriefActivity extends AppCompatActivity{
+public class BriefActivity extends AppCompatActivity implements OrderGeneratorAPIAsync.OrderGeneratedListener {
 
     ProgressDialog finalProgressDialog;
+    OrderGeneratorAPIAsync orderGenerator;
 
     private User user;
     private DeliveryPlace deliveryPlace;
     private ShoppingCart cart;
+    private Payment payment;
     private ListItemRepository repository;
 
     private TextView contact_brief_text_view;
@@ -78,6 +82,7 @@ public class BriefActivity extends AppCompatActivity{
         user = User.getInstance();
         deliveryPlace = DeliveryPlace.getInstance();
         cart = ShoppingCart.getInstance();
+        payment = Payment.getInstance();
         repository = ListItemRepository.getInstance();
 
         contact_brief_text_view = (TextView) findViewById(R.id.contact_brief_text_view);
@@ -121,6 +126,8 @@ public class BriefActivity extends AppCompatActivity{
         items_quantity_brief_text_view.setText(String.format("%s%d", ITEMS_QUANTITY_PREFIX, cart.getItemsQuantity()));
         total_brief_text_view.setText(String.format("%s%.2f", TOTAL_PREFIX, cart.getTotal()));
 
+        payment_confirmation_text_view = (TextView) findViewById(R.id.payment_confirmation_text_view);
+        payment_confirmation_text_view.setText(payment.printBrief());
 
 //        adapter = new BriefItemsAdapter(this.getApplicationContext());
 //        items_brief_linear_layout.setupAdapter(adapter);
@@ -190,32 +197,12 @@ public class BriefActivity extends AppCompatActivity{
         finalProgressDialog.setCancelable(false);
     }
 
-    //TODO direcionar para unluckly
-    public void goToUnluckilyActivity(View view) {
+    public void generateOrder(View view) {
         if (majority_confirmation_switch.isChecked()) {
+            orderGenerator = new OrderGeneratorAPIAsync();
+            orderGenerator.setListener(this);
+            orderGenerator.execute();
             finalProgressDialog.show();
-
-            new Handler().postDelayed(new Runnable() {
-
-            /*
-             * Showing splash screen with a timer. This will be useful when you
-             * want to show case your app logo / company
-             */
-
-                @Override
-                public void run() {
-                    // This method will be executed once the timer is over
-                    // Start your app main activity
-                    Intent i = new Intent(BriefActivity.this, UnluckilyActivity.class);
-                    startActivity(i);
-
-                    // close this activity
-                    finish();
-                }
-            }, PROGRESS_DIALOG_TIME_OUT);
-//
-//            finalProgressDialog.dismiss();
-//            startActivity(new Intent(this, UnluckilyActivity.class));
         } else {
             pop_up_window.showAtLocation(pop_up_container_layout, Gravity.BOTTOM, 0, 0);
 //            pop_up_window.update(300,300);
@@ -227,9 +214,26 @@ public class BriefActivity extends AppCompatActivity{
             item.setQuantityAndUpdateCart(0);
     }
 
+    //Código para realizar após ordem estar gerada na nossa API
+    @Override
+    public void onOrderSucceeded() {
+        resetItems();
+
+        finalProgressDialog.dismiss();
+        startActivity(new Intent(this, OnOrderAcceptedActivity.class));
+
+        //TODO: zerar todos os items e limpar carrinho
+    }
+
+    //TODO: implementar
+    @Override
+    public void onOrderFailed() {
+        finalProgressDialog.dismiss();
+    }
+
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(this, OrderDetailsActivity.class));
+        startActivity(new Intent(this, PaymentActivity.class));
     }
 
     @Override
@@ -247,7 +251,7 @@ public class BriefActivity extends AppCompatActivity{
                 startActivity(new Intent(this, CartActivity.class));
                 return (true);
             case android.R.id.home:
-                startActivity(new Intent(this, OrderDetailsActivity.class));
+                startActivity(new Intent(this, PaymentActivity.class));
                 return (true);
         }
         return (super.onOptionsItemSelected(item));

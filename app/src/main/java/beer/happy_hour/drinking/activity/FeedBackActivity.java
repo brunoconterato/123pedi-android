@@ -18,7 +18,6 @@ import android.widget.TextView;
 import beer.happy_hour.drinking.R;
 import beer.happy_hour.drinking.activity.CartActivity;
 import beer.happy_hour.drinking.activity.MainActivity;
-import beer.happy_hour.drinking.activity.UnluckilyActivity;
 import beer.happy_hour.drinking.async_http_client.MessageGetterAPISync;
 import beer.happy_hour.drinking.model.User;
 import beer.happy_hour.drinking.model.UserFeedBack;
@@ -103,7 +102,7 @@ public class FeedBackActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(this, UnluckilyActivity.class));
+        startActivity(new Intent(this, OnOrderAcceptedActivity.class));
     }
 
     @Override
@@ -121,7 +120,7 @@ public class FeedBackActivity extends AppCompatActivity {
                 startActivity(new Intent(this, CartActivity.class));
                 return (true);
             case android.R.id.home:
-                startActivity(new Intent(this, UnluckilyActivity.class));
+                startActivity(new Intent(this, OnOrderAcceptedActivity.class));
                 return (true);
         }
         return (super.onOptionsItemSelected(item));

@@ -84,8 +84,8 @@
             android:layout_margin="8dp"
             android:background="@drawable/rounded_corner_ghost_button"
             android:textSize="20sp"
-            android:onClick="goToBriefActivity"
-            android:text="Prosseguir para Resumo" />
+            android:onClick="goToPaymentActivity"
+            android:text="Prosseguir para Pagamento" />
 
     </LinearLayout>
 </ScrollView>

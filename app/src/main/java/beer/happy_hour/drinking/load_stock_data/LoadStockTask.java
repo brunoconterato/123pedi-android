@@ -33,7 +33,6 @@ public class LoadStockTask extends AsyncTask<String, Void, List<Item>> {
 
     private ItemsDatabaseHandler databaseHandler;
     private static LoadStockTask instance;
-    private boolean initialized = false;
     private LoadStockFragment.TaskCallbacks callback;
     private ListItemRepository repository;
 
@@ -51,10 +50,6 @@ public class LoadStockTask extends AsyncTask<String, Void, List<Item>> {
             }
         }
         return instance;
-    }
-
-    public boolean isInitialized() {
-        return initialized;
     }
 
     public void setCallback(LoadStockFragment.TaskCallbacks callback) {
@@ -75,8 +70,6 @@ public class LoadStockTask extends AsyncTask<String, Void, List<Item>> {
      */
     @Override
     protected List<Item> doInBackground(String... strings) {
-        initialized = true;
-
         try {
             Log.d("Entrou", "LoadStockTask");
             String stringJSON = loadJSON(strings[0]);
